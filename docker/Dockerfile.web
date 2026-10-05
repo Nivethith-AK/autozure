@@ -1,0 +1,24 @@
+FROM node:20-alpine AS base
+WORKDIR /app
+RUN npm install -g pnpm turbo
+
+FROM base AS builder
+COPY . .
+RUN pnpm install --frozen-lockfile=false
+RUN pnpm --filter=@flowforge/types build
+RUN pnpm --filter=@flowforge/ui build
+RUN pnpm --filter=@flowforge/web build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+RUN npm install -g pnpm
+
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-workspace.yaml ./
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/apps/web ./apps/web
+
+WORKDIR /app/apps/web
+EXPOSE 3000
+CMD ["pnpm", "start"]
