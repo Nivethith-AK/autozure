@@ -94,6 +94,11 @@ export interface NodePosition {
 export interface WorkflowNodeData {
   type: string;
   label: string;
+  category?: string;
+  icon?: string;
+  color?: string;
+  inputs?: PortDefinition[];
+  outputs?: PortDefinition[];
   parameters: Record<string, unknown>;
   disabled?: boolean;
   notes?: string;
@@ -131,6 +136,7 @@ export interface Workflow {
   description?: string;
   graph: WorkflowGraph;
   status: WorkflowStatus;
+  active?: boolean;
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -197,6 +203,7 @@ export interface NodeExecutionResult {
   id: string;
   executionId: string;
   nodeId: string;
+  nodeType?: string;
   status: NodeExecutionStatus;
   inputData?: unknown;
   outputData?: unknown;

@@ -20,6 +20,10 @@ import {
   CheckCircle2,
   XCircle,
   Loader2,
+  Trash2,
+  Copy,
+  Settings2,
+  Power,
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
 
@@ -42,6 +46,8 @@ const ICON_MAP: Record<string, React.ElementType> = {
 
 export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
   const selectNode = useWorkflowStore((s) => s.selectNode);
+  const deleteNode = useWorkflowStore((s) => s.deleteNode);
+  const addNode = useWorkflowStore((s) => s.addNode);
   const activeExecution = useWorkflowStore((s) => s.activeExecution);
 
   const nodeData = data as any;
@@ -51,80 +57,156 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
   const nodeResult = activeExecution?.nodeResults?.find((r) => r.nodeId === id);
   const status = nodeResult?.status;
 
+  const handleDuplicate = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    addNode(nodeData.type, {
+      x: (nodeData.position?.x || 100) + 40,
+      y: (nodeData.position?.y || 100) + 40,
+    });
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    deleteNode(id);
+  };
+
+  // Extract a helpful summary from parameters
+  const paramSummary = React.useMemo(() => {
+    const p = nodeData.parameters || {};
+    if (nodeData.type === 'action.http') return `${p.method || 'GET'} ${p.url ? String(p.url).slice(0, 24) : ''}`;
+    if (nodeData.type === 'trigger.schedule') return `cron: ${p.cron || '0 * * * *'}`;
+    if (nodeData.type === 'ai.openai' || nodeData.type === 'ai.gemini' || nodeData.type === 'ai.anthropic') return `Model: ${p.model || 'default'}`;
+    if (nodeData.type === 'logic.condition') return `${p.field || 'val'} ${p.operator || '=='} ${p.value || ''}`;
+    if (nodeData.type === 'action.delay') return `Wait ${p.duration || 1000}${p.unit || 'ms'}`;
+    return null;
+  }, [nodeData.type, nodeData.parameters]);
+
   return (
     <div
       onClick={() => selectNode(id)}
-      className={`relative min-w-[200px] rounded-xl border bg-slate-900 text-slate-100 shadow-xl transition-all duration-200 cursor-pointer ${
+      className={`group relative min-w-[240px] max-w-[280px] rounded-2xl border transition-all duration-200 cursor-pointer select-none ${
         selected
-          ? 'border-emerald-500 ring-2 ring-emerald-500/30 shadow-emerald-950/50'
-          : 'border-slate-700/80 hover:border-slate-600'
+          ? 'border-emerald-500 bg-slate-900 shadow-xl glow-emerald ring-2 ring-emerald-500/30'
+          : 'border-slate-800 bg-slate-900/95 hover:border-slate-700 hover:bg-slate-900 shadow-lg'
       } ${
         status === 'running'
-          ? 'ring-2 ring-blue-500 animate-pulse border-blue-500'
+          ? 'border-blue-500 ring-2 ring-blue-500/40 glow-blue'
           : status === 'failed'
-          ? 'border-rose-500 ring-2 ring-rose-500/20'
+          ? 'border-rose-500 ring-2 ring-rose-500/40 glow-rose'
           : status === 'success'
-          ? 'border-emerald-500/60'
+          ? 'border-emerald-500/80 shadow-emerald-950/40'
           : ''
       }`}
     >
+      {/* Top action hover bar */}
+      <div className="absolute -top-9 right-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-slate-950/90 border border-slate-800 rounded-lg p-1 shadow-xl z-20 backdrop-blur-md">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            selectNode(id);
+          }}
+          className="p-1 rounded text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition-colors"
+          title="Configure Node"
+        >
+          <Settings2 className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={handleDuplicate}
+          className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+          title="Duplicate Node"
+        >
+          <Copy className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={handleDelete}
+          className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+          title="Delete Node"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
       {/* Input handles */}
       {(nodeData.inputs || []).map((port: any, idx: number) => (
-        <Handle
-          key={`in-${port.name}-${idx}`}
-          type="target"
-          position={Position.Left}
-          id={port.name}
-          className="!w-3 !h-3 !bg-slate-400 !border-2 !border-slate-900 hover:!bg-emerald-400 !transition-colors"
-          style={{ top: `${((idx + 1) / ((nodeData.inputs?.length || 1) + 1)) * 100}%` }}
-        />
+        <div key={`in-${port.name}-${idx}`}>
+          <Handle
+            type="target"
+            position={Position.Left}
+            id={port.name}
+            className="react-flow__handle-left"
+            style={{ top: `${((idx + 1) / ((nodeData.inputs?.length || 1) + 1)) * 100}%` }}
+          />
+        </div>
       ))}
 
-      {/* Header */}
-      <div className="flex items-center gap-3 p-3 border-b border-slate-800">
+      {/* Node Header */}
+      <div className="flex items-center gap-3 p-3.5 border-b border-slate-800/80">
         <div
-          className="flex h-9 w-9 items-center justify-center rounded-lg shadow-sm"
-          style={{ backgroundColor: `${nodeData.color || '#3b82f6'}22`, color: nodeData.color || '#3b82f6' }}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-inner transition-transform group-hover:scale-105"
+          style={{
+            backgroundColor: `${nodeData.color || '#3b82f6'}18`,
+            color: nodeData.color || '#3b82f6',
+            border: `1px solid ${nodeData.color || '#3b82f6'}30`,
+          }}
         >
           <IconComponent className="h-5 w-5" />
         </div>
-        <div className="flex-1 overflow-hidden">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            {nodeData.category || 'node'}
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold tracking-wider uppercase text-slate-400 font-mono">
+              {nodeData.category || 'node'}
+            </span>
+            {/* Status indicator */}
+            {status === 'running' && (
+              <span className="flex items-center gap-1 text-[10px] text-blue-400 font-mono font-medium animate-pulse">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                running
+              </span>
+            )}
+            {status === 'success' && (
+              <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-mono font-medium">
+                <CheckCircle2 className="h-3 w-3" />
+                {nodeResult?.durationMs !== undefined ? `${nodeResult.durationMs}ms` : 'ok'}
+              </span>
+            )}
+            {status === 'failed' && (
+              <span className="flex items-center gap-1 text-[10px] text-rose-400 font-mono font-medium">
+                <XCircle className="h-3 w-3" />
+                failed
+              </span>
+            )}
           </div>
-          <div className="truncate text-sm font-medium text-slate-100">
+          <div className="truncate text-xs font-semibold text-slate-100 mt-0.5">
             {nodeData.label || 'Node'}
           </div>
         </div>
-
-        {/* Status icon */}
-        {status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-blue-400" />}
-        {status === 'success' && <CheckCircle2 className="h-4 w-4 text-emerald-400" />}
-        {status === 'failed' && <XCircle className="h-4 w-4 text-rose-400" />}
       </div>
 
-      {/* Body details preview */}
-      <div className="p-2.5 text-[11px] text-slate-400 font-mono bg-slate-950/40 rounded-b-xl">
-        <div className="truncate">
-          {nodeData.type}
+      {/* Node Body Details */}
+      <div className="p-3 bg-slate-950/50 rounded-b-2xl text-[11px] space-y-1.5">
+        <div className="flex items-center justify-between text-slate-400 font-mono">
+          <span className="text-[10px] text-slate-500 truncate">{nodeData.type}</span>
         </div>
-        {nodeData.parameters && Object.keys(nodeData.parameters).length > 0 && (
-          <div className="mt-1 text-[10px] text-slate-500">
-            {Object.keys(nodeData.parameters).length} parameter{Object.keys(nodeData.parameters).length > 1 ? 's' : ''} configured
+
+        {paramSummary && (
+          <div className="rounded-lg bg-slate-900 border border-slate-800/80 px-2 py-1 text-[10px] font-mono text-emerald-400/90 truncate">
+            {paramSummary}
           </div>
         )}
       </div>
 
       {/* Output handles */}
       {(nodeData.outputs || []).map((port: any, idx: number) => (
-        <Handle
-          key={`out-${port.name}-${idx}`}
-          type="source"
-          position={Position.Right}
-          id={port.name}
-          className="!w-3 !h-3 !bg-emerald-500 !border-2 !border-slate-900 hover:!bg-emerald-300 !transition-colors"
-          style={{ top: `${((idx + 1) / ((nodeData.outputs?.length || 1) + 1)) * 100}%` }}
-        />
+        <div key={`out-${port.name}-${idx}`}>
+          <Handle
+            type="source"
+            position={Position.Right}
+            id={port.name}
+            className="react-flow__handle-right"
+            style={{ top: `${((idx + 1) / ((nodeData.outputs?.length || 1) + 1)) * 100}%` }}
+          />
+        </div>
       ))}
     </div>
   );

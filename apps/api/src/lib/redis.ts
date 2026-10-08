@@ -33,7 +33,7 @@ redis.on('close', () => {
 });
 
 // Separate subscriber connection for pub/sub if needed
-export const redisSub = new Redis(process.env.REDIS_URL, {
+export const redisSub = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
   lazyConnect: true,

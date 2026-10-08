@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -12,26 +12,52 @@ import {
   Terminal,
   Layers,
   ChevronRight,
+  Copy,
+  Check,
+  Download,
+  Play,
+  ArrowUpRight,
+  AlertTriangle,
+  FileJson,
+  Code2,
+  Eye,
+  Info,
 } from 'lucide-react';
-import { executionApi } from '@/lib/api';
-import { Execution, NodeExecutionResult } from '@flowforge/types';
+import { executionApi, workflowApi } from '@/lib/api';
+import { Execution, NodeExecutionResult, ExecutionLog, Workflow } from '@flowforge/types';
 
 export default function ExecutionDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
 
   const [execution, setExecution] = useState<Execution | null>(null);
+  const [workflow, setWorkflow] = useState<Workflow | null>(null);
   const [selectedNode, setSelectedNode] = useState<NodeExecutionResult | null>(null);
+  const [activeTab, setActiveTab] = useState<'output' | 'input' | 'logs' | 'raw'>('output');
+  const [logs, setLogs] = useState<ExecutionLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [isReRunning, setIsReRunning] = useState(false);
 
   useEffect(() => {
     async function load() {
       try {
         setIsLoading(true);
-        const data = await executionApi.get(id);
-        setExecution(data);
-        if (data.nodeResults && data.nodeResults.length > 0) {
-          setSelectedNode(data.nodeResults[0]);
+        const [execData, logData] = await Promise.all([
+          executionApi.get(id),
+          executionApi.logs(id).catch(() => []),
+        ]);
+        setExecution(execData);
+        setLogs(logData);
+
+        if (execData.workflowId) {
+          const wf = await workflowApi.get(execData.workflowId).catch(() => null);
+          setWorkflow(wf);
+        }
+
+        if (execData.nodeResults && execData.nodeResults.length > 0) {
+          setSelectedNode(execData.nodeResults[0]);
         }
       } catch (err) {
         console.error('Failed to load execution details:', err);
@@ -42,10 +68,43 @@ export default function ExecutionDetailPage() {
     if (id) load();
   }, [id]);
 
+  const copyText = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  const handleDownloadExecution = () => {
+    if (!execution) return;
+    const blob = new Blob([JSON.stringify({ execution, logs }, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `execution-${execution.id.slice(0, 8)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleReRun = async () => {
+    if (!execution) return;
+    setIsReRunning(true);
+    try {
+      const res = await workflowApi.execute(execution.workflowId, execution.triggerData as any);
+      router.push(`/executions/${res.executionId}`);
+    } catch (err) {
+      console.error('Failed to re-run:', err);
+    } finally {
+      setIsReRunning(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-100">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+          <p className="text-xs text-slate-400">Loading execution telemetry...</p>
+        </div>
       </div>
     );
   }
@@ -54,8 +113,8 @@ export default function ExecutionDetailPage() {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-100">
         <div className="text-center">
-          <p className="text-xs text-slate-400">Execution not found.</p>
-          <Link href="/executions" className="mt-2 inline-block text-xs text-emerald-400 hover:underline">
+          <p className="text-xs text-slate-400">Execution not found or deleted.</p>
+          <Link href="/executions" className="mt-3 inline-block text-xs text-emerald-400 hover:underline">
             Back to Executions
           </Link>
         </div>
@@ -63,24 +122,40 @@ export default function ExecutionDetailPage() {
     );
   }
 
+  // Calculate total duration
+  let durationStr = '—';
+  if (execution.finishedAt && execution.startedAt) {
+    const ms = new Date(execution.finishedAt).getTime() - new Date(execution.startedAt).getTime();
+    durationStr = ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(2)}s`;
+  }
+
+  const nodeResults = execution.nodeResults || [];
+  const nodeLogs = logs.filter((l) => !selectedNode || l.nodeId === selectedNode.nodeId);
+
   return (
-    <div className="flex h-screen w-screen flex-col bg-slate-950 text-slate-100">
-      {/* Header */}
-      <header className="h-14 border-b border-slate-800 bg-slate-950 px-5 flex items-center justify-between select-none">
+    <div className="flex h-screen w-screen flex-col bg-slate-950 text-slate-100 overflow-hidden select-none">
+      {/* Top Header */}
+      <header className="h-14 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md px-5 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">
           <Link
             href="/executions"
             className="rounded-lg p-2 text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-colors"
+            title="Back to Executions"
           >
             <ArrowLeft className="h-4 w-4" />
           </Link>
+
+          <div className="h-4 w-px bg-slate-800" />
+
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-sm font-semibold text-slate-100">
-                Execution {execution.id.slice(0, 8)}
-              </h1>
+              <span className="text-sm font-bold text-slate-100">
+                Run {execution.id.slice(0, 8)}
+              </span>
+
+              {/* Status pill */}
               <span
-                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase tracking-wider ${
                   execution.status === 'success'
                     ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                     : execution.status === 'failed'
@@ -93,91 +168,280 @@ export default function ExecutionDetailPage() {
                 {execution.status === 'running' && <Loader2 className="h-3 w-3 animate-spin" />}
                 {execution.status}
               </span>
+
+              {workflow && (
+                <Link
+                  href={`/editor/${workflow.id}`}
+                  className="hidden md:flex items-center gap-1 text-xs text-slate-400 hover:text-emerald-400 font-medium transition-colors"
+                >
+                  ({workflow.name})
+                  <ArrowUpRight className="h-3 w-3" />
+                </Link>
+              )}
             </div>
-            <p className="text-[11px] text-slate-500 font-mono">
-              Trigger: {execution.triggerType}
-            </p>
+
+            <div className="flex items-center gap-3 text-[11px] text-slate-500 font-mono mt-0.5">
+              <span>Trigger: <strong className="text-slate-300 capitalize">{execution.triggerType}</strong></span>
+              <span>• Duration: <strong className="text-slate-300">{durationStr}</strong></span>
+              <span>• Started: {new Date(execution.startedAt).toLocaleTimeString()}</span>
+            </div>
           </div>
+        </div>
+
+        {/* Right Action buttons */}
+        <div className="flex items-center gap-2">
+          {/* Re-run button */}
+          <button
+            onClick={handleReRun}
+            disabled={isReRunning}
+            className="flex items-center gap-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 px-3 py-1.5 text-xs text-slate-300 font-medium transition-colors"
+            title="Re-run this workflow"
+          >
+            {isReRunning ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-emerald-400" />
+            ) : (
+              <Play className="h-3.5 w-3.5 text-emerald-400" />
+            )}
+            <span className="hidden sm:inline">Re-Run</span>
+          </button>
+
+          {/* Download JSON */}
+          <button
+            onClick={handleDownloadExecution}
+            className="flex items-center gap-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 px-3 py-1.5 text-xs text-slate-300 font-medium transition-colors"
+            title="Download full execution JSON"
+          >
+            <Download className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Export JSON</span>
+          </button>
+
+          {workflow && (
+            <Link
+              href={`/editor/${workflow.id}`}
+              className="flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-3.5 py-1.5 text-xs transition-colors shadow-lg shadow-emerald-950/40"
+            >
+              Open Editor
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          )}
         </div>
       </header>
 
       {/* Main split view */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Node list sidebar */}
-        <div className="w-80 border-r border-slate-800 bg-slate-950/60 flex flex-col">
-          <div className="p-3 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Executed Nodes
+        {/* Left Sidebar: Node execution pipeline */}
+        <div className="w-80 border-r border-slate-800 bg-slate-950/70 flex flex-col">
+          <div className="p-3.5 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Layers className="h-3.5 w-3.5" />
+              Executed Nodes
+            </span>
+            <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-900 text-slate-400">
+              {nodeResults.length}
+            </span>
           </div>
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {(execution.nodeResults || []).map((nr) => (
-              <div
-                key={nr.nodeId}
-                onClick={() => setSelectedNode(nr)}
-                className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${
-                  selectedNode?.nodeId === nr.nodeId
-                    ? 'bg-slate-900 border-emerald-500/50 text-slate-100 shadow-md'
-                    : 'bg-slate-900/30 border-slate-800/80 text-slate-400 hover:bg-slate-900/60 hover:text-slate-200'
-                }`}
-              >
-                <div className="overflow-hidden pr-2">
-                  <span className="block text-xs font-medium truncate">{nr.nodeId}</span>
-                  <span className="block text-[10px] text-slate-500 font-mono capitalize">
-                    {nr.status} {nr.durationMs !== undefined ? `• ${nr.durationMs}ms` : ''}
-                  </span>
-                </div>
-                {nr.status === 'success' && <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />}
-                {nr.status === 'failed' && <XCircle className="h-4 w-4 text-rose-400 shrink-0" />}
-                {nr.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-blue-400 shrink-0" />}
+
+          <div className="flex-1 overflow-y-auto p-2.5 space-y-1.5">
+            {nodeResults.length === 0 ? (
+              <div className="p-4 text-center text-xs text-slate-500">
+                No node executions recorded yet.
               </div>
-            ))}
+            ) : (
+              nodeResults.map((nr) => {
+                const isSelected = selectedNode?.nodeId === nr.nodeId;
+                return (
+                  <div
+                    key={nr.nodeId}
+                    onClick={() => setSelectedNode(nr)}
+                    className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all ${
+                      isSelected
+                        ? 'bg-slate-900 border-emerald-500/50 text-slate-100 shadow-md ring-1 ring-emerald-500/20'
+                        : 'bg-slate-900/30 border-slate-800/80 text-slate-400 hover:bg-slate-900/60 hover:text-slate-200'
+                    }`}
+                  >
+                    <div className="overflow-hidden pr-2">
+                      <span className="block text-xs font-bold text-slate-100 truncate">{nr.nodeId}</span>
+                      <span className="block text-[10px] text-slate-500 font-mono truncate">{nr.nodeType}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {nr.durationMs !== undefined && (
+                        <span className="text-[10px] font-mono text-slate-500">
+                          {nr.durationMs}ms
+                        </span>
+                      )}
+                      {nr.status === 'success' && <CheckCircle2 className="h-4 w-4 text-emerald-400" />}
+                      {nr.status === 'failed' && <XCircle className="h-4 w-4 text-rose-400" />}
+                      {nr.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-blue-400" />}
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
-        {/* Node detail & I/O Inspector */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* Right Content Pane: I/O & Log Inspector */}
+        <div className="flex-1 flex flex-col overflow-hidden bg-slate-950">
           {!selectedNode ? (
-            <div className="text-center py-20 text-slate-500 text-xs">
-              Select a node from the left to inspect its input and output telemetry.
+            <div className="flex-1 flex items-center justify-center text-center p-8 text-slate-500 text-xs">
+              Select a node from the left panel to inspect its inputs, outputs, and runtime logs.
             </div>
           ) : (
             <>
-              <div>
-                <h2 className="text-base font-bold text-slate-100">{selectedNode.nodeId}</h2>
-                <div className="mt-1 flex items-center gap-3 text-xs text-slate-400 font-mono">
-                  <span>Status: <strong className="text-slate-200 capitalize">{selectedNode.status}</strong></span>
-                  {selectedNode.durationMs !== undefined && (
-                    <span>Duration: <strong className="text-slate-200">{selectedNode.durationMs}ms</strong></span>
-                  )}
+              {/* Selected Node Header */}
+              <div className="p-4 border-b border-slate-800 bg-slate-900/30 flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-sm font-bold text-slate-100">{selectedNode.nodeId}</h2>
+                    <span className="text-[11px] font-mono text-slate-500">({selectedNode.nodeType})</span>
+                    <span
+                      className={`text-[10px] font-mono uppercase font-semibold px-2 py-0.5 rounded-full ${
+                        selectedNode.status === 'success'
+                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          : selectedNode.status === 'failed'
+                          ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                          : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                      }`}
+                    >
+                      {selectedNode.status}
+                    </span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-3 text-xs text-slate-400 font-mono">
+                    <span>Duration: <strong className="text-slate-200">{selectedNode.durationMs ?? 0}ms</strong></span>
+                    {selectedNode.startedAt && (
+                      <span>Started: {new Date(selectedNode.startedAt).toLocaleTimeString()}</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Tab selector */}
+                <div className="flex items-center gap-1 rounded-xl bg-slate-900 border border-slate-800 p-1">
+                  <button
+                    onClick={() => setActiveTab('output')}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      activeTab === 'output' ? 'bg-slate-800 text-slate-100 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Output Data
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('input')}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      activeTab === 'input' ? 'bg-slate-800 text-slate-100 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Input Data
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('logs')}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      activeTab === 'logs' ? 'bg-slate-800 text-slate-100 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Node Logs ({nodeLogs.length})
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('raw')}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                      activeTab === 'raw' ? 'bg-slate-800 text-slate-100 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Raw Record
+                  </button>
                 </div>
               </div>
 
+              {/* Error Banner if Node Failed */}
               {selectedNode.error && (
-                <div className="rounded-xl border border-rose-800/80 bg-rose-950/30 p-4 text-xs text-rose-300">
-                  <h3 className="font-semibold mb-1">Execution Error:</h3>
-                  <pre className="font-mono text-[11px] whitespace-pre-wrap">{selectedNode.error}</pre>
+                <div className="m-4 rounded-2xl border border-rose-900/50 bg-rose-950/20 p-4 flex items-start gap-3 text-rose-300">
+                  <AlertTriangle className="h-5 w-5 text-rose-400 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-xs font-bold text-rose-200">Execution Error Encountered</h4>
+                    <p className="mt-1 text-xs font-mono text-rose-400 break-all leading-relaxed">
+                      {selectedNode.error}
+                    </p>
+                  </div>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Inputs */}
-                <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-                  <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 font-mono">
-                    Input Payload
-                  </h3>
-                  <pre className="p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-[11px] font-mono text-slate-300 overflow-x-auto max-h-96">
-                    {JSON.stringify(selectedNode.inputData, null, 2) || '{}'}
-                  </pre>
-                </div>
+              {/* Tab Viewport */}
+              <div className="flex-1 overflow-y-auto p-4 select-text">
+                {activeTab === 'output' && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-slate-300">Node Output Payload</span>
+                      <button
+                        onClick={() => copyText(JSON.stringify(selectedNode.outputData, null, 2), 'output')}
+                        className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-emerald-400 transition-colors"
+                      >
+                        {copiedKey === 'output' ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                        {copiedKey === 'output' ? 'Copied' : 'Copy Output JSON'}
+                      </button>
+                    </div>
+                    <pre className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 font-mono text-xs text-emerald-400 overflow-x-auto leading-relaxed shadow-inner">
+                      {JSON.stringify(selectedNode.outputData ?? {}, null, 2)}
+                    </pre>
+                  </div>
+                )}
 
-                {/* Outputs */}
-                <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-                  <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 font-mono">
-                    Output Result
-                  </h3>
-                  <pre className="p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-[11px] font-mono text-emerald-300 overflow-x-auto max-h-96">
-                    {JSON.stringify(selectedNode.outputData, null, 2) || '{}'}
-                  </pre>
-                </div>
+                {activeTab === 'input' && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-slate-300">Predecessor Input Payload</span>
+                      <button
+                        onClick={() => copyText(JSON.stringify(selectedNode.inputData, null, 2), 'input')}
+                        className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-emerald-400 transition-colors"
+                      >
+                        {copiedKey === 'input' ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                        {copiedKey === 'input' ? 'Copied' : 'Copy Input JSON'}
+                      </button>
+                    </div>
+                    <pre className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 font-mono text-xs text-blue-400 overflow-x-auto leading-relaxed shadow-inner">
+                      {JSON.stringify(selectedNode.inputData ?? {}, null, 2)}
+                    </pre>
+                  </div>
+                )}
+
+                {activeTab === 'logs' && (
+                  <div className="space-y-2">
+                    <span className="text-xs font-semibold text-slate-300">Execution Logs Scoped to this Node</span>
+                    {nodeLogs.length === 0 ? (
+                      <p className="text-xs text-slate-500 italic p-4">No specific logs generated for this node.</p>
+                    ) : (
+                      <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 font-mono text-xs space-y-2 leading-relaxed">
+                        {nodeLogs.map((l, i) => (
+                          <div key={l.id || i} className="flex items-start gap-2">
+                            <span className="text-slate-500 font-mono text-[10px]">
+                              {new Date(l.timestamp).toLocaleTimeString()}
+                            </span>
+                            <span
+                              className={`uppercase text-[9px] px-1.5 rounded font-bold ${
+                                l.level === 'error'
+                                  ? 'bg-rose-500/20 text-rose-400'
+                                  : l.level === 'warn'
+                                  ? 'bg-amber-500/20 text-amber-400'
+                                  : 'bg-blue-500/20 text-blue-400'
+                              }`}
+                            >
+                              {l.level}
+                            </span>
+                            <span className="text-slate-200 break-all">{l.message}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'raw' && (
+                  <div className="space-y-2">
+                    <span className="text-xs font-semibold text-slate-300">Raw Node Result Object</span>
+                    <pre className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed shadow-inner">
+                      {JSON.stringify(selectedNode, null, 2)}
+                    </pre>
+                  </div>
+                )}
               </div>
             </>
           )}

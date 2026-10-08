@@ -67,7 +67,7 @@ export class WorkspaceService {
       where: eq(workspaceMembers.userId, userId),
       with: { workspace: true },
     });
-    return memberships.map(m => ({ ...m.workspace, role: m.role }));
+    return memberships.map(m => ({ ...(m.workspace as any), role: m.role }));
   }
 
   async getById(workspaceId: string, userId: string) {
@@ -86,7 +86,7 @@ export class WorkspaceService {
       with: { workspace: true },
     });
     if (!membership) throw new NotFoundError('Workspace');
-    return { ...membership.workspace, role: membership.role };
+    return { ...(membership.workspace as any), role: membership.role };
   }
 
   async update(workspaceId: string, userId: string, data: { name?: string; description?: string }) {

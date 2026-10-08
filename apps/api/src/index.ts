@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { sql } from 'drizzle-orm';
 import { app } from './app';
 import { logger } from './lib/logger';
 import { db, setDbConnected } from './db';
@@ -11,7 +12,7 @@ async function main() {
   try {
     // Test DB connection
     try {
-      await db.execute('SELECT 1');
+      await db.execute(sql`SELECT 1`);
       setDbConnected(true);
       logger.info('✅ PostgreSQL connected');
     } catch (dbErr: any) {

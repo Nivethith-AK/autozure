@@ -19,6 +19,7 @@ import {
   Bug,
   Box,
   Plus,
+  GripVertical,
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
 import { NodeDefinitionMeta } from '@flowforge/types';
@@ -70,19 +71,22 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
   }, [nodeDefinitions, search, selectedCategory]);
 
   const handleAddNode = (nodeType: string) => {
-    // Add near center of canvas
-    addNode(nodeType, { x: 250 + Math.random() * 50, y: 150 + Math.random() * 50 });
+    // Add near center of view
+    addNode(nodeType, {
+      x: 300 + (Math.random() * 60 - 30),
+      y: 200 + (Math.random() * 60 - 30),
+    });
   };
 
   if (!isOpen) return null;
 
   return (
-    <aside className="fixed left-0 top-14 bottom-0 z-30 w-80 border-r border-slate-800 bg-slate-950/95 backdrop-blur-md flex flex-col shadow-2xl transition-all">
+    <aside className="fixed left-0 top-14 bottom-0 z-30 w-84 sm:w-96 border-r border-slate-800 bg-slate-950/95 backdrop-blur-xl flex flex-col shadow-2xl transition-all select-none">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-slate-800">
+      <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/40">
         <div>
-          <h2 className="text-sm font-semibold text-slate-100">Nodes Library</h2>
-          <p className="text-xs text-slate-400">Click or drag a node to add it</p>
+          <h2 className="text-sm font-bold text-slate-100">Integration Registry</h2>
+          <p className="text-[11px] text-slate-400">14 nodes ready for automation & AI pipelines</p>
         </div>
         <button
           onClick={onClose}
@@ -93,28 +97,28 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
       </div>
 
       {/* Search Input */}
-      <div className="p-3 border-b border-slate-800/80">
+      <div className="p-3 border-b border-slate-800/80 bg-slate-950">
         <div className="relative">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search nodes..."
-            className="w-full rounded-lg bg-slate-900 border border-slate-800 pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
+            placeholder="Search triggers, AI, HTTP, logic..."
+            className="w-full rounded-xl bg-slate-900 border border-slate-800 pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-medium"
           />
         </div>
 
-        {/* Category Pills */}
+        {/* Category Filter Pills */}
         <div className="mt-2.5 flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`rounded-md px-2.5 py-1 text-[11px] font-medium capitalize whitespace-nowrap transition-colors ${
+              className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold capitalize whitespace-nowrap transition-all ${
                 selectedCategory === cat
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-transparent'
+                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm'
+                  : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 border border-slate-800/60'
               }`}
             >
               {cat}
@@ -126,8 +130,8 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
       {/* Node list */}
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {filteredNodes.length === 0 ? (
-          <div className="text-center py-8 text-xs text-slate-500">
-            No nodes found matching &ldquo;{search}&rdquo;
+          <div className="text-center py-12 text-xs text-slate-500">
+            No integration nodes found matching &ldquo;{search}&rdquo;
           </div>
         ) : (
           filteredNodes.map((node: NodeDefinitionMeta) => {
@@ -136,18 +140,25 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
               <div
                 key={node.type}
                 onClick={() => handleAddNode(node.type)}
-                className="group relative flex items-start gap-3 rounded-xl border border-slate-800/80 bg-slate-900/60 p-3 hover:border-slate-700 hover:bg-slate-900 cursor-pointer transition-all hover:scale-[1.01]"
+                className="group relative flex items-start gap-3 rounded-2xl border border-slate-800/80 bg-slate-900/50 p-3 hover:border-emerald-500/50 hover:bg-slate-900 cursor-pointer transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-emerald-950/20"
               >
                 <div
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-sm"
-                  style={{ backgroundColor: `${node.color || '#3b82f6'}22`, color: node.color || '#3b82f6' }}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-inner transition-transform group-hover:scale-105"
+                  style={{
+                    backgroundColor: `${node.color || '#3b82f6'}18`,
+                    color: node.color || '#3b82f6',
+                    border: `1px solid ${node.color || '#3b82f6'}30`,
+                  }}
                 >
                   <Icon className="h-5 w-5" />
                 </div>
+
                 <div className="flex-1 min-w-0 pr-6">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-medium text-slate-100 truncate">{node.label}</span>
-                    <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">
+                    <span className="text-xs font-semibold text-slate-100 truncate group-hover:text-emerald-400 transition-colors">
+                      {node.label}
+                    </span>
+                    <span className="text-[9px] uppercase px-1.5 py-0.5 rounded font-mono font-bold bg-slate-800 text-slate-400">
                       {node.category}
                     </span>
                   </div>
@@ -157,7 +168,7 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
                 </div>
 
                 <button
-                  className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 rounded-md p-1 bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-all shadow-md"
+                  className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 rounded-lg p-1.5 bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-all shadow-md"
                   title="Add to canvas"
                 >
                   <Plus className="h-3.5 w-3.5" />

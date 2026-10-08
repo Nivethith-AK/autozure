@@ -17,7 +17,7 @@ export function signAccessToken(payload: Omit<TokenPayload, 'type'>): string {
   return jwt.sign(
     { ...payload, type: 'access' },
     JWT_SECRET,
-    { expiresIn: ACCESS_EXPIRES, jwtid: uuidv4() }
+    { expiresIn: ACCESS_EXPIRES as any, jwtid: uuidv4() }
   );
 }
 
@@ -25,7 +25,7 @@ export function signRefreshToken(payload: Omit<TokenPayload, 'type'>): string {
   return jwt.sign(
     { ...payload, type: 'refresh' },
     JWT_REFRESH_SECRET,
-    { expiresIn: REFRESH_EXPIRES, jwtid: uuidv4() }
+    { expiresIn: REFRESH_EXPIRES as any, jwtid: uuidv4() }
   );
 }
 
