@@ -28,10 +28,10 @@ app.use(helmet({
 
 // CORS
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: true, // Allow requests from any origin (e.g. localhost:3000, 127.0.0.1:3000)
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-workspace-id', 'X-Workspace-Id', 'Accept'],
 }));
 
 // Body parsing
