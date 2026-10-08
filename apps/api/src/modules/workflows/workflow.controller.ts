@@ -5,6 +5,8 @@ import { createWorkflowSchema, updateWorkflowSchema, executeWorkflowSchema } fro
 import { AuthRequest } from '../../middleware/auth.middleware';
 import { UnauthorizedError } from '../../middleware/error.middleware';
 import { executionQueue } from '../../workers/queue';
+import { isRedisConnected } from '../../lib/redis';
+import { workflowExecutor } from '../../engine/executor';
 
 function getWorkspaceId(req: AuthRequest): string {
   const id = req.headers['x-workspace-id'] as string || req.query.workspaceId as string;
@@ -60,19 +62,33 @@ export const executeWorkflow = asyncHandler(async (req: AuthRequest, res: Respon
     req.params.id, req.user.sub, workspaceId, body.data
   );
 
-  // Queue the execution
-  const job = await executionQueue.add('execute-workflow', {
-    executionId: execution.id,
-    graph,
-    triggerData: body.data,
-  });
+  if (isRedisConnected) {
+    // Queue the execution via BullMQ
+    const job = await executionQueue.add('execute-workflow', {
+      executionId: execution.id,
+      graph,
+      triggerData: body.data,
+    });
 
-  res.status(202).json({
-    executionId: execution.id,
-    jobId: job.id,
-    status: 'pending',
-    message: 'Workflow execution queued',
-  });
+    res.status(202).json({
+      executionId: execution.id,
+      jobId: job.id,
+      status: 'pending',
+      message: 'Workflow execution queued in BullMQ',
+    });
+  } else {
+    // Execute directly in-process for local development
+    workflowExecutor.execute(execution.id, graph, body.data).catch((err) => {
+      console.error('In-process execution error:', err);
+    });
+
+    res.status(202).json({
+      executionId: execution.id,
+      jobId: 'local-process',
+      status: 'running',
+      message: 'Workflow execution running in local process',
+    });
+  }
 });
 
 export const getWorkflowVersions = asyncHandler(async (req: AuthRequest, res: Response) => {

@@ -1,5 +1,6 @@
 import { eq, and, desc } from 'drizzle-orm';
-import { db } from '../../db';
+import { db, isDbConnected } from '../../db';
+import { memoryStore } from '../../db/memoryStore';
 import { workflows, workflowVersions, executions } from '../../db/schema';
 import { workspaceService } from '../workspaces/workspace.service';
 import { NotFoundError, ForbiddenError, ValidationError } from '../../middleware/error.middleware';
@@ -17,6 +18,24 @@ export class WorkflowService {
 
     const graph = data.graph || { nodes: [], edges: [] };
 
+    if (!isDbConnected) {
+      const id = `wf-${Date.now()}`;
+      const newWf: any = {
+        id,
+        workspaceId,
+        name: data.name,
+        description: data.description,
+        graph,
+        createdBy: userId,
+        status: 'draft',
+        active: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      memoryStore.workflows.set(id, newWf);
+      return newWf;
+    }
+
     const [workflow] = await db.insert(workflows).values({
       workspaceId,
       name: data.name,
@@ -32,6 +51,12 @@ export class WorkflowService {
   async getAll(userId: string, workspaceId: string, page = 1, pageSize = 20) {
     await workspaceService.assertRole(workspaceId, userId, ['owner', 'admin', 'editor', 'viewer']);
 
+    if (!isDbConnected) {
+      return Array.from(memoryStore.workflows.values()).filter(
+        w => w.workspaceId === workspaceId
+      );
+    }
+
     const offset = (page - 1) * pageSize;
     const all = await db.query.workflows.findMany({
       where: eq(workflows.workspaceId, workspaceId),
@@ -45,6 +70,12 @@ export class WorkflowService {
 
   async getById(id: string, userId: string, workspaceId: string) {
     await workspaceService.assertRole(workspaceId, userId, ['owner', 'admin', 'editor', 'viewer']);
+
+    if (!isDbConnected) {
+      const wf = memoryStore.workflows.get(id);
+      if (!wf || wf.workspaceId !== workspaceId) throw new NotFoundError('Workflow');
+      return wf;
+    }
 
     const workflow = await db.query.workflows.findFirst({
       where: and(eq(workflows.id, id), eq(workflows.workspaceId, workspaceId)),
@@ -67,6 +98,17 @@ export class WorkflowService {
       if (!valid && data.status === 'active') {
         throw new ValidationError('Workflow graph is invalid', { graph: errors });
       }
+    }
+
+    if (!isDbConnected) {
+      const updated: any = {
+        ...workflow,
+        ...data,
+        updatedAt: new Date(),
+        active: data.status ? data.status === 'active' : (workflow as any).active,
+      };
+      memoryStore.workflows.set(id, updated);
+      return updated;
     }
 
     // Save version snapshot before update
@@ -100,11 +142,18 @@ export class WorkflowService {
   async delete(id: string, userId: string, workspaceId: string) {
     await this.getById(id, userId, workspaceId);
     await workspaceService.assertRole(workspaceId, userId, ['owner', 'admin']);
+    if (!isDbConnected) {
+      memoryStore.workflows.delete(id);
+      return;
+    }
     await db.delete(workflows).where(eq(workflows.id, id));
   }
 
   async getVersions(id: string, userId: string, workspaceId: string) {
     await this.getById(id, userId, workspaceId);
+    if (!isDbConnected) {
+      return memoryStore.workflowVersions.get(id) || [];
+    }
     return db.query.workflowVersions.findMany({
       where: eq(workflowVersions.workflowId, id),
       orderBy: [desc(workflowVersions.version)],
@@ -117,6 +166,21 @@ export class WorkflowService {
 
     const { valid, errors } = validateGraph(workflow.graph as WorkflowGraph);
     if (!valid) throw new ValidationError('Workflow graph has errors', { graph: errors });
+
+    if (!isDbConnected) {
+      const executionId = `exec-${Date.now()}`;
+      const newExec: any = {
+        id: executionId,
+        workflowId,
+        workspaceId,
+        status: 'pending',
+        triggerType: 'manual',
+        triggerData,
+        startedAt: new Date(),
+      };
+      memoryStore.executions.set(executionId, newExec);
+      return { execution: newExec, graph: workflow.graph as WorkflowGraph };
+    }
 
     const [execution] = await db.insert(executions).values({
       workflowId,

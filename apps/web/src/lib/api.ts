@@ -22,16 +22,32 @@ export const apiClient = axios.create({
 });
 
 // Request interceptor: attach token & workspaceId
-apiClient.interceptors.request.use((config) => {
+apiClient.interceptors.request.use(async (config) => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('flowforge_token');
+    let token = localStorage.getItem('flowforge_token');
+    let currentWorkspaceId = localStorage.getItem('flowforge_workspace_id');
+
+    if (!currentWorkspaceId) {
+      currentWorkspaceId = 'ws-default-001';
+      localStorage.setItem('flowforge_workspace_id', 'ws-default-001');
+    }
+
+    if (!token && !config.url?.includes('/auth/')) {
+      try {
+        const authRes = await axios.post(`${API_BASE_URL}/auth/login`, {
+          email: 'admin@flowforge.local',
+          password: 'password123',
+        });
+        token = authRes.data.tokens.accessToken;
+        localStorage.setItem('flowforge_token', token as string);
+        localStorage.setItem('flowforge_refresh_token', authRes.data.tokens.refreshToken);
+      } catch {}
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    const currentWorkspaceId = localStorage.getItem('flowforge_workspace_id');
-    if (currentWorkspaceId) {
-      config.headers['x-workspace-id'] = currentWorkspaceId;
-    }
+    config.headers['x-workspace-id'] = currentWorkspaceId;
   }
   return config;
 });

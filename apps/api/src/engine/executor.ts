@@ -2,7 +2,8 @@ import { WorkflowGraph, Execution, NodeExecutionResult, ExecutionLog } from '@fl
 import { topologicalSort, getPredecessors } from './graph';
 import { nodeRegistry } from '../nodes/registry';
 import { ExecutionContext } from '../nodes/types';
-import { db } from '../db';
+import { db, isDbConnected } from '../db';
+import { memoryStore } from '../db/memoryStore';
 import { executions, executionNodeResults, executionLogs, workflows } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { logger } from '../lib/logger';
@@ -21,15 +22,23 @@ export class WorkflowExecutor {
   ): Promise<void> {
     const { timeoutMs = 300_000 } = options; // 5 min default timeout
 
-    // Mark execution as running
-    await db.update(executions)
-      .set({ status: 'running', startedAt: new Date() })
-      .where(eq(executions.id, executionId));
+    let execution: any;
+    if (!isDbConnected) {
+      execution = memoryStore.executions.get(executionId);
+      if (!execution) throw new Error(`Execution ${executionId} not found`);
+      execution.status = 'running';
+      execution.startedAt = new Date();
+    } else {
+      // Mark execution as running
+      await db.update(executions)
+        .set({ status: 'running', startedAt: new Date() })
+        .where(eq(executions.id, executionId));
 
-    const execution = await db.query.executions.findFirst({
-      where: eq(executions.id, executionId),
-    });
-    if (!execution) throw new Error(`Execution ${executionId} not found`);
+      execution = await db.query.executions.findFirst({
+        where: eq(executions.id, executionId),
+      });
+      if (!execution) throw new Error(`Execution ${executionId} not found`);
+    }
 
     await this.log(executionId, 'info', 'Execution started');
 
@@ -121,14 +130,28 @@ export class WorkflowExecutor {
       if (controller.signal.aborted) {
         await this.failExecution(executionId, 'Execution timed out');
       } else {
-        await db.update(executions)
-          .set({ status: 'success', finishedAt: new Date() })
-          .where(eq(executions.id, executionId));
-        // Update workflow's last run
-        await db.update(workflows)
-          .set({ lastRunAt: new Date(), lastRunStatus: 'success' })
-          .where(eq(workflows.id, execution.workflowId));
-        await this.log(executionId, 'info', 'Execution completed successfully');
+        if (!isDbConnected) {
+          const exec = memoryStore.executions.get(executionId);
+          if (exec) {
+            exec.status = 'success';
+            exec.finishedAt = new Date();
+          }
+          const wf = memoryStore.workflows.get(execution.workflowId);
+          if (wf) {
+            wf.lastRunAt = new Date();
+            wf.lastRunStatus = 'success';
+          }
+          await this.log(executionId, 'info', 'Execution completed successfully');
+        } else {
+          await db.update(executions)
+            .set({ status: 'success', finishedAt: new Date() })
+            .where(eq(executions.id, executionId));
+          // Update workflow's last run
+          await db.update(workflows)
+            .set({ lastRunAt: new Date(), lastRunStatus: 'success' })
+            .where(eq(workflows.id, execution.workflowId));
+          await this.log(executionId, 'info', 'Execution completed successfully');
+        }
       }
     } finally {
       clearTimeout(timeoutHandle);
@@ -136,6 +159,22 @@ export class WorkflowExecutor {
   }
 
   private async failExecution(executionId: string, error: string) {
+    if (!isDbConnected) {
+      const exec = memoryStore.executions.get(executionId);
+      if (exec) {
+        exec.status = 'failed';
+        exec.finishedAt = new Date();
+        exec.error = error;
+      }
+      const wf = memoryStore.workflows.get(exec?.workflowId || '');
+      if (wf) {
+        wf.lastRunAt = new Date();
+        wf.lastRunStatus = 'failed';
+      }
+      await this.log(executionId, 'error', `Execution failed: ${error}`);
+      return;
+    }
+
     const execution = await db.query.executions.findFirst({ where: eq(executions.id, executionId) });
     await db.update(executions)
       .set({ status: 'failed', finishedAt: new Date(), error })
@@ -160,6 +199,31 @@ export class WorkflowExecutor {
     finishedAt?: Date,
     durationMs?: number
   ) {
+    if (!isDbConnected) {
+      let results = memoryStore.nodeResults.get(executionId);
+      if (!results) {
+        results = [];
+        memoryStore.nodeResults.set(executionId, results);
+      }
+      const idx = results.findIndex(r => r.nodeId === nodeId);
+      const nr: any = {
+        id: `nr-${nodeId}`,
+        executionId,
+        nodeId,
+        nodeType,
+        status,
+        inputData,
+        outputData,
+        error,
+        startedAt: startedAt || new Date(),
+        finishedAt,
+        durationMs,
+      };
+      if (idx >= 0) results[idx] = nr;
+      else results.push(nr);
+      return;
+    }
+
     // Upsert
     const existing = await db.query.executionNodeResults.findFirst({
       where: eq(executionNodeResults.executionId, executionId),
@@ -188,6 +252,25 @@ export class WorkflowExecutor {
     nodeId?: string,
     metadata?: Record<string, unknown>
   ): Promise<void> {
+    if (!isDbConnected) {
+      let logs = memoryStore.logs.get(executionId);
+      if (!logs) {
+        logs = [];
+        memoryStore.logs.set(executionId, logs);
+      }
+      logs.push({
+        id: `log-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        executionId,
+        nodeId,
+        level,
+        message,
+        metadata: metadata as any,
+        timestamp: new Date(),
+      });
+      logger[level](`[Execution:${executionId.slice(0, 8)}] ${message}`, metadata);
+      return;
+    }
+
     await db.insert(executionLogs).values({
       executionId,
       nodeId,
