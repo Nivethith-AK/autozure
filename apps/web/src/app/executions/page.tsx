@@ -10,17 +10,13 @@ import {
   Loader2,
   StopCircle,
   ChevronRight,
-  Filter,
   Play,
   Globe,
   RefreshCw,
   Search,
   Copy,
   Check,
-  Calendar,
-  Layers,
   ArrowUpRight,
-  CheckCheck,
 } from 'lucide-react';
 import { executionApi, workflowApi } from '@/lib/api';
 import { Execution, Workflow } from '@flowforge/types';
@@ -122,18 +118,18 @@ export default function ExecutionsPage() {
   }, [executions, filterStatus, searchQuery, workflows]);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12 select-none">
+    <div className="space-y-6 max-w-7xl mx-auto pb-16 select-none">
       {/* Top Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-100">Execution History & Logs</h1>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-black tracking-tight text-slate-100">Execution History & Logs</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/25">
               Live Engine Telemetry
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-400">
-            Real-time execution status, node performance timelines, and input/output inspection.
+            Real-time execution status, node performance timelines, and input/output payload inspection.
           </p>
         </div>
 
@@ -141,10 +137,10 @@ export default function ExecutionsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setAutoRefresh(!autoRefresh)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
               autoRefresh
                 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                : 'bg-slate-900 text-slate-400 border-slate-800'
+                : 'bg-[#0e111a] text-slate-400 border-[#1a1f2e]'
             }`}
           >
             <span className={`w-2 h-2 rounded-full ${autoRefresh ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
@@ -153,7 +149,7 @@ export default function ExecutionsPage() {
 
           <button
             onClick={() => fetchExecutions()}
-            className="flex items-center gap-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 px-3 py-1.5 text-xs text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl bg-[#0e111a] hover:bg-slate-800 border border-[#1a1f2e] px-3 py-1.5 text-xs text-slate-300 transition-colors"
             title="Refresh executions"
           >
             <RefreshCw className="h-3.5 w-3.5" />
@@ -164,7 +160,7 @@ export default function ExecutionsPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Total Invocations</span>
             <Activity className="h-4 w-4 text-blue-400" />
@@ -172,7 +168,7 @@ export default function ExecutionsPage() {
           <div className="mt-2 text-2xl font-bold text-slate-100">{stats.total}</div>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Successful Runs</span>
             <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -180,7 +176,7 @@ export default function ExecutionsPage() {
           <div className="mt-2 text-2xl font-bold text-emerald-400">{stats.successful}</div>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Failed Runs</span>
             <XCircle className="h-4 w-4 text-rose-400" />
@@ -188,7 +184,7 @@ export default function ExecutionsPage() {
           <div className="mt-2 text-2xl font-bold text-rose-400">{stats.failed}</div>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Active Workers</span>
             <Clock className="h-4 w-4 text-amber-400" />
@@ -198,7 +194,7 @@ export default function ExecutionsPage() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-[#1a1f2e] pb-4">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
@@ -207,7 +203,7 @@ export default function ExecutionsPage() {
             placeholder="Search by ID, workflow name, or trigger..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl bg-slate-900 border border-slate-800 pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
+            className="w-full rounded-xl bg-[#0e111a] border border-[#1a1f2e] pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
           />
         </div>
 
@@ -225,10 +221,10 @@ export default function ExecutionsPage() {
             <button
               key={tab.id}
               onClick={() => setFilterStatus(tab.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors whitespace-nowrap border ${
                 filterStatus === tab.id
-                  ? 'bg-slate-800 text-slate-100 border border-slate-700 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-sm'
+                  : 'bg-[#0e111a] text-slate-400 hover:text-slate-200 border-[#1a1f2e]'
               }`}
             >
               {tab.label}
@@ -242,17 +238,17 @@ export default function ExecutionsPage() {
         <div className="flex py-24 items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-            <p className="text-xs text-slate-400">Loading executions...</p>
+            <p className="text-xs text-slate-400 font-mono">Loading telemetry logs...</p>
           </div>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-800 bg-slate-900/20 p-12 text-center text-slate-500 text-xs">
+        <div className="rounded-2xl border border-dashed border-[#1a1f2e] bg-[#0e111a]/30 p-12 text-center text-slate-500 text-xs">
           No execution runs found matching your filters.
         </div>
       ) : (
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/40 overflow-hidden shadow-xl">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/60 overflow-hidden shadow-xl">
           <table className="w-full text-left text-xs">
-            <thead className="border-b border-slate-800 bg-slate-900/90 text-slate-400 uppercase font-mono text-[10px] tracking-wider">
+            <thead className="border-b border-[#1a1f2e] bg-[#08090d] text-slate-400 uppercase font-mono text-[10px] tracking-wider">
               <tr>
                 <th className="px-5 py-3.5">Status</th>
                 <th className="px-5 py-3.5">Workflow</th>
@@ -263,12 +259,11 @@ export default function ExecutionsPage() {
                 <th className="px-5 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-medium">
+            <tbody className="divide-y divide-[#1a1f2e] font-medium">
               {filtered.map((exec) => {
                 const wf = workflows[exec.workflowId];
                 const wfName = wf?.name || 'Workflow';
 
-                // Calculate duration
                 let durationStr = '—';
                 if (exec.finishedAt && exec.startedAt) {
                   const ms = new Date(exec.finishedAt).getTime() - new Date(exec.startedAt).getTime();
@@ -285,7 +280,7 @@ export default function ExecutionsPage() {
                     : Play;
 
                 return (
-                  <tr key={exec.id} className="hover:bg-slate-900/80 transition-colors">
+                  <tr key={exec.id} className="hover:bg-[#0e111a] transition-colors">
                     {/* Status Badge */}
                     <td className="px-5 py-3.5">
                       <span
@@ -382,7 +377,7 @@ export default function ExecutionsPage() {
                         {/* Inspect detail page */}
                         <Link
                           href={`/executions/${exec.id}`}
-                          className="inline-flex items-center gap-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 text-xs font-semibold transition-colors"
+                          className="inline-flex items-center gap-1 rounded-xl bg-[#1a1f2e] hover:bg-slate-800 text-slate-200 px-3 py-1.5 text-xs font-semibold transition-colors"
                         >
                           Inspect
                           <ChevronRight className="h-3.5 w-3.5" />

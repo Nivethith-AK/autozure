@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import {
   KeyRound,
   Shield,
@@ -44,6 +45,8 @@ import {
   Folder,
   Box,
   Cpu,
+  Flame,
+  Terminal,
 } from 'lucide-react';
 import { credentialApi } from '@/lib/api';
 import { Credential } from '@flowforge/types';
@@ -81,6 +84,54 @@ const CREDENTIAL_PRESETS: CredentialPreset[] = [
     icon: Brain,
     badgeColor: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
     fields: [{ name: 'apiKey', label: 'API Key', placeholder: 'sk-ant-...', type: 'password' }],
+  },
+  {
+    type: 'groq',
+    name: 'Groq Cloud API Key',
+    provider: 'Groq',
+    icon: Flame,
+    badgeColor: 'text-orange-400 bg-orange-500/10 border-orange-500/30',
+    fields: [{ name: 'groq_api_key', label: 'Groq API Key', placeholder: 'gsk_...', type: 'password' }],
+  },
+  {
+    type: 'mistral',
+    name: 'Mistral AI API Key',
+    provider: 'Mistral AI',
+    icon: Flame,
+    badgeColor: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
+    fields: [{ name: 'mistral_api_key', label: 'Mistral API Key', placeholder: '••••••••', type: 'password' }],
+  },
+  {
+    type: 'deepseek',
+    name: 'DeepSeek API Key',
+    provider: 'DeepSeek',
+    icon: Cpu,
+    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+    fields: [{ name: 'deepseek_api_key', label: 'DeepSeek API Key', placeholder: 'sk-••••', type: 'password' }],
+  },
+  {
+    type: 'perplexity',
+    name: 'Perplexity AI API Key',
+    provider: 'Perplexity',
+    icon: Sparkles,
+    badgeColor: 'text-teal-400 bg-teal-500/10 border-teal-500/30',
+    fields: [{ name: 'perplexity_api_key', label: 'Perplexity API Key', placeholder: 'pplx-...', type: 'password' }],
+  },
+  {
+    type: 'cohere',
+    name: 'Cohere API Key',
+    provider: 'Cohere',
+    icon: Brain,
+    badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+    fields: [{ name: 'cohere_api_key', label: 'Cohere API Key', placeholder: '••••••••', type: 'password' }],
+  },
+  {
+    type: 'elevenlabs',
+    name: 'ElevenLabs Voice API Key',
+    provider: 'ElevenLabs',
+    icon: Radio,
+    badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
+    fields: [{ name: 'elevenlabs_api_key', label: 'API Key', placeholder: '••••••••', type: 'password' }],
   },
   {
     type: 'slack',
@@ -174,6 +225,26 @@ const CREDENTIAL_PRESETS: CredentialPreset[] = [
     ],
   },
   {
+    type: 'mysql',
+    name: 'MySQL Connection String',
+    provider: 'MySQL',
+    icon: Database,
+    badgeColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30',
+    fields: [
+      { name: 'mysql_connection_string', label: 'Connection URL', placeholder: 'mysql://user:pass@host:3306/db', type: 'password' },
+    ],
+  },
+  {
+    type: 'redis',
+    name: 'Redis Connection URL',
+    provider: 'Redis',
+    icon: Database,
+    badgeColor: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
+    fields: [
+      { name: 'redisUrl', label: 'Redis URL', placeholder: 'redis://default:pass@host:6379', type: 'password' },
+    ],
+  },
+  {
     type: 'mongodb',
     name: 'MongoDB Connection URI',
     provider: 'MongoDB',
@@ -195,34 +266,44 @@ const CREDENTIAL_PRESETS: CredentialPreset[] = [
     ],
   },
   {
-    type: 'twilio',
-    name: 'Twilio Auth Credentials',
-    provider: 'Twilio',
+    type: 'cloudflare',
+    name: 'Cloudflare API Token',
+    provider: 'Cloudflare',
+    icon: Cloud,
+    badgeColor: 'text-orange-400 bg-orange-500/10 border-orange-500/30',
+    fields: [
+      { name: 'cloudflare_api_token', label: 'API Token', placeholder: '••••••••', type: 'password' },
+      { name: 'cloudflare_account_id', label: 'Account ID (Optional)', placeholder: '••••••••', type: 'text' },
+    ],
+  },
+  {
+    type: 'digitalocean',
+    name: 'DigitalOcean API Token',
+    provider: 'DigitalOcean',
+    icon: Cloud,
+    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+    fields: [
+      { name: 'digitalocean_token', label: 'Personal Access Token', placeholder: 'dop_v1_...', type: 'password' },
+    ],
+  },
+  {
+    type: 'sentry',
+    name: 'Sentry Auth Token',
+    provider: 'Sentry',
+    icon: Activity,
+    badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
+    fields: [
+      { name: 'sentry_auth_token', label: 'Internal Auth Token', placeholder: 'sntrys_...', type: 'password' },
+    ],
+  },
+  {
+    type: 'pagerduty',
+    name: 'PagerDuty API Token',
+    provider: 'PagerDuty',
     icon: PhoneCall,
-    badgeColor: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
+    badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
     fields: [
-      { name: 'twilioAccountSid', label: 'Account SID', placeholder: 'AC...', type: 'text' },
-      { name: 'twilioAuthToken', label: 'Auth Token', placeholder: '••••••••', type: 'password' },
-    ],
-  },
-  {
-    type: 'huggingface',
-    name: 'Hugging Face User Token',
-    provider: 'Hugging Face',
-    icon: Sparkles,
-    badgeColor: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
-    fields: [
-      { name: 'hfToken', label: 'User Access Token', placeholder: 'hf_...', type: 'password' },
-    ],
-  },
-  {
-    type: 'pinecone',
-    name: 'Pinecone Vector DB Key',
-    provider: 'Pinecone',
-    icon: Binary,
-    badgeColor: 'text-slate-300 bg-slate-800 border-slate-700',
-    fields: [
-      { name: 'pineconeApiKey', label: 'API Key', placeholder: '••••••••', type: 'password' },
+      { name: 'pagerduty_token', label: 'REST API Key', placeholder: 'u+...', type: 'password' },
     ],
   },
   {
@@ -236,25 +317,13 @@ const CREDENTIAL_PRESETS: CredentialPreset[] = [
     ],
   },
   {
-    type: 'shopify',
-    name: 'Shopify Admin API Token',
-    provider: 'Shopify',
-    icon: ShoppingBag,
-    badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
-    fields: [
-      { name: 'shopify_access_token', label: 'Admin API Access Token', placeholder: 'shpat_...', type: 'password' },
-      { name: 'shopDomain', label: 'Store Domain', placeholder: 'my-store.myshopify.com', type: 'text' },
-    ],
-  },
-  {
-    type: 'paypal',
-    name: 'PayPal API Credentials',
-    provider: 'PayPal',
+    type: 'lemonsqueezy',
+    name: 'Lemon Squeezy API Key',
+    provider: 'Lemon Squeezy',
     icon: DollarSign,
-    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+    badgeColor: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
     fields: [
-      { name: 'paypal_client_id', label: 'Client ID', placeholder: 'A...', type: 'text' },
-      { name: 'paypal_client_secret', label: 'Client Secret', placeholder: '••••••••', type: 'password' },
+      { name: 'lemonsqueezy_api_key', label: 'API Key', placeholder: 'eyJ...', type: 'password' },
     ],
   },
   {
@@ -268,27 +337,6 @@ const CREDENTIAL_PRESETS: CredentialPreset[] = [
     ],
   },
   {
-    type: 'mailchimp',
-    name: 'Mailchimp API Key',
-    provider: 'Mailchimp',
-    icon: Send,
-    badgeColor: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
-    fields: [
-      { name: 'mailchimp_api_key', label: 'API Key (key-datacenter)', placeholder: 'abcdef...-us19', type: 'password' },
-    ],
-  },
-  {
-    type: 'salesforce',
-    name: 'Salesforce Connected App',
-    provider: 'Salesforce',
-    icon: Cloud,
-    badgeColor: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
-    fields: [
-      { name: 'salesforce_instance_url', label: 'Instance URL', placeholder: 'https://yourinstance.my.salesforce.com', type: 'text' },
-      { name: 'salesforce_access_token', label: 'OAuth Access Token', placeholder: '••••••••', type: 'password' },
-    ],
-  },
-  {
     type: 'resend',
     name: 'Resend API Key',
     provider: 'Resend',
@@ -296,48 +344,6 @@ const CREDENTIAL_PRESETS: CredentialPreset[] = [
     badgeColor: 'text-slate-200 bg-slate-800 border-slate-700',
     fields: [
       { name: 'resend_api_key', label: 'API Key', placeholder: 're_...', type: 'password' },
-    ],
-  },
-  {
-    type: 'teams',
-    name: 'Microsoft Teams Webhook',
-    provider: 'Microsoft Teams',
-    icon: MessageSquare,
-    badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
-    fields: [
-      { name: 'teams_webhook_url', label: 'Incoming Webhook URL', placeholder: 'https://outlook.office.com/webhook/...', type: 'password' },
-    ],
-  },
-  {
-    type: 'whatsapp',
-    name: 'WhatsApp Meta Cloud API',
-    provider: 'WhatsApp',
-    icon: PhoneCall,
-    badgeColor: 'text-green-400 bg-green-500/10 border-green-500/30',
-    fields: [
-      { name: 'whatsapp_phone_number_id', label: 'Phone Number ID', placeholder: '1092837465...', type: 'text' },
-      { name: 'whatsapp_access_token', label: 'Permanent System User Token', placeholder: 'EAA...', type: 'password' },
-    ],
-  },
-  {
-    type: 'trello',
-    name: 'Trello API Key & Token',
-    provider: 'Trello',
-    icon: CheckSquare,
-    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
-    fields: [
-      { name: 'trello_api_key', label: 'API Key', placeholder: 'key...', type: 'text' },
-      { name: 'trello_token', label: 'Server Token', placeholder: '••••••••', type: 'password' },
-    ],
-  },
-  {
-    type: 'asana',
-    name: 'Asana Personal Access Token',
-    provider: 'Asana',
-    icon: CheckSquare,
-    badgeColor: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
-    fields: [
-      { name: 'asana_access_token', label: 'Personal Access Token (PAT)', placeholder: '1/12345:...', type: 'password' },
     ],
   },
   {
@@ -350,101 +356,15 @@ const CREDENTIAL_PRESETS: CredentialPreset[] = [
       { name: 'linear_api_key', label: 'Personal API Key', placeholder: 'lin_api_...', type: 'password' },
     ],
   },
-  {
-    type: 'clickup',
-    name: 'ClickUp API Token',
-    provider: 'ClickUp',
-    icon: CheckCircle,
-    badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
-    fields: [
-      { name: 'clickup_api_token', label: 'Personal API Token', placeholder: 'pk_...', type: 'password' },
-    ],
-  },
-  {
-    type: 'mysql',
-    name: 'MySQL Connection String',
-    provider: 'MySQL',
-    icon: Database,
-    badgeColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30',
-    fields: [
-      { name: 'mysql_connection_string', label: 'Connection URL', placeholder: 'mysql://user:pass@host:3306/db', type: 'password' },
-    ],
-  },
-  {
-    type: 'qdrant',
-    name: 'Qdrant Vector Engine',
-    provider: 'Qdrant',
-    icon: Binary,
-    badgeColor: 'text-red-400 bg-red-500/10 border-red-500/30',
-    fields: [
-      { name: 'qdrant_url', label: 'Cluster URL', placeholder: 'https://xxx.qdrant.tech:6333', type: 'text' },
-      { name: 'qdrant_api_key', label: 'API Key', placeholder: '••••••••', type: 'password' },
-    ],
-  },
-  {
-    type: 'docker',
-    name: 'Docker Daemon Endpoint',
-    provider: 'Docker',
-    icon: Box,
-    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
-    fields: [
-      { name: 'docker_host', label: 'Docker Daemon URL / Socket', placeholder: 'http://localhost:2375', type: 'text' },
-    ],
-  },
-  {
-    type: 'aws-lambda',
-    name: 'AWS Lambda Credentials',
-    provider: 'AWS',
-    icon: Cpu,
-    badgeColor: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
-    fields: [
-      { name: 'aws_access_key_id', label: 'AWS Access Key ID', placeholder: 'AKIA...', type: 'text' },
-      { name: 'aws_secret_access_key', label: 'AWS Secret Access Key', placeholder: '••••••••', type: 'password' },
-    ],
-  },
-  {
-    type: 'google-calendar',
-    name: 'Google Calendar OAuth Token',
-    provider: 'Google',
-    icon: Calendar,
-    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
-    fields: [
-      { name: 'google_calendar_token', label: 'OAuth Access Token', placeholder: 'ya29....', type: 'password' },
-    ],
-  },
-  {
-    type: 'google-drive',
-    name: 'Google Drive OAuth Token',
-    provider: 'Google',
-    icon: Folder,
-    badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
-    fields: [
-      { name: 'google_drive_token', label: 'OAuth Access Token', placeholder: 'ya29....', type: 'password' },
-    ],
-  },
-  {
-    type: 'bearer',
-    name: 'HTTP Bearer Token',
-    provider: 'REST API',
-    icon: Globe,
-    badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
-    fields: [{ name: 'token', label: 'Bearer Token', placeholder: 'eyJhbGciOi...', type: 'password' }],
-  },
-  {
-    type: 'basic_auth',
-    name: 'HTTP Basic Auth',
-    provider: 'HTTP',
-    icon: Lock,
-    badgeColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30',
-    fields: [
-      { name: 'username', label: 'Username', placeholder: 'admin', type: 'text' },
-      { name: 'password', label: 'Password', placeholder: '••••••••', type: 'password' },
-    ],
-  },
 ];
 
-export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<'credentials' | 'system' | 'workspace'>('credentials');
+function SettingsContent() {
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get('tab') as 'credentials' | 'system' | 'workspace' | null;
+
+  const [activeTab, setActiveTab] = useState<'credentials' | 'system' | 'workspace'>(
+    initialTab === 'system' ? 'system' : initialTab === 'workspace' ? 'workspace' : 'credentials'
+  );
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -513,16 +433,16 @@ export default function SettingsPage() {
   const activePreset = CREDENTIAL_PRESETS.find((p) => p.type === selectedType) || CREDENTIAL_PRESETS[0];
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12 select-none">
+    <div className="space-y-6 max-w-6xl mx-auto pb-16 select-none">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-100">Settings & Security</h1>
+        <h1 className="text-2xl font-black tracking-tight text-slate-100">Settings & Security</h1>
         <p className="mt-1 text-xs text-slate-400">
           Configure encrypted API credentials, workspace access controls, and view platform system telemetry.
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-800">
+      <div className="flex border-b border-[#1a1f2e]">
         <button
           onClick={() => setActiveTab('credentials')}
           className={`flex items-center gap-2 py-3 px-5 text-xs font-semibold border-b-2 transition-colors ${
@@ -532,7 +452,7 @@ export default function SettingsPage() {
           }`}
         >
           <KeyRound className="h-4 w-4" />
-          API Credentials
+          Credentials Vault ({credentials.length})
         </button>
 
         <button
@@ -544,7 +464,7 @@ export default function SettingsPage() {
           }`}
         >
           <Server className="h-4 w-4" />
-          Engine & Health
+          Engine & Health (93 Nodes)
         </button>
 
         <button
@@ -572,9 +492,9 @@ export default function SettingsPage() {
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 text-xs transition-all shadow-lg shadow-emerald-950/40"
+              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold px-4 py-2 text-xs transition-all shadow-lg shadow-emerald-950/40"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus className="h-3.5 w-3.5 stroke-[3]" />
               Add Credential
             </button>
           </div>
@@ -584,13 +504,13 @@ export default function SettingsPage() {
               <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
             </div>
           ) : credentials.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-800 p-12 text-center text-xs text-slate-500">
+            <div className="rounded-2xl border border-dashed border-[#1a1f2e] bg-[#0e111a]/40 p-12 text-center text-xs text-slate-500">
               <KeyRound className="h-8 w-8 text-slate-600 mx-auto mb-2" />
               <p className="font-medium text-slate-300">No credentials configured</p>
-              <p className="mt-1">Add your OpenAI, Gemini, or Anthropic API keys to power AI workflow nodes.</p>
+              <p className="mt-1">Add your OpenAI, Gemini, Groq, Mistral, Slack, or GitHub keys to power workflows.</p>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 text-xs font-semibold transition-colors"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[#1a1f2e] hover:bg-slate-800 text-slate-200 px-3.5 py-1.5 text-xs font-semibold transition-colors"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add Your First Key
@@ -607,12 +527,12 @@ export default function SettingsPage() {
                 return (
                   <div
                     key={cred.id}
-                    className="flex flex-col justify-between p-4 rounded-2xl border border-slate-800/80 bg-slate-900/40 hover:bg-slate-900/70 transition-all shadow-lg"
+                    className="flex flex-col justify-between p-4 rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/60 hover:bg-[#0e111a] transition-all shadow-lg"
                   >
                     <div>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-xl bg-slate-800 flex items-center justify-center text-emerald-400 border border-slate-700/60">
+                          <div className="h-10 w-10 rounded-xl bg-[#08090d] flex items-center justify-center text-emerald-400 border border-[#1a1f2e]">
                             <Icon className="h-5 w-5" />
                           </div>
                           <div>
@@ -628,13 +548,13 @@ export default function SettingsPage() {
                         </span>
                       </div>
 
-                      <div className="mt-4 p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 flex items-center justify-between text-xs font-mono text-slate-400">
-                        <span>Encrypted Key:</span>
-                        <span className="text-slate-500">••••••••••••••••</span>
+                      <div className="mt-4 p-2.5 rounded-xl bg-[#08090d] border border-[#1a1f2e] flex items-center justify-between text-xs font-mono text-slate-400">
+                        <span>Encrypted Payload:</span>
+                        <span className="text-slate-500">•••••••••••••••• (AES-256)</span>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                    <div className="mt-4 pt-3 border-t border-[#1a1f2e] flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleTestConnection(cred.id)}
@@ -668,8 +588,8 @@ export default function SettingsPage() {
 
           {/* Add Credential Modal */}
           {isModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-              <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl animate-in zoom-in-95">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+              <div className="w-full max-w-md rounded-2xl border border-[#1a1f2e] bg-[#0e111a] p-6 shadow-2xl animate-in zoom-in-95">
                 <h3 className="text-sm font-bold text-slate-100">Add New Credential</h3>
                 <p className="mt-1 text-xs text-slate-400">
                   Store integration API keys securely with AES-256 encryption.
@@ -681,7 +601,7 @@ export default function SettingsPage() {
                     <select
                       value={selectedType}
                       onChange={(e) => setSelectedType(e.target.value)}
-                      className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 font-medium"
+                      className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 font-medium"
                     >
                       {CREDENTIAL_PRESETS.map((p) => (
                         <option key={p.type} value={p.type}>{p.name}</option>
@@ -697,7 +617,7 @@ export default function SettingsPage() {
                       placeholder="e.g. Production OpenAI Key"
                       value={credName}
                       onChange={(e) => setCredName(e.target.value)}
-                      className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
+                      className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
                     />
                   </div>
 
@@ -722,16 +642,16 @@ export default function SettingsPage() {
                         placeholder={field.placeholder}
                         value={credData[field.name] || ''}
                         onChange={(e) => setCredData({ ...credData, [field.name]: e.target.value })}
-                        className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
+                        className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
                       />
                     </div>
                   ))}
 
-                  <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800/80">
+                  <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#1a1f2e]">
                     <button
                       type="button"
                       onClick={() => setIsModalOpen(false)}
-                      className="rounded-xl px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-slate-800 transition-colors"
+                      className="rounded-xl px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-[#1a1f2e] transition-colors"
                     >
                       Cancel
                     </button>
@@ -754,20 +674,20 @@ export default function SettingsPage() {
       {/* SYSTEM & HEALTH TAB */}
       {activeTab === 'system' && (
         <div className="space-y-4">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 space-y-4 shadow-lg">
+          <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-5 space-y-4 shadow-lg backdrop-blur-sm">
             <h2 className="text-sm font-bold text-slate-200">FlowForge Engine Diagnostics</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-[#08090d] border border-[#1a1f2e]">
                 <span className="block text-[11px] text-slate-500 font-mono">Backend API Endpoint</span>
                 <span className="block text-xs font-mono font-semibold text-emerald-400 mt-1">
                   http://localhost:3001
                 </span>
                 <span className="inline-block mt-2 text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  ONLINE • Healthy
+                  ONLINE • Healthy (Port 3001)
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-[#08090d] border border-[#1a1f2e]">
                 <span className="block text-[11px] text-slate-500 font-mono">Execution Engine Mode</span>
                 <span className="block text-xs font-semibold text-slate-200 mt-1">
                   In-Process Local Executor (BullMQ Ready)
@@ -777,7 +697,7 @@ export default function SettingsPage() {
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-[#08090d] border border-[#1a1f2e]">
                 <span className="block text-[11px] text-slate-500 font-mono">Persistence Store</span>
                 <span className="block text-xs font-semibold text-slate-200 mt-1">
                   In-Memory Store (PostgreSQL / Drizzle Ready)
@@ -787,13 +707,13 @@ export default function SettingsPage() {
                 </span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-[#08090d] border border-[#1a1f2e]">
                 <span className="block text-[11px] text-slate-500 font-mono">Registered Node Types</span>
                 <span className="block text-xs font-semibold text-slate-200 mt-1">
-                  14 Built-In Production Nodes
+                  93 Built-In Production Nodes
                 </span>
                 <span className="inline-block mt-2 text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  Triggers, Actions, Logic, Data, AI
+                  Triggers, Actions, Logic, Data, AI, Databases, Cloud
                 </span>
               </div>
             </div>
@@ -803,7 +723,7 @@ export default function SettingsPage() {
 
       {/* WORKSPACE TAB */}
       {activeTab === 'workspace' && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 space-y-6 shadow-lg">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-6 space-y-6 shadow-lg backdrop-blur-sm">
           <div>
             <h2 className="text-sm font-bold text-slate-200">Workspace Settings</h2>
             <p className="text-xs text-slate-400">Manage workspace branding, slug, and members.</p>
@@ -814,8 +734,8 @@ export default function SettingsPage() {
               <label className="block text-xs font-medium text-slate-300 mb-1">Workspace Name</label>
               <input
                 type="text"
-                defaultValue="Default Workspace"
-                className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"
+                defaultValue="Production Cluster"
+                className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"
               />
             </div>
             <div>
@@ -823,8 +743,8 @@ export default function SettingsPage() {
               <input
                 type="text"
                 disabled
-                defaultValue="ws-default-001"
-                className="w-full rounded-xl bg-slate-950/50 border border-slate-800 px-3.5 py-2 text-xs text-slate-500 font-mono"
+                defaultValue="ws-production-cluster"
+                className="w-full rounded-xl bg-[#08090d]/60 border border-[#1a1f2e] px-3.5 py-2 text-xs text-slate-500 font-mono"
               />
             </div>
           </div>
@@ -832,7 +752,7 @@ export default function SettingsPage() {
           {/* Members list */}
           <div className="space-y-3">
             <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Workspace Members</h3>
-            <div className="rounded-xl border border-slate-800 bg-slate-950/50 divide-y divide-slate-800/80">
+            <div className="rounded-xl border border-[#1a1f2e] bg-[#08090d]/60 divide-y divide-[#1a1f2e]">
               <div className="flex items-center justify-between p-3.5">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-xs font-bold text-emerald-400">
@@ -852,5 +772,13 @@ export default function SettingsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={<div className="py-20 flex justify-center"><Loader2 className="h-6 w-6 animate-spin text-emerald-500" /></div>}>
+      <SettingsContent />
+    </Suspense>
   );
 }

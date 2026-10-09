@@ -9,7 +9,6 @@ import {
   Check,
   Power,
   KeyRound,
-  ExternalLink,
   Layers,
   Sparkles,
   Zap,
@@ -34,8 +33,6 @@ import {
   Box,
   CheckCircle2,
   Filter,
-  Download,
-  AlertCircle,
   Loader2,
   Terminal,
   CreditCard,
@@ -48,6 +45,12 @@ import {
   Calendar,
   Folder,
   Calculator,
+  Flame,
+  Brain,
+  MessageSquare,
+  Blocks,
+  ArrowRight,
+  ExternalLink,
 } from 'lucide-react';
 import { workflowApi } from '@/lib/api';
 import { NodeDefinitionMeta } from '@flowforge/types';
@@ -58,7 +61,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Clock,
   Sparkles,
   Zap,
-  Brain: Sparkles,
+  Brain,
   Code2: FileCode,
   GitBranch: Layers,
   Shuffle: Layers,
@@ -67,7 +70,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Merge: Layers,
   Bug: Terminal,
   Box,
-  MessageSquare: Send,
+  MessageSquare,
   Radio,
   Send,
   Mail,
@@ -96,6 +99,8 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Folder,
   Filter,
   Calculator,
+  Flame,
+  Terminal,
 };
 
 export default function PluginsPage() {
@@ -200,6 +205,10 @@ export default function PluginsPage() {
     return ['all', ...Array.from(cats)];
   }, [nodes]);
 
+  const aiCount = useMemo(() => nodes.filter((n) => n.category === 'ai').length, [nodes]);
+  const dbCount = useMemo(() => nodes.filter((n) => n.category === 'databases').length, [nodes]);
+  const commCount = useMemo(() => nodes.filter((n) => n.category === 'communication').length, [nodes]);
+
   const filteredNodes = useMemo(() => {
     return nodes.filter((node) => {
       const matchesSearch =
@@ -217,7 +226,7 @@ export default function PluginsPage() {
     <div className="space-y-8 max-w-7xl mx-auto pb-16 select-none">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-16 right-6 z-50 flex items-center gap-2 rounded-xl bg-slate-900 border border-emerald-500/40 text-emerald-300 text-xs px-4 py-2.5 shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-top-2">
+        <div className="fixed top-16 right-6 z-50 flex items-center gap-2 rounded-xl bg-[#0e111a] border border-emerald-500/40 text-emerald-300 text-xs px-4 py-2.5 shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-top-2">
           <Check className="h-4 w-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
@@ -226,25 +235,25 @@ export default function PluginsPage() {
       {/* Top Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-100">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-black tracking-tight text-slate-100">
               Plugins & Connector Integrations
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
               {nodes.length} Connectors Active
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-400">
-            Extend FlowForge with enterprise connectors for Slack, Discord, GitHub, PostgreSQL, Notion, Ollama, Supabase, and AWS S3.
+            Enterprise integrations across LLMs (OpenAI, Claude, Gemini, Ollama, Groq, Mistral, DeepSeek), Databases (PostgreSQL, Supabase, Redis, S3, MongoDB), DevOps, and SaaS.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsInstallModalOpen(true)}
-            className="flex items-center gap-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2.5 text-xs transition-all shadow-lg shadow-emerald-950/40"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold px-4 py-2.5 text-xs transition-all shadow-lg shadow-emerald-950/50 hover:shadow-emerald-500/20 active:scale-95"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4 stroke-[3]" />
             Install Custom Plugin
           </button>
         </div>
@@ -252,27 +261,27 @@ export default function PluginsPage() {
 
       {/* Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 backdrop-blur-sm">
           <span className="text-xs font-medium text-slate-400">Total Connectors</span>
-          <div className="mt-2 text-2xl font-extrabold text-slate-100">{nodes.length}</div>
+          <div className="mt-2 text-3xl font-extrabold text-slate-100 tracking-tight">{nodes.length}</div>
           <span className="text-[11px] text-emerald-400 font-mono">100% Zero-Lockin Ready</span>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 backdrop-blur-sm">
           <span className="text-xs font-medium text-slate-400">AI & Local LLM Nodes</span>
-          <div className="mt-2 text-2xl font-extrabold text-purple-400">6 Models</div>
-          <span className="text-[11px] text-slate-500 font-mono">OpenAI, Claude, Gemini, Ollama</span>
+          <div className="mt-2 text-3xl font-extrabold text-purple-400 tracking-tight">{aiCount} Models</div>
+          <span className="text-[11px] text-slate-500 font-mono">OpenAI, Claude, Ollama, Groq...</span>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 backdrop-blur-sm">
           <span className="text-xs font-medium text-slate-400">Databases & Storage</span>
-          <div className="mt-2 text-2xl font-extrabold text-blue-400">5 Systems</div>
-          <span className="text-[11px] text-slate-500 font-mono">Postgres, Redis, Supabase, S3, Mongo</span>
+          <div className="mt-2 text-3xl font-extrabold text-blue-400 tracking-tight">{dbCount} Systems</div>
+          <span className="text-[11px] text-slate-500 font-mono">Postgres, Redis, Supabase, S3...</span>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4">
+        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 backdrop-blur-sm">
           <span className="text-xs font-medium text-slate-400">Active Integrations</span>
-          <div className="mt-2 text-2xl font-extrabold text-emerald-400">
+          <div className="mt-2 text-3xl font-extrabold text-emerald-400 tracking-tight">
             {nodes.length - disabledNodes.size} Enabled
           </div>
           <span className="text-[11px] text-slate-500 font-mono">Ready for execution engine</span>
@@ -280,7 +289,7 @@ export default function PluginsPage() {
       </div>
 
       {/* Search & Category Filter Bar */}
-      <div className="space-y-3 border-b border-slate-800/80 pb-4">
+      <div className="space-y-3 border-b border-[#1a1f2e] pb-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
@@ -288,8 +297,8 @@ export default function PluginsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search connectors (Slack, GitHub, Postgres, AI)..."
-              className="w-full rounded-xl bg-slate-900 border border-slate-800 pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
+              placeholder="Search connectors (Slack, GitHub, Postgres, AI, Stripe)..."
+              className="w-full rounded-xl bg-[#0e111a] border border-[#1a1f2e] pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
             />
           </div>
 
@@ -304,10 +313,10 @@ export default function PluginsPage() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`rounded-xl px-3 py-1.5 text-xs font-semibold capitalize whitespace-nowrap transition-all ${
+              className={`rounded-xl px-3 py-1.5 text-xs font-semibold capitalize whitespace-nowrap transition-all border ${
                 selectedCategory === cat
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-sm'
-                  : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-sm'
+                  : 'bg-[#0e111a] text-slate-400 hover:text-slate-200 border-[#1a1f2e]'
               }`}
             >
               {cat}
@@ -321,11 +330,11 @@ export default function PluginsPage() {
         <div className="py-24 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-            <p className="text-xs text-slate-400">Loading plugin registry...</p>
+            <p className="text-xs text-slate-400 font-mono">Loading connector registry...</p>
           </div>
         </div>
       ) : filteredNodes.length === 0 ? (
-        <div className="p-12 text-center text-xs text-slate-500 rounded-2xl border border-dashed border-slate-800">
+        <div className="p-12 text-center text-xs text-slate-500 rounded-2xl border border-dashed border-[#1a1f2e] bg-[#0e111a]/30">
           No connectors match &ldquo;{searchQuery}&rdquo;
         </div>
       ) : (
@@ -340,8 +349,8 @@ export default function PluginsPage() {
                 key={node.type}
                 className={`group flex flex-col justify-between rounded-2xl border p-5 transition-all shadow-lg ${
                   isDisabled
-                    ? 'border-slate-800/40 bg-slate-950/40 opacity-60'
-                    : 'border-slate-800/80 bg-slate-900/40 hover:bg-slate-900/80 hover:border-slate-700/80'
+                    ? 'border-[#1a1f2e]/40 bg-[#08090d] opacity-50'
+                    : 'border-[#1a1f2e] bg-[#0e111a]/60 hover:bg-[#0e111a] hover:border-slate-700 shadow-black/40'
                 }`}
               >
                 <div>
@@ -372,7 +381,7 @@ export default function PluginsPage() {
                       onClick={() => toggleNodeEnabled(node.type)}
                       className={`p-1.5 rounded-lg border text-[10px] font-mono transition-colors ${
                         isDisabled
-                          ? 'border-slate-800 text-slate-500 bg-slate-950 hover:text-slate-300'
+                          ? 'border-[#1a1f2e] text-slate-500 bg-[#08090d] hover:text-slate-300'
                           : 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20'
                       }`}
                       title={isDisabled ? 'Click to enable' : 'Click to disable'}
@@ -387,7 +396,7 @@ export default function PluginsPage() {
 
                   {/* Capabilities / Parameters tags */}
                   <div className="mt-4 flex flex-wrap gap-1.5">
-                    <span className="px-2 py-0.5 rounded-md bg-slate-950 border border-slate-800/80 text-[10px] font-mono text-slate-400">
+                    <span className="px-2 py-0.5 rounded-md bg-[#08090d] border border-[#1a1f2e] text-[10px] font-mono text-slate-400">
                       {(node.parameters || []).length} parameters
                     </span>
                     {hasCredentials ? (
@@ -399,25 +408,25 @@ export default function PluginsPage() {
                         Zero Auth
                       </span>
                     )}
-                    <span className="px-2 py-0.5 rounded-md bg-slate-950 border border-slate-800/80 text-[10px] font-mono text-slate-500">
-                      v1.0.0
+                    <span className="px-2 py-0.5 rounded-md bg-[#08090d] border border-[#1a1f2e] text-[10px] font-mono text-slate-500">
+                      v1.0
                     </span>
                   </div>
                 </div>
 
                 {/* Card Actions */}
-                <div className="mt-5 pt-3.5 border-t border-slate-800/80 flex items-center justify-between">
+                <div className="mt-5 pt-3.5 border-t border-[#1a1f2e] flex items-center justify-between">
                   {hasCredentials ? (
                     <Link
-                      href="/settings"
-                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-slate-200 transition-colors"
-                      title="Manage connector API credentials"
+                      href="/settings?tab=credentials"
+                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-emerald-400 transition-colors"
+                      title="Manage connector API credentials in vault"
                     >
                       <KeyRound className="h-3 w-3" />
-                      Credentials
+                      Vault Keys
                     </Link>
                   ) : (
-                    <span className="text-[11px] text-slate-600 font-mono">Built-In</span>
+                    <span className="text-[11px] text-slate-500 font-mono">Native Node</span>
                   )}
 
                   <button
@@ -425,7 +434,7 @@ export default function PluginsPage() {
                     disabled={isDisabled}
                     className="flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors disabled:opacity-40"
                   >
-                    Use in Workflow →
+                    Use in Workflow <ArrowRight className="h-3 w-3" />
                   </button>
                 </div>
               </div>
@@ -436,9 +445,9 @@ export default function PluginsPage() {
 
       {/* Install Custom Plugin Modal */}
       {isInstallModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-sm font-bold text-slate-100">Install Community Plugin</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-2xl border border-[#1a1f2e] bg-[#0e111a] p-6 shadow-2xl animate-in zoom-in-95">
+            <h3 className="text-sm font-bold text-slate-100">Install Custom Connector</h3>
             <p className="mt-1 text-xs text-slate-400">
               Register custom npm packages, OpenAPI specs, or third-party FlowForge connector bundles.
             </p>
@@ -454,15 +463,15 @@ export default function PluginsPage() {
                   placeholder="e.g. @flowforge/plugin-salesforce or user/custom-nodes"
                   value={customPackageName}
                   onChange={(e) => setCustomPackageName(e.target.value)}
-                  className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
+                  className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#1a1f2e]">
                 <button
                   type="button"
                   onClick={() => setIsInstallModalOpen(false)}
-                  className="rounded-xl px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-slate-800 transition-colors"
+                  className="rounded-xl px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-[#1a1f2e] transition-colors"
                 >
                   Cancel
                 </button>
