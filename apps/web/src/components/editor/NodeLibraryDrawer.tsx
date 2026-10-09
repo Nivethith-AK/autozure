@@ -20,6 +20,35 @@ import {
   Box,
   Plus,
   GripVertical,
+  MessageSquare,
+  Radio,
+  Send,
+  Mail,
+  PhoneCall,
+  Github,
+  Gitlab,
+  Layers,
+  BookOpen,
+  Table,
+  FileSpreadsheet,
+  Database,
+  HardDrive,
+  Cpu,
+  Binary,
+  Shield,
+  FileCode,
+  Repeat,
+  CreditCard,
+  ShoppingBag,
+  DollarSign,
+  Contact,
+  Cloud,
+  CheckSquare,
+  CheckCircle,
+  Calendar,
+  Folder,
+  Filter,
+  Calculator,
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
 import { NodeDefinitionMeta } from '@flowforge/types';
@@ -39,6 +68,35 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Merge,
   Bug,
   Box,
+  MessageSquare,
+  Radio,
+  Send,
+  Mail,
+  PhoneCall,
+  Github,
+  Gitlab,
+  Layers,
+  BookOpen,
+  Table,
+  FileSpreadsheet,
+  Database,
+  HardDrive,
+  Cpu,
+  Binary,
+  Shield,
+  FileCode,
+  Repeat,
+  CreditCard,
+  ShoppingBag,
+  DollarSign,
+  Contact,
+  Cloud,
+  CheckSquare,
+  CheckCircle,
+  Calendar,
+  Folder,
+  Filter,
+  Calculator,
 };
 
 interface NodeLibraryDrawerProps {
@@ -86,7 +144,7 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
       <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/40">
         <div>
           <h2 className="text-sm font-bold text-slate-100">Integration Registry</h2>
-          <p className="text-[11px] text-slate-400">14 nodes ready for automation & AI pipelines</p>
+          <p className="text-[11px] text-slate-400">{nodeDefinitions.length} nodes ready for automation & AI pipelines</p>
         </div>
         <button
           onClick={onClose}

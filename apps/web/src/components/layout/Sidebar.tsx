@@ -14,12 +14,14 @@ import {
   Radio,
   Server,
   Zap,
+  Blocks,
 } from 'lucide-react';
 import { authApi } from '@/lib/api';
 
 const NAV_ITEMS = [
   { label: 'Workflows', href: '/', icon: GitFork },
   { label: 'Executions', href: '/executions', icon: Activity },
+  { label: 'Plugins & Connectors', href: '/plugins', icon: Blocks },
   { label: 'Credentials', href: '/settings', icon: KeyRound },
   { label: 'Settings', href: '/settings', icon: Settings },
 ];
@@ -74,15 +76,16 @@ export function Sidebar() {
         <nav className="p-3 space-y-1">
           {NAV_ITEMS.map((item, idx) => {
             const Icon = item.icon;
-            // Prevent duplicate highlight for credentials & settings which share pathname
             const isActive =
               item.label === 'Workflows'
                 ? pathname === '/'
                 : item.label === 'Executions'
                 ? pathname.startsWith('/executions')
+                : item.label === 'Plugins & Connectors'
+                ? pathname.startsWith('/plugins')
                 : item.label === 'Credentials'
-                ? pathname.startsWith('/settings') && idx === 2
-                : pathname.startsWith('/settings') && idx === 3;
+                ? pathname.startsWith('/settings') && idx === 3
+                : pathname.startsWith('/settings') && idx === 4;
 
             return (
               <Link

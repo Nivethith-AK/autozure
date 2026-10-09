@@ -27,6 +27,11 @@ import {
   FileCode,
   Check,
   AlertTriangle,
+  Cpu,
+  MessageSquare,
+  Github,
+  CreditCard,
+  Contact,
 } from 'lucide-react';
 import { workflowApi, executionApi } from '@/lib/api';
 import { Workflow, WorkflowGraph } from '@flowforge/types';
@@ -280,6 +285,220 @@ const STARTER_TEMPLATES: StarterTemplate[] = [
         { id: 'e2', source: 'node-trigger', target: 'node-anthropic' },
         { id: 'e3', source: 'node-gemini', target: 'node-merge' },
         { id: 'e4', source: 'node-anthropic', target: 'node-merge' },
+      ],
+    },
+  },
+  {
+    id: 'github-slack-alert',
+    title: 'GitHub to Slack Notifier',
+    description: 'Trigger from incoming webhook, create a GitHub issue, and broadcast updates to Slack.',
+    icon: Github,
+    badge: 'DevOps & Chat',
+    badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
+    graph: {
+      nodes: [
+        {
+          id: 'node-webhook',
+          type: 'trigger.webhook',
+          position: { x: 80, y: 160 },
+          data: {
+            type: 'trigger.webhook',
+            label: 'Inbound Webhook',
+            parameters: { method: 'POST', response: 'immediate' },
+          },
+        },
+        {
+          id: 'node-github',
+          type: 'connector.github',
+          position: { x: 380, y: 160 },
+          data: {
+            type: 'connector.github',
+            label: 'Create GitHub Issue',
+            parameters: {
+              operation: 'create_issue',
+              owner: 'my-org',
+              repo: 'my-app',
+              title: 'Incident: {{input.title}}',
+              body: 'Reported via FlowForge webhook:\n{{input.body}}',
+            },
+          },
+        },
+        {
+          id: 'node-slack',
+          type: 'connector.slack',
+          position: { x: 720, y: 160 },
+          data: {
+            type: 'connector.slack',
+            label: 'Post to Slack',
+            parameters: {
+              operation: 'webhook',
+              text: 'New Issue created: {{input.title}} (URL: {{input.issueUrl}})',
+            },
+          },
+        },
+      ],
+      edges: [
+        { id: 'e1', source: 'node-webhook', target: 'node-github' },
+        { id: 'e2', source: 'node-github', target: 'node-slack' },
+      ],
+    },
+  },
+  {
+    id: 'local-ollama-rag',
+    title: 'Local Ollama Private AI',
+    description: 'Query your self-hosted Ollama model (Llama 3), hash output, and parse structured output.',
+    icon: Cpu,
+    badge: 'Local AI',
+    badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+    graph: {
+      nodes: [
+        {
+          id: 'node-trigger',
+          type: 'trigger.manual',
+          position: { x: 80, y: 160 },
+          data: {
+            type: 'trigger.manual',
+            label: 'Local Prompt Trigger',
+            parameters: { data: '{"query": "Provide a quick summary of modern container security."}' },
+          },
+        },
+        {
+          id: 'node-ollama',
+          type: 'connector.ollama',
+          position: { x: 380, y: 160 },
+          data: {
+            type: 'connector.ollama',
+            label: 'Ollama Llama 3',
+            parameters: {
+              baseUrl: 'http://localhost:11434',
+              model: 'llama3',
+              prompt: '{{input.query}}',
+              temperature: 0.7,
+            },
+          },
+        },
+        {
+          id: 'node-crypto',
+          type: 'util.crypto',
+          position: { x: 700, y: 160 },
+          data: {
+            type: 'util.crypto',
+            label: 'Hash Response',
+            parameters: { operation: 'sha256', value: '{{input.response}}' },
+          },
+        },
+      ],
+      edges: [
+        { id: 'e1', source: 'node-trigger', target: 'node-ollama' },
+        { id: 'e2', source: 'node-ollama', target: 'node-crypto' },
+      ],
+    },
+  },
+  {
+    id: 'stripe-resend-invoice',
+    title: 'Stripe Payment to Resend Invoice',
+    description: 'Listen for successful Stripe payment webhook, trigger transactional email invoice, and notify Slack.',
+    icon: CreditCard,
+    badge: 'FinTech & Commerce',
+    badgeColor: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30',
+    graph: {
+      nodes: [
+        {
+          id: 'node-stripe-trigger',
+          type: 'trigger.stripe',
+          position: { x: 80, y: 160 },
+          data: {
+            type: 'trigger.stripe',
+            label: 'Stripe Payment Succeeded',
+            parameters: { event: 'payment_intent.succeeded' },
+          },
+        },
+        {
+          id: 'node-resend',
+          type: 'connector.resend',
+          position: { x: 400, y: 160 },
+          data: {
+            type: 'connector.resend',
+            label: 'Send Receipt via Resend',
+            parameters: {
+              from: 'billing@flowforge.local',
+              to: '{{input.customer_email}}',
+              subject: 'Receipt for Order #{{input.id}}',
+              html: '<p>Thank you for your payment!</p>',
+            },
+          },
+        },
+        {
+          id: 'node-slack',
+          type: 'connector.slack',
+          position: { x: 740, y: 160 },
+          data: {
+            type: 'connector.slack',
+            label: 'Notify Sales Channel',
+            parameters: {
+              operation: 'webhook',
+              text: '💰 New payment received: ${{input.amount}}',
+            },
+          },
+        },
+      ],
+      edges: [
+        { id: 'e1', source: 'node-stripe-trigger', target: 'node-resend' },
+        { id: 'e2', source: 'node-resend', target: 'node-slack' },
+      ],
+    },
+  },
+  {
+    id: 'crm-sync-hubspot-notion',
+    title: 'HubSpot Lead to Notion Sync',
+    description: 'Ingest inbound lead inquiries, create a contact in HubSpot CRM, and append to Notion database.',
+    icon: Contact,
+    badge: 'CRM & Workspace',
+    badgeColor: 'text-orange-400 bg-orange-500/10 border-orange-500/30',
+    graph: {
+      nodes: [
+        {
+          id: 'node-webhook',
+          type: 'trigger.webhook',
+          position: { x: 80, y: 160 },
+          data: {
+            type: 'trigger.webhook',
+            label: 'Contact Form Webhook',
+            parameters: { method: 'POST', response: 'immediate' },
+          },
+        },
+        {
+          id: 'node-hubspot',
+          type: 'connector.hubspot',
+          position: { x: 400, y: 160 },
+          data: {
+            type: 'connector.hubspot',
+            label: 'Create HubSpot Contact',
+            parameters: {
+              operation: 'createContact',
+              email: '{{input.email}}',
+              firstname: '{{input.firstName}}',
+              lastname: '{{input.lastName}}',
+            },
+          },
+        },
+        {
+          id: 'node-notion',
+          type: 'connector.notion',
+          position: { x: 740, y: 160 },
+          data: {
+            type: 'connector.notion',
+            label: 'Add Notion Lead Row',
+            parameters: {
+              operation: 'createPage',
+              title: 'Lead: {{input.firstName}} {{input.lastName}}',
+            },
+          },
+        },
+      ],
+      edges: [
+        { id: 'e1', source: 'node-webhook', target: 'node-hubspot' },
+        { id: 'e2', source: 'node-hubspot', target: 'node-notion' },
       ],
     },
   },

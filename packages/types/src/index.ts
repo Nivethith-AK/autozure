@@ -48,7 +48,15 @@ export type NodeCategory =
   | 'data'
   | 'ai'
   | 'utils'
-  | 'integrations';
+  | 'integrations'
+  | 'communication'
+  | 'databases'
+  | 'storage'
+  | 'developer'
+  | 'productivity'
+  | 'commerce'
+  | 'crm'
+  | 'devops';
 
 export type ParameterType =
   | 'string'

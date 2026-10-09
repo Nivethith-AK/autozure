@@ -24,6 +24,35 @@ import {
   Copy,
   Settings2,
   Power,
+  MessageSquare,
+  Radio,
+  Send,
+  Mail,
+  PhoneCall,
+  Github,
+  Gitlab,
+  Layers,
+  BookOpen,
+  Table,
+  FileSpreadsheet,
+  Database,
+  HardDrive,
+  Cpu,
+  Binary,
+  Shield,
+  FileCode,
+  Repeat,
+  CreditCard,
+  ShoppingBag,
+  DollarSign,
+  Contact,
+  Cloud,
+  CheckSquare,
+  CheckCircle,
+  Calendar,
+  Folder,
+  Filter,
+  Calculator,
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
 
@@ -42,6 +71,35 @@ const ICON_MAP: Record<string, React.ElementType> = {
   Merge,
   Bug,
   Box,
+  MessageSquare,
+  Radio,
+  Send,
+  Mail,
+  PhoneCall,
+  Github,
+  Gitlab,
+  Layers,
+  BookOpen,
+  Table,
+  FileSpreadsheet,
+  Database,
+  HardDrive,
+  Cpu,
+  Binary,
+  Shield,
+  FileCode,
+  Repeat,
+  CreditCard,
+  ShoppingBag,
+  DollarSign,
+  Contact,
+  Cloud,
+  CheckSquare,
+  CheckCircle,
+  Calendar,
+  Folder,
+  Filter,
+  Calculator,
 };
 
 export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
@@ -75,7 +133,44 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
     const p = nodeData.parameters || {};
     if (nodeData.type === 'action.http') return `${p.method || 'GET'} ${p.url ? String(p.url).slice(0, 24) : ''}`;
     if (nodeData.type === 'trigger.schedule') return `cron: ${p.cron || '0 * * * *'}`;
+    if (nodeData.type === 'trigger.github') return `Event: ${p.events || 'push'}`;
+    if (nodeData.type === 'trigger.stripe') return `Event: ${p.event || 'payment_intent.succeeded'}`;
     if (nodeData.type === 'ai.openai' || nodeData.type === 'ai.gemini' || nodeData.type === 'ai.anthropic') return `Model: ${p.model || 'default'}`;
+    if (nodeData.type === 'connector.ollama') return `Local: ${p.model || 'llama3'}`;
+    if (nodeData.type === 'connector.stripe') return `Stripe: ${p.operation || 'createCustomer'}`;
+    if (nodeData.type === 'connector.shopify') return `Shopify: ${p.operation || 'getProducts'}`;
+    if (nodeData.type === 'connector.paypal') return `PayPal: ${p.operation || 'createOrder'}`;
+    if (nodeData.type === 'connector.hubspot') return `HubSpot: ${p.operation || 'createContact'}`;
+    if (nodeData.type === 'connector.mailchimp') return `Mailchimp: ${p.operation || 'addSubscriber'}`;
+    if (nodeData.type === 'connector.salesforce') return `SF: ${p.operation || 'createLead'}`;
+    if (nodeData.type === 'connector.resend') return `Resend: ${p.to || 'email'}`;
+    if (nodeData.type === 'connector.teams') return `Teams: ${p.operation || 'sendMessage'}`;
+    if (nodeData.type === 'connector.whatsapp') return `WhatsApp: ${p.to || 'recipient'}`;
+    if (nodeData.type === 'connector.slack') return `Slack: ${p.operation || 'msg'}`;
+    if (nodeData.type === 'connector.discord') return `Discord: ${p.content ? String(p.content).slice(0, 20) : 'Webhook'}`;
+    if (nodeData.type === 'connector.telegram') return `Chat: ${p.chatId || 'msg'}`;
+    if (nodeData.type === 'connector.email') return `To: ${p.to || 'email'}`;
+    if (nodeData.type === 'connector.github') return `GH: ${p.operation || 'issue'} ${p.repo || ''}`;
+    if (nodeData.type === 'connector.linear') return `Linear: ${p.operation || 'createIssue'}`;
+    if (nodeData.type === 'connector.trello') return `Trello: ${p.operation || 'createCard'}`;
+    if (nodeData.type === 'connector.asana') return `Asana: ${p.operation || 'createTask'}`;
+    if (nodeData.type === 'connector.clickup') return `ClickUp: ${p.operation || 'createTask'}`;
+    if (nodeData.type === 'connector.postgres') return `SQL: ${String(p.query || '').slice(0, 20)}...`;
+    if (nodeData.type === 'connector.mysql') return `MySQL: ${String(p.query || '').slice(0, 20)}...`;
+    if (nodeData.type === 'connector.redis') return `Redis: ${p.command || 'GET'} ${p.key || ''}`;
+    if (nodeData.type === 'connector.supabase') return `Supabase: ${p.operation || 'select'} ${p.table || ''}`;
+    if (nodeData.type === 'connector.s3') return `S3: ${p.bucket || 'bucket'}/${p.key || ''}`;
+    if (nodeData.type === 'connector.notion') return `Notion: ${p.operation || 'page'}`;
+    if (nodeData.type === 'connector.googleCalendar') return `Cal: ${p.operation || 'createEvent'}`;
+    if (nodeData.type === 'connector.googleDrive') return `Drive: ${p.operation || 'listFiles'}`;
+    if (nodeData.type === 'connector.docker') return `Docker: ${p.operation || 'listContainers'}`;
+    if (nodeData.type === 'connector.awsLambda') return `Lambda: ${p.functionName || 'fn'}`;
+    if (nodeData.type === 'connector.qdrant') return `Qdrant: ${p.collectionName || 'vectors'}`;
+    if (nodeData.type === 'data.filter') return `Filter: ${p.field || 'key'} ${p.operator || '=='}`;
+    if (nodeData.type === 'util.math') return `Math: ${p.operation || 'add'}`;
+    if (nodeData.type === 'util.crypto') return `Crypto: ${p.operation || 'hash'}`;
+    if (nodeData.type === 'util.datetime') return `Date: ${p.operation || 'now'}`;
+    if (nodeData.type === 'logic.loop') return `Batch size: ${p.batchSize || 10}`;
     if (nodeData.type === 'logic.condition') return `${p.field || 'val'} ${p.operator || '=='} ${p.value || ''}`;
     if (nodeData.type === 'action.delay') return `Wait ${p.duration || 1000}${p.unit || 'ms'}`;
     return null;
