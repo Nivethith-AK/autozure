@@ -7,7 +7,6 @@ import {
   Play,
   Globe,
   Clock,
-  Sparkles,
   Zap,
   Brain,
   Code2,
@@ -55,12 +54,12 @@ import {
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
 import { NodeDefinitionMeta } from '@flowforge/types';
+import { NodeIcon } from '@/components/icons/NodeIcon';
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Play,
   Globe,
   Clock,
-  Sparkles,
   Zap,
   Brain,
   Code2,
@@ -219,7 +218,7 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
                     border: `1px solid ${node.color || '#3b82f6'}35`,
                   }}
                 >
-                  <Icon className="h-5 w-5" />
+                  <NodeIcon nodeType={node.type} iconName={node.icon} className="h-5 w-5" />
                 </div>
 
                 <div className="flex-1 min-w-0 pr-6">

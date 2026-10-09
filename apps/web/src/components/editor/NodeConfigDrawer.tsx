@@ -11,7 +11,7 @@ import {
   Copy,
   Info,
   Clock,
-  Sparkles,
+  Zap,
   Play,
   Loader2,
   Power,
@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
 import { ParameterDefinition } from '@flowforge/types';
+import { NodeIcon } from '@/components/icons/NodeIcon';
 import Link from 'next/link';
 
 export function NodeConfigDrawer() {
@@ -106,7 +107,7 @@ export function NodeConfigDrawer() {
             className="h-8 w-8 rounded-xl flex items-center justify-center shrink-0 shadow-inner"
             style={{ backgroundColor: `${nodeData.color || '#3b82f6'}20`, color: nodeData.color || '#3b82f6', border: `1px solid ${nodeData.color || '#3b82f6'}40` }}
           >
-            <Settings2 className="h-4 w-4" />
+            <NodeIcon nodeType={nodeData.type} iconName={nodeData.icon} className="h-4 w-4" />
           </div>
           <div className="overflow-hidden">
             <h2 className="text-xs font-bold text-slate-100 truncate">{nodeData.label || 'Node'}</h2>
@@ -329,7 +330,7 @@ export function NodeConfigDrawer() {
           <div className="space-y-4">
             <div className="p-3.5 rounded-xl bg-[#111422] border border-white/[0.08]">
               <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs mb-1">
-                <Sparkles className="h-4 w-4" />
+                <Zap className="h-4 w-4" />
                 Live Node Step Evaluator
               </div>
               <p className="text-[11px] text-slate-400 leading-relaxed">

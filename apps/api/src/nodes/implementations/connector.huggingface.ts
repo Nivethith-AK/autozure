@@ -6,7 +6,7 @@ export const huggingFaceNode: NodeHandler = {
   category: 'ai',
   label: 'Hugging Face',
   description: 'Run open inference on 100,000+ machine learning models on Hugging Face.',
-  icon: 'Sparkles',
+  icon: 'HuggingFace',
   color: '#ffcc00',
   inputs: [{ name: 'input', label: 'Input' }],
   outputs: [{ name: 'output', label: 'Output' }],

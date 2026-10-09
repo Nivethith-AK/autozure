@@ -5,7 +5,7 @@ export const openAINode: NodeHandler = {
   category: 'ai',
   label: 'OpenAI',
   description: 'Send a prompt to OpenAI GPT models and get a response.',
-  icon: 'Sparkles',
+  icon: 'OpenAI',
   color: '#10a37f',
   inputs: [{ name: 'input', label: 'Input' }],
   outputs: [{ name: 'output', label: 'Output' }],

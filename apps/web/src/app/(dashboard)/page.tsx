@@ -17,7 +17,6 @@ import {
   Copy,
   Trash2,
   Power,
-  Sparkles,
   ArrowRight,
   Server,
   Layers,
@@ -32,6 +31,7 @@ import {
 } from 'lucide-react';
 import { workflowApi, executionApi } from '@/lib/api';
 import { Workflow, WorkflowGraph } from '@flowforge/types';
+import { OpenAIIcon } from '@/components/icons/NodeIcon';
 
 interface StarterTemplate {
   id: string;
@@ -48,7 +48,7 @@ const STARTER_TEMPLATES: StarterTemplate[] = [
     id: 'ai-synthesizer',
     title: 'AI Content Synthesizer',
     description: 'Transform user inputs with GPT-4o Mini, format the schema, and log structured data.',
-    icon: Sparkles,
+    icon: OpenAIIcon,
     badge: 'AI & Data',
     badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
     graph: {
@@ -780,7 +780,7 @@ export default function DashboardPage() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-emerald-400" />
+            <Layers className="h-4 w-4 text-emerald-400" />
             <h2 className="text-sm font-bold text-slate-200">Production Starter Templates</h2>
           </div>
           <span className="text-xs text-slate-500 font-mono">1-click to instantiate prebuilt graphs</span>

@@ -12,7 +12,6 @@ import {
   Globe,
   Copy,
   Layers,
-  Sparkles,
   ExternalLink,
   Edit2,
   Download,

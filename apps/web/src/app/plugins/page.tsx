@@ -10,7 +10,6 @@ import {
   Power,
   KeyRound,
   Layers,
-  Sparkles,
   Zap,
   Globe,
   Radio,
@@ -54,54 +53,7 @@ import {
 } from 'lucide-react';
 import { workflowApi } from '@/lib/api';
 import { NodeDefinitionMeta } from '@flowforge/types';
-
-const ICON_MAP: Record<string, React.ElementType> = {
-  Play: Globe,
-  Globe,
-  Clock,
-  Sparkles,
-  Zap,
-  Brain,
-  Code2: FileCode,
-  GitBranch: Layers,
-  Shuffle: Layers,
-  Timer: Clock,
-  Variable: FileCode,
-  Merge: Layers,
-  Bug: Terminal,
-  Box,
-  MessageSquare,
-  Radio,
-  Send,
-  Mail,
-  PhoneCall,
-  Github,
-  Gitlab,
-  Layers,
-  BookOpen,
-  Table,
-  FileSpreadsheet,
-  Database,
-  HardDrive,
-  Cpu,
-  Binary,
-  Shield,
-  FileCode,
-  Repeat,
-  CreditCard,
-  ShoppingBag,
-  DollarSign,
-  Contact,
-  Cloud,
-  CheckSquare,
-  CheckCircle,
-  Calendar,
-  Folder,
-  Filter,
-  Calculator,
-  Flame,
-  Terminal,
-};
+import { NodeIcon } from '@/components/icons/NodeIcon';
 
 export default function PluginsPage() {
   const router = useRouter();
@@ -207,7 +159,6 @@ export default function PluginsPage() {
 
   const aiCount = useMemo(() => nodes.filter((n) => n.category === 'ai').length, [nodes]);
   const dbCount = useMemo(() => nodes.filter((n) => n.category === 'databases').length, [nodes]);
-  const commCount = useMemo(() => nodes.filter((n) => n.category === 'communication').length, [nodes]);
 
   const filteredNodes = useMemo(() => {
     return nodes.filter((node) => {
@@ -297,7 +248,7 @@ export default function PluginsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search connectors (Slack, GitHub, Postgres, AI, Stripe)..."
+              placeholder="Search connectors (Slack, GitHub, Postgres, OpenAI, Stripe)..."
               className="w-full rounded-xl bg-[#0e111a] border border-[#1a1f2e] pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
             />
           </div>
@@ -340,7 +291,6 @@ export default function PluginsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredNodes.map((node) => {
-            const Icon = ICON_MAP[node.icon] || Box;
             const isDisabled = disabledNodes.has(node.type);
             const hasCredentials = (node.credentials || []).length > 0;
 
@@ -365,7 +315,7 @@ export default function PluginsPage() {
                           border: `1px solid ${node.color || '#3b82f6'}30`,
                         }}
                       >
-                        <Icon className="h-5 w-5" />
+                        <NodeIcon nodeType={node.type} iconName={node.icon} className="h-5 w-5" />
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">

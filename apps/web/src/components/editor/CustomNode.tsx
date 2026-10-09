@@ -6,7 +6,6 @@ import {
   Play,
   Globe,
   Clock,
-  Sparkles,
   Zap,
   Brain,
   Code2,
@@ -59,12 +58,12 @@ import {
   Key,
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
+import { NodeIcon } from '@/components/icons/NodeIcon';
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Play,
   Globe,
   Clock,
-  Sparkles,
   Zap,
   Brain,
   Code2,
@@ -296,7 +295,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
             border: `1px solid ${brandColor}35`,
           }}
         >
-          <IconComponent className="h-5 w-5" />
+          <NodeIcon nodeType={nodeData.type} iconName={nodeData.icon} className="h-5 w-5" />
         </div>
 
         <div className="flex-1 min-w-0">

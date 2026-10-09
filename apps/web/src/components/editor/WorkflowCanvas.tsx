@@ -17,7 +17,6 @@ import {
   Maximize2,
   Grid,
   MapPin,
-  Sparkles,
   Layers,
   ZoomIn,
   ZoomOut,
@@ -140,7 +139,7 @@ function CanvasInner() {
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition-all hover:scale-[1.02] shadow-sm"
           title="Auto-organize workflow layout"
         >
-          <Sparkles className="h-3.5 w-3.5" />
+          <Layers className="h-3.5 w-3.5" />
           <span>Auto-Align</span>
         </button>
 
