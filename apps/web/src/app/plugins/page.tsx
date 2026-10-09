@@ -54,6 +54,18 @@ import {
 import { workflowApi } from '@/lib/api';
 import { NodeDefinitionMeta } from '@flowforge/types';
 import { NodeIcon } from '@/components/icons/NodeIcon';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 export default function PluginsPage() {
   const router = useRouter();
@@ -190,70 +202,70 @@ export default function PluginsPage() {
             <h1 className="text-2xl font-black tracking-tight text-slate-100">
               Plugins & Connector Integrations
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+            <Badge variant="default" className="text-[10px] font-mono px-2.5 py-0.5">
               {nodes.length} Connectors Active
-            </span>
+            </Badge>
           </div>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-muted-foreground">
             Enterprise integrations across LLMs (OpenAI, Claude, Gemini, Ollama, Groq, Mistral, DeepSeek), Databases (PostgreSQL, Supabase, Redis, S3, MongoDB), DevOps, and SaaS.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <button
+          <Button
             onClick={() => setIsInstallModalOpen(true)}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold px-4 py-2.5 text-xs transition-all shadow-lg shadow-emerald-950/50 hover:shadow-emerald-500/20 active:scale-95"
+            className="rounded-xl font-bold gap-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 shadow-lg shadow-emerald-950/50"
           >
             <Plus className="h-4 w-4 stroke-[3]" />
             Install Custom Plugin
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Stats Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 backdrop-blur-sm">
-          <span className="text-xs font-medium text-slate-400">Total Connectors</span>
+        <Card className="p-4 backdrop-blur-sm">
+          <span className="text-xs font-medium text-muted-foreground">Total Connectors</span>
           <div className="mt-2 text-3xl font-extrabold text-slate-100 tracking-tight">{nodes.length}</div>
           <span className="text-[11px] text-emerald-400 font-mono">100% Zero-Lockin Ready</span>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 backdrop-blur-sm">
-          <span className="text-xs font-medium text-slate-400">AI & Local LLM Nodes</span>
+        <Card className="p-4 backdrop-blur-sm">
+          <span className="text-xs font-medium text-muted-foreground">AI & Local LLM Nodes</span>
           <div className="mt-2 text-3xl font-extrabold text-purple-400 tracking-tight">{aiCount} Models</div>
-          <span className="text-[11px] text-slate-500 font-mono">OpenAI, Claude, Ollama, Groq...</span>
-        </div>
+          <span className="text-[11px] text-muted-foreground font-mono">OpenAI, Claude, Ollama, Groq...</span>
+        </Card>
 
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 backdrop-blur-sm">
-          <span className="text-xs font-medium text-slate-400">Databases & Storage</span>
+        <Card className="p-4 backdrop-blur-sm">
+          <span className="text-xs font-medium text-muted-foreground">Databases & Storage</span>
           <div className="mt-2 text-3xl font-extrabold text-blue-400 tracking-tight">{dbCount} Systems</div>
-          <span className="text-[11px] text-slate-500 font-mono">Postgres, Redis, Supabase, S3...</span>
-        </div>
+          <span className="text-[11px] text-muted-foreground font-mono">Postgres, Redis, Supabase, S3...</span>
+        </Card>
 
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 backdrop-blur-sm">
-          <span className="text-xs font-medium text-slate-400">Active Integrations</span>
+        <Card className="p-4 backdrop-blur-sm">
+          <span className="text-xs font-medium text-muted-foreground">Active Integrations</span>
           <div className="mt-2 text-3xl font-extrabold text-emerald-400 tracking-tight">
             {nodes.length - disabledNodes.size} Enabled
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">Ready for execution engine</span>
-        </div>
+          <span className="text-[11px] text-muted-foreground font-mono">Ready for execution engine</span>
+        </Card>
       </div>
 
       {/* Search & Category Filter Bar */}
-      <div className="space-y-3 border-b border-[#1a1f2e] pb-4">
+      <div className="space-y-3 border-b border-border pb-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
-            <input
+            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search connectors (Slack, GitHub, Postgres, OpenAI, Stripe)..."
-              className="w-full rounded-xl bg-[#0e111a] border border-[#1a1f2e] pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
+              className="pl-10 h-9 bg-card border-border text-xs rounded-xl"
             />
           </div>
 
-          <div className="text-xs text-slate-500 font-mono">
+          <div className="text-xs text-muted-foreground font-mono">
             Showing {filteredNodes.length} of {nodes.length} connectors
           </div>
         </div>
@@ -267,7 +279,7 @@ export default function PluginsPage() {
               className={`rounded-xl px-3 py-1.5 text-xs font-semibold capitalize whitespace-nowrap transition-all border ${
                 selectedCategory === cat
                   ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-sm'
-                  : 'bg-[#0e111a] text-slate-400 hover:text-slate-200 border-[#1a1f2e]'
+                  : 'bg-card text-muted-foreground hover:text-slate-200 border-border'
               }`}
             >
               {cat}
@@ -281,13 +293,13 @@ export default function PluginsPage() {
         <div className="py-24 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-            <p className="text-xs text-slate-400 font-mono">Loading connector registry...</p>
+            <p className="text-xs text-muted-foreground font-mono">Loading connector registry...</p>
           </div>
         </div>
       ) : filteredNodes.length === 0 ? (
-        <div className="p-12 text-center text-xs text-slate-500 rounded-2xl border border-dashed border-[#1a1f2e] bg-[#0e111a]/30">
+        <Card className="p-12 text-center text-xs text-muted-foreground border-dashed bg-card/30">
           No connectors match &ldquo;{searchQuery}&rdquo;
-        </div>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredNodes.map((node) => {
@@ -295,12 +307,12 @@ export default function PluginsPage() {
             const hasCredentials = (node.credentials || []).length > 0;
 
             return (
-              <div
+              <Card
                 key={node.type}
-                className={`group flex flex-col justify-between rounded-2xl border p-5 transition-all shadow-lg ${
+                className={`group flex flex-col justify-between p-5 transition-all shadow-lg ${
                   isDisabled
-                    ? 'border-[#1a1f2e]/40 bg-[#08090d] opacity-50'
-                    : 'border-[#1a1f2e] bg-[#0e111a]/60 hover:bg-[#0e111a] hover:border-slate-700 shadow-black/40'
+                    ? 'border-border/40 bg-[#08090d] opacity-50'
+                    : 'bg-card hover:border-slate-700 shadow-black/40'
                 }`}
               >
                 <div>
@@ -321,123 +333,126 @@ export default function PluginsPage() {
                         <h3 className="text-sm font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">
                           {node.label}
                         </h3>
-                        <span className="text-[10px] text-slate-500 font-mono uppercase font-semibold">
+                        <span className="text-[10px] text-muted-foreground font-mono uppercase font-semibold">
                           {node.category}
                         </span>
                       </div>
                     </div>
 
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
                       onClick={() => toggleNodeEnabled(node.type)}
-                      className={`p-1.5 rounded-lg border text-[10px] font-mono transition-colors ${
+                      className={`rounded-lg border text-[10px] font-mono transition-colors ${
                         isDisabled
-                          ? 'border-[#1a1f2e] text-slate-500 bg-[#08090d] hover:text-slate-300'
+                          ? 'border-border text-muted-foreground bg-[#08090d] hover:text-slate-300'
                           : 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20'
                       }`}
                       title={isDisabled ? 'Click to enable' : 'Click to disable'}
                     >
                       <Power className="h-3.5 w-3.5" />
-                    </button>
+                    </Button>
                   </div>
 
-                  <p className="mt-3 text-xs text-slate-400 leading-relaxed line-clamp-2">
+                  <p className="mt-3 text-xs text-muted-foreground leading-relaxed line-clamp-2">
                     {node.description}
                   </p>
 
                   {/* Capabilities / Parameters tags */}
                   <div className="mt-4 flex flex-wrap gap-1.5">
-                    <span className="px-2 py-0.5 rounded-md bg-[#08090d] border border-[#1a1f2e] text-[10px] font-mono text-slate-400">
-                      {(node.parameters || []).length} parameters
-                    </span>
+                    <Badge variant="secondary" className="text-[10px] font-mono px-2 py-0">
+                      {(node.parameters || []).length} params
+                    </Badge>
                     {hasCredentials ? (
-                      <span className="px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-[10px] font-mono text-amber-400">
+                      <Badge variant="warning" className="text-[10px] font-mono px-2 py-0">
                         Auth Required
-                      </span>
+                      </Badge>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400">
+                      <Badge variant="default" className="text-[10px] font-mono px-2 py-0">
                         Zero Auth
-                      </span>
+                      </Badge>
                     )}
-                    <span className="px-2 py-0.5 rounded-md bg-[#08090d] border border-[#1a1f2e] text-[10px] font-mono text-slate-500">
+                    <Badge variant="outline" className="text-[10px] font-mono px-2 py-0 text-muted-foreground">
                       v1.0
-                    </span>
+                    </Badge>
                   </div>
                 </div>
 
                 {/* Card Actions */}
-                <div className="mt-5 pt-3.5 border-t border-[#1a1f2e] flex items-center justify-between">
+                <div className="mt-5 pt-3.5 border-t border-border flex items-center justify-between">
                   {hasCredentials ? (
-                    <Link
-                      href="/settings?tab=credentials"
-                      className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-emerald-400 transition-colors"
-                      title="Manage connector API credentials in vault"
-                    >
-                      <KeyRound className="h-3 w-3" />
-                      Vault Keys
-                    </Link>
+                    <Button variant="link" size="sm" asChild className="p-0 h-auto text-[11px] font-medium text-muted-foreground hover:text-emerald-400 gap-1">
+                      <Link href="/settings?tab=credentials" title="Manage connector API credentials in vault">
+                        <KeyRound className="h-3 w-3" />
+                        Vault Keys
+                      </Link>
+                    </Button>
                   ) : (
-                    <span className="text-[11px] text-slate-500 font-mono">Native Node</span>
+                    <span className="text-[11px] text-muted-foreground font-mono">Native Node</span>
                   )}
 
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => handleCreateWorkflowWithNode(node)}
                     disabled={isDisabled}
-                    className="flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors disabled:opacity-40"
+                    className="h-auto p-0 text-xs font-semibold text-emerald-400 hover:text-emerald-300 gap-1 hover:bg-transparent disabled:opacity-40"
                   >
                     Use in Workflow <ArrowRight className="h-3 w-3" />
-                  </button>
+                  </Button>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
       )}
 
-      {/* Install Custom Plugin Modal */}
-      {isInstallModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#1a1f2e] bg-[#0e111a] p-6 shadow-2xl animate-in zoom-in-95">
-            <h3 className="text-sm font-bold text-slate-100">Install Custom Connector</h3>
-            <p className="mt-1 text-xs text-slate-400">
+      {/* Install Custom Plugin Dialog with shadcn Dialog */}
+      <Dialog open={isInstallModalOpen} onOpenChange={setIsInstallModalOpen}>
+        <DialogContent className="max-w-md bg-[#0e111a] border-border text-slate-100 rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-sm font-bold text-slate-100">Install Custom Connector</DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
               Register custom npm packages, OpenAPI specs, or third-party FlowForge connector bundles.
-            </p>
+            </DialogDescription>
+          </DialogHeader>
 
-            <form onSubmit={handleInstallCustomPlugin} className="mt-4 space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  Package Name or GitHub Repository
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. @flowforge/plugin-salesforce or user/custom-nodes"
-                  value={customPackageName}
-                  onChange={(e) => setCustomPackageName(e.target.value)}
-                  className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
-                />
-              </div>
+          <form onSubmit={handleInstallCustomPlugin} className="mt-2 space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                Package Name or GitHub Repository
+              </label>
+              <Input
+                type="text"
+                required
+                placeholder="e.g. @flowforge/plugin-salesforce or user/custom-nodes"
+                value={customPackageName}
+                onChange={(e) => setCustomPackageName(e.target.value)}
+                className="font-mono text-xs bg-card border-border"
+              />
+            </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#1a1f2e]">
-                <button
-                  type="button"
-                  onClick={() => setIsInstallModalOpen(false)}
-                  className="rounded-xl px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-[#1a1f2e] transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isInstalling}
-                  className="rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 text-xs transition-colors flex items-center gap-1.5 shadow-lg shadow-emerald-950/50"
-                >
-                  {isInstalling && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                  Install Connector
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <DialogFooter className="mt-4 gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setIsInstallModalOpen(false)}
+                className="rounded-xl"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isInstalling}
+                className="rounded-xl font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 gap-1.5 shadow-lg shadow-emerald-950/50"
+              >
+                {isInstalling && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                Install Connector
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

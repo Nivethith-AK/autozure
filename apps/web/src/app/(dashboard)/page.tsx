@@ -32,6 +32,18 @@ import {
 import { workflowApi, executionApi } from '@/lib/api';
 import { Workflow, WorkflowGraph } from '@flowforge/types';
 import { OpenAIIcon } from '@/components/icons/NodeIcon';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface StarterTemplate {
   id: string;
@@ -690,31 +702,31 @@ export default function DashboardPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black tracking-tight text-slate-100">Automation Workflows</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+            <Badge variant="default" className="text-[10px] font-mono px-2.5 py-0.5">
               FlowForge v1.0 • 93 Nodes
-            </span>
+            </Badge>
           </div>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-muted-foreground">
             Build, execute, and monitor distributed visual pipelines with AI models, cloud triggers, and multi-step logic.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <button
+          <Button
             onClick={handleCreateBlankWorkflow}
             disabled={isCreating}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold px-4 py-2.5 text-xs transition-all shadow-lg shadow-emerald-950/50 hover:shadow-emerald-500/20 active:scale-95 disabled:opacity-50"
+            className="rounded-xl font-bold gap-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 shadow-lg shadow-emerald-950/50"
           >
             {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4 stroke-[3]" />}
             New Workflow
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 relative overflow-hidden backdrop-blur-md group hover:border-slate-700 transition-colors">
-          <div className="flex items-center justify-between text-slate-400">
+        <Card className="p-4 relative overflow-hidden group hover:border-slate-700 transition-colors">
+          <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-medium">Total Workflows</span>
             <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
               <GitFork className="h-4 w-4" />
@@ -722,14 +734,14 @@ export default function DashboardPage() {
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-3xl font-extrabold text-slate-100 tracking-tight">{workflows.length}</span>
-            <span className="text-[11px] text-slate-500 font-mono">
+            <span className="text-[11px] text-muted-foreground font-mono">
               ({activeCount} active, {draftCount} draft)
             </span>
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 relative overflow-hidden backdrop-blur-md group hover:border-slate-700 transition-colors">
-          <div className="flex items-center justify-between text-slate-400">
+        <Card className="p-4 relative overflow-hidden group hover:border-slate-700 transition-colors">
+          <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-medium">Execution Runs</span>
             <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
               <Activity className="h-4 w-4" />
@@ -737,14 +749,14 @@ export default function DashboardPage() {
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-3xl font-extrabold text-slate-100 tracking-tight">{stats.total}</span>
-            <span className="text-[11px] text-slate-500 font-mono">
+            <span className="text-[11px] text-muted-foreground font-mono">
               {stats.successful} passed
             </span>
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 relative overflow-hidden backdrop-blur-md group hover:border-slate-700 transition-colors">
-          <div className="flex items-center justify-between text-slate-400">
+        <Card className="p-4 relative overflow-hidden group hover:border-slate-700 transition-colors">
+          <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-medium">Execution Success Rate</span>
             <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
               <CheckCircle2 className="h-4 w-4" />
@@ -754,14 +766,14 @@ export default function DashboardPage() {
             <span className="text-3xl font-extrabold text-emerald-400 tracking-tight">
               {stats.total > 0 ? `${stats.successRate}%` : '100%'}
             </span>
-            <span className="text-[11px] text-slate-500 font-mono">
+            <span className="text-[11px] text-muted-foreground font-mono">
               {stats.failed} failed
             </span>
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-4 relative overflow-hidden backdrop-blur-md group hover:border-slate-700 transition-colors">
-          <div className="flex items-center justify-between text-slate-400">
+        <Card className="p-4 relative overflow-hidden group hover:border-slate-700 transition-colors">
+          <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-medium">Active Jobs Running</span>
             <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
               <Clock className="h-4 w-4" />
@@ -773,7 +785,7 @@ export default function DashboardPage() {
               Engine ready
             </span>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Starter Templates Section */}
@@ -783,48 +795,50 @@ export default function DashboardPage() {
             <Layers className="h-4 w-4 text-emerald-400" />
             <h2 className="text-sm font-bold text-slate-200">Production Starter Templates</h2>
           </div>
-          <span className="text-xs text-slate-500 font-mono">1-click to instantiate prebuilt graphs</span>
+          <span className="text-xs text-muted-foreground font-mono">1-click to instantiate prebuilt graphs</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {STARTER_TEMPLATES.map((tmpl) => {
             const Icon = tmpl.icon;
             return (
-              <div
+              <Card
                 key={tmpl.id}
-                className="group relative flex flex-col justify-between rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/60 p-4 hover:border-emerald-500/40 hover:bg-[#0e111a] transition-all hover:shadow-xl hover:shadow-emerald-950/20"
+                className="group relative flex flex-col justify-between p-4 hover:border-emerald-500/40 hover:bg-[#0e111a] transition-all hover:shadow-xl hover:shadow-emerald-950/20"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="h-9 w-9 rounded-xl bg-[#08090d] flex items-center justify-center text-emerald-400 border border-[#1a1f2e] group-hover:scale-105 transition-transform">
+                    <div className="h-9 w-9 rounded-xl bg-[#08090d] flex items-center justify-center text-emerald-400 border border-border group-hover:scale-105 transition-transform">
                       <Icon className="h-4 w-4" />
                     </div>
-                    <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full border ${tmpl.badgeColor}`}>
+                    <Badge variant="secondary" className={`text-[10px] font-mono px-2 py-0 border ${tmpl.badgeColor}`}>
                       {tmpl.badge}
-                    </span>
+                    </Badge>
                   </div>
 
                   <h3 className="text-xs font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">
                     {tmpl.title}
                   </h3>
-                  <p className="mt-1 text-[11px] text-slate-400 leading-relaxed line-clamp-2">
+                  <p className="mt-1 text-[11px] text-muted-foreground leading-relaxed line-clamp-2">
                     {tmpl.description}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-[#1a1f2e] flex items-center justify-between">
-                  <span className="text-[10px] text-slate-500 font-mono">
+                <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
+                  <span className="text-[10px] text-muted-foreground font-mono">
                     {tmpl.graph.nodes.length} nodes
                   </span>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => handleUseTemplate(tmpl)}
                     disabled={isCreating}
-                    className="flex items-center gap-1 text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+                    className="h-auto p-0 text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 gap-1 hover:bg-transparent"
                   >
                     Use Template <ArrowRight className="h-3 w-3" />
-                  </button>
+                  </Button>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
@@ -832,59 +846,55 @@ export default function DashboardPage() {
 
       {/* Workflows Search & Filter Bar */}
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-[#1a1f2e] pb-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-border pb-4">
           {/* Search Box */}
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-500" />
-            <input
+            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search workflows by name or description..."
-              className="w-full rounded-xl bg-[#0e111a] border border-[#1a1f2e] pl-10 pr-4 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-medium"
+              className="pl-10 h-9 bg-card border-border text-xs rounded-xl"
             />
           </div>
 
           <div className="flex items-center gap-3">
             {/* Status Tabs */}
-            <div className="flex items-center gap-1 rounded-xl bg-[#0e111a] border border-[#1a1f2e] p-1">
-              <button
+            <div className="flex items-center gap-1 rounded-xl bg-card border border-border p-1">
+              <Button
+                variant={statusFilter === 'all' ? 'secondary' : 'ghost'}
+                size="sm"
                 onClick={() => setStatusFilter('all')}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                  statusFilter === 'all'
-                    ? 'bg-[#1a1f2e] text-slate-100 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
+                className="h-7 px-3 text-xs rounded-lg"
               >
                 All ({workflows.length})
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={statusFilter === 'active' ? 'secondary' : 'ghost'}
+                size="sm"
                 onClick={() => setStatusFilter('active')}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                  statusFilter === 'active'
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : 'text-slate-400 hover:text-slate-200'
+                className={`h-7 px-3 text-xs rounded-lg ${
+                  statusFilter === 'active' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : ''
                 }`}
               >
                 Active ({activeCount})
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={statusFilter === 'draft' ? 'secondary' : 'ghost'}
+                size="sm"
                 onClick={() => setStatusFilter('draft')}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                  statusFilter === 'draft'
-                    ? 'bg-[#1a1f2e] text-slate-100 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
+                className="h-7 px-3 text-xs rounded-lg"
               >
                 Draft ({draftCount})
-              </button>
+              </Button>
             </div>
 
             {/* Sort Dropdown */}
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="rounded-xl bg-[#0e111a] border border-[#1a1f2e] px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500 font-medium"
+              className="rounded-xl bg-card border border-border px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500 font-medium"
             >
               <option value="updated">Recently Updated</option>
               <option value="name">Name (A-Z)</option>
@@ -898,32 +908,32 @@ export default function DashboardPage() {
           <div className="flex py-24 items-center justify-center">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-              <p className="text-xs text-slate-400 font-mono">Loading pipelines from engine...</p>
+              <p className="text-xs text-muted-foreground font-mono">Loading pipelines from engine...</p>
             </div>
           </div>
         ) : displayedWorkflows.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-[#1a1f2e] bg-[#0e111a]/30 p-12 text-center">
+          <Card className="border-dashed p-12 text-center bg-card/30">
             <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto mb-3">
               <Zap className="h-6 w-6" />
             </div>
             <h3 className="text-sm font-semibold text-slate-200">
               {searchQuery ? 'No matching workflows found' : 'No workflows yet'}
             </h3>
-            <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
+            <p className="mt-1 text-xs text-muted-foreground max-w-sm mx-auto">
               {searchQuery
                 ? 'Try adjusting your search query or status filter.'
                 : 'Get started by creating a blank workflow or selecting one of the production templates above.'}
             </p>
             {!searchQuery && (
-              <button
+              <Button
                 onClick={handleCreateBlankWorkflow}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-950/40"
+                className="mt-4 gap-1.5 rounded-xl font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-lg shadow-emerald-950/40"
               >
                 <Plus className="h-4 w-4 stroke-[3]" />
                 Forge Blank Workflow
-              </button>
+              </Button>
             )}
-          </div>
+          </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayedWorkflows.map((wf) => {
@@ -932,9 +942,9 @@ export default function DashboardPage() {
               const nodeNames = (wf.graph?.nodes || []).slice(0, 3).map((n) => n.data?.label || n.type);
 
               return (
-                <div
+                <Card
                   key={wf.id}
-                  className="group rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/60 hover:bg-[#0e111a] hover:border-slate-700 transition-all p-5 flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-black/60"
+                  className="group hover:border-slate-700 transition-all p-5 flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-black/60"
                 >
                   <div>
                     {/* Header: Title & Status switch */}
@@ -946,7 +956,7 @@ export default function DashboardPage() {
                         >
                           {wf.name}
                         </Link>
-                        <p className="mt-1 text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                        <p className="mt-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                           {wf.description || 'Visual workflow pipeline'}
                         </p>
                       </div>
@@ -954,21 +964,22 @@ export default function DashboardPage() {
                       {/* Active/Draft Switch */}
                       <button
                         onClick={() => handleToggleActive(wf)}
-                        className={`shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold transition-all border ${
-                          wf.status === 'active'
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
-                            : 'bg-[#1a1f2e] text-slate-400 border-slate-700 hover:text-slate-300'
-                        }`}
                         title="Click to toggle Active / Draft"
+                        className="focus:outline-none"
                       >
-                        <Power className="h-3 w-3" />
-                        <span className="uppercase">{wf.status}</span>
+                        <Badge
+                          variant={wf.status === 'active' ? 'default' : 'secondary'}
+                          className="cursor-pointer gap-1.5 uppercase font-mono text-[10px] py-0.5 px-2.5"
+                        >
+                          <Power className="h-3 w-3" />
+                          <span>{wf.status}</span>
+                        </Badge>
                       </button>
                     </div>
 
                     {/* Node chain preview */}
                     {nodeNames.length > 0 && (
-                      <div className="mt-3 flex items-center gap-1 text-[10px] text-slate-500 font-mono truncate">
+                      <div className="mt-3 flex items-center gap-1 text-[10px] text-muted-foreground font-mono truncate">
                         <Layers className="h-3 w-3 text-slate-600 shrink-0" />
                         <span className="truncate">
                           {nodeNames.join(' → ')}
@@ -978,7 +989,7 @@ export default function DashboardPage() {
                     )}
 
                     {/* Metadata & Last run */}
-                    <div className="mt-4 flex items-center justify-between text-xs text-slate-500 font-mono">
+                    <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground font-mono">
                       <span>{nodeCount} node{nodeCount !== 1 ? 's' : ''}</span>
                       {wf.lastRunStatus ? (
                         <span className="flex items-center gap-1">
@@ -996,20 +1007,21 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Card Bottom Actions */}
-                  <div className="mt-5 pt-3.5 border-t border-[#1a1f2e] flex items-center justify-between">
-                    <Link
-                      href={`/editor/${wf.id}`}
-                      className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors"
-                    >
-                      Open Canvas →
-                    </Link>
+                  <div className="mt-5 pt-3.5 border-t border-border flex items-center justify-between">
+                    <Button variant="link" size="sm" asChild className="p-0 h-auto font-semibold text-emerald-400 hover:text-emerald-300">
+                      <Link href={`/editor/${wf.id}`}>
+                        Open Canvas →
+                      </Link>
+                    </Button>
 
                     <div className="flex items-center gap-1">
                       {/* Run button */}
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleRunWorkflow(wf)}
                         disabled={isRunning}
-                        className="rounded-lg p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-colors disabled:opacity-50"
+                        className="rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10"
                         title="Run Workflow Now"
                       >
                         {isRunning ? (
@@ -1017,74 +1029,80 @@ export default function DashboardPage() {
                         ) : (
                           <Play className="h-3.5 w-3.5" />
                         )}
-                      </button>
+                      </Button>
 
                       {/* Duplicate button */}
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleDuplicateWorkflow(wf)}
-                        className="rounded-lg p-2 text-slate-400 hover:text-slate-200 hover:bg-[#1a1f2e] transition-colors"
+                        className="rounded-lg text-slate-400 hover:text-white"
                         title="Duplicate Workflow"
                       >
                         <Copy className="h-3.5 w-3.5" />
-                      </button>
+                      </Button>
 
                       {/* Delete button */}
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => setWorkflowToDelete(wf)}
-                        className="rounded-lg p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                        className="rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10"
                         title="Delete Workflow"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
-                </div>
+                </Card>
               );
             })}
           </div>
         )}
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {workflowToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-rose-900/50 bg-[#0e111a] p-6 shadow-2xl animate-in zoom-in-95">
-            <div className="flex items-center gap-3 text-rose-400 mb-3">
+      {/* Delete Confirmation Dialog with shadcn Dialog */}
+      <Dialog open={!!workflowToDelete} onOpenChange={(open) => !open && setWorkflowToDelete(null)}>
+        <DialogContent className="max-w-md bg-[#0e111a] border-border text-slate-100 rounded-2xl">
+          <DialogHeader>
+            <div className="flex items-center gap-3 text-rose-400 mb-1">
               <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20">
                 <AlertTriangle className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-100">Delete Workflow</h3>
-                <p className="text-xs text-slate-400">This action cannot be undone</p>
+                <DialogTitle className="text-sm font-bold text-slate-100">Delete Workflow</DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground">This action cannot be undone</DialogDescription>
               </div>
             </div>
+          </DialogHeader>
 
-            <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-              Are you sure you want to permanently delete{' '}
-              <strong className="text-slate-100 font-semibold">&ldquo;{workflowToDelete.name}&rdquo;</strong>?
-              All associated execution logs and version histories will be removed.
-            </p>
+          <p className="text-xs text-slate-300 mt-2 leading-relaxed">
+            Are you sure you want to permanently delete{' '}
+            <strong className="text-slate-100 font-semibold">&ldquo;{workflowToDelete?.name}&rdquo;</strong>?
+            All associated execution logs and version histories will be removed.
+          </p>
 
-            <div className="flex items-center justify-end gap-2.5 mt-6">
-              <button
-                onClick={() => setWorkflowToDelete(null)}
-                disabled={isDeleting}
-                className="rounded-xl px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-[#1a1f2e] transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDeleteWorkflow}
-                disabled={isDeleting}
-                className="rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-semibold px-4 py-2 text-xs transition-colors flex items-center gap-1.5 shadow-lg shadow-rose-950/50"
-              >
-                {isDeleting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                Delete Workflow
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          <DialogFooter className="mt-4 gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => setWorkflowToDelete(null)}
+              disabled={isDeleting}
+              className="rounded-xl"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteWorkflow}
+              disabled={isDeleting}
+              className="rounded-xl gap-1.5"
+            >
+              {isDeleting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              Delete Workflow
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

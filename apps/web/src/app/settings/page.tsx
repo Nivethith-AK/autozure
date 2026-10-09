@@ -49,6 +49,19 @@ import {
 } from 'lucide-react';
 import { credentialApi } from '@/lib/api';
 import { Credential } from '@flowforge/types';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   OpenAIIcon,
   AnthropicIcon,
@@ -472,62 +485,45 @@ function SettingsContent() {
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-[#1a1f2e]">
-        <button
-          onClick={() => setActiveTab('credentials')}
-          className={`flex items-center gap-2 py-3 px-5 text-xs font-semibold border-b-2 transition-colors ${
-            activeTab === 'credentials'
-              ? 'border-emerald-500 text-emerald-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <KeyRound className="h-4 w-4" />
-          Credentials Vault ({credentials.length})
-        </button>
+      {/* Settings Navigation with shadcn Tabs */}
+      <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as any)} className="space-y-6">
+        <TabsList className="bg-card border border-border h-11 p-1 rounded-xl">
+          <TabsTrigger value="credentials" className="text-xs font-semibold gap-2 px-5 py-2 rounded-lg">
+            <KeyRound className="h-4 w-4" />
+            <span>Credentials Vault</span>
+            <Badge variant="secondary" className="text-[10px] py-0 px-1.5 ml-1 font-mono">
+              {credentials.length}
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger value="system" className="text-xs font-semibold gap-2 px-5 py-2 rounded-lg">
+            <Server className="h-4 w-4" />
+            <span>Engine & Health</span>
+            <Badge variant="default" className="text-[10px] py-0 px-1.5 ml-1 font-mono">
+              93 Nodes
+            </Badge>
+          </TabsTrigger>
+          <TabsTrigger value="workspace" className="text-xs font-semibold gap-2 px-5 py-2 rounded-lg">
+            <Building className="h-4 w-4" />
+            <span>Workspace</span>
+          </TabsTrigger>
+        </TabsList>
 
-        <button
-          onClick={() => setActiveTab('system')}
-          className={`flex items-center gap-2 py-3 px-5 text-xs font-semibold border-b-2 transition-colors ${
-            activeTab === 'system'
-              ? 'border-emerald-500 text-emerald-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Server className="h-4 w-4" />
-          Engine & Health (93 Nodes)
-        </button>
-
-        <button
-          onClick={() => setActiveTab('workspace')}
-          className={`flex items-center gap-2 py-3 px-5 text-xs font-semibold border-b-2 transition-colors ${
-            activeTab === 'workspace'
-              ? 'border-emerald-500 text-emerald-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Building className="h-4 w-4" />
-          Workspace
-        </button>
-      </div>
-
-      {/* CREDENTIALS TAB */}
-      {activeTab === 'credentials' && (
-        <div className="space-y-4">
+        {/* CREDENTIALS TAB */}
+        <TabsContent value="credentials" className="mt-0 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm font-bold text-slate-200">Encrypted Credentials Vault</h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted-foreground">
                 Credentials are encrypted with AES-256-GCM at rest and decrypted on-demand during node execution.
               </p>
             </div>
-            <button
+            <Button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold px-4 py-2 text-xs transition-all shadow-lg shadow-emerald-950/40"
+              className="rounded-xl font-bold gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 shadow-lg shadow-emerald-950/40"
             >
               <Plus className="h-3.5 w-3.5 stroke-[3]" />
               Add Credential
-            </button>
+            </Button>
           </div>
 
           {isLoading ? (
@@ -535,18 +531,19 @@ function SettingsContent() {
               <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
             </div>
           ) : credentials.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-[#1a1f2e] bg-[#0e111a]/40 p-12 text-center text-xs text-slate-500">
+            <Card className="border-dashed p-12 text-center text-xs text-muted-foreground bg-card/40">
               <KeyRound className="h-8 w-8 text-slate-600 mx-auto mb-2" />
               <p className="font-medium text-slate-300">No credentials configured</p>
               <p className="mt-1">Add your OpenAI, Gemini, Groq, Mistral, Slack, or GitHub keys to power workflows.</p>
-              <button
+              <Button
+                variant="secondary"
                 onClick={() => setIsModalOpen(true)}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[#1a1f2e] hover:bg-slate-800 text-slate-200 px-3.5 py-1.5 text-xs font-semibold transition-colors"
+                className="mt-4 gap-1.5 rounded-xl font-semibold text-xs"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add Your First Key
-              </button>
-            </div>
+              </Button>
+            </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {credentials.map((cred) => {
@@ -556,41 +553,43 @@ function SettingsContent() {
                 const verified = testResult[cred.id];
 
                 return (
-                  <div
+                  <Card
                     key={cred.id}
-                    className="flex flex-col justify-between p-4 rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/60 hover:bg-[#0e111a] transition-all shadow-lg"
+                    className="flex flex-col justify-between p-4 bg-card/60 hover:bg-card transition-all shadow-lg"
                   >
                     <div>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-xl bg-[#08090d] flex items-center justify-center text-emerald-400 border border-[#1a1f2e]">
+                          <div className="h-10 w-10 rounded-xl bg-[#08090d] flex items-center justify-center text-emerald-400 border border-border">
                             <Icon className="h-5 w-5" />
                           </div>
                           <div>
                             <span className="block text-xs font-bold text-slate-200">{cred.name}</span>
-                            <span className="block text-[10px] text-slate-500 font-mono">
+                            <span className="block text-[10px] text-muted-foreground font-mono">
                               ID: {cred.id.slice(0, 8)}...
                             </span>
                           </div>
                         </div>
 
-                        <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full border ${preset.badgeColor}`}>
+                        <Badge variant="secondary" className={`text-[10px] font-mono uppercase px-2 py-0 border ${preset.badgeColor}`}>
                           {cred.type}
-                        </span>
+                        </Badge>
                       </div>
 
-                      <div className="mt-4 p-2.5 rounded-xl bg-[#08090d] border border-[#1a1f2e] flex items-center justify-between text-xs font-mono text-slate-400">
+                      <div className="mt-4 p-2.5 rounded-xl bg-[#08090d] border border-border flex items-center justify-between text-xs font-mono text-muted-foreground">
                         <span>Encrypted Payload:</span>
                         <span className="text-slate-500">•••••••••••••••• (AES-256)</span>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-[#1a1f2e] flex items-center justify-between">
+                    <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleTestConnection(cred.id)}
                           disabled={isTesting}
-                          className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-emerald-400 transition-colors"
+                          className="h-auto p-0 text-[11px] font-semibold text-muted-foreground hover:text-emerald-400 gap-1 hover:bg-transparent"
                         >
                           {isTesting ? (
                             <Loader2 className="h-3 w-3 animate-spin text-emerald-400" />
@@ -600,208 +599,209 @@ function SettingsContent() {
                             <Activity className="h-3 w-3" />
                           )}
                           <span>{verified ? 'Connected' : 'Test Connection'}</span>
-                        </button>
+                        </Button>
                       </div>
 
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleDelete(cred.id)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                        className="rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10"
                         title="Delete Credential"
                       >
                         <Trash2 className="h-4 w-4" />
-                      </button>
+                      </Button>
                     </div>
-                  </div>
+                  </Card>
                 );
               })}
             </div>
           )}
 
-          {/* Add Credential Modal */}
-          {isModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-              <div className="w-full max-w-md rounded-2xl border border-[#1a1f2e] bg-[#0e111a] p-6 shadow-2xl animate-in zoom-in-95">
-                <h3 className="text-sm font-bold text-slate-100">Add New Credential</h3>
-                <p className="mt-1 text-xs text-slate-400">
+          {/* Add Credential Dialog with shadcn Dialog */}
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="max-w-md bg-[#0e111a] border-border text-slate-100 rounded-2xl">
+              <DialogHeader>
+                <DialogTitle className="text-sm font-bold text-slate-100">Add New Credential</DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground">
                   Store integration API keys securely with AES-256 encryption.
-                </p>
+                </DialogDescription>
+              </DialogHeader>
 
-                <form onSubmit={handleCreateCredential} className="mt-4 space-y-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">Provider Type</label>
-                    <select
-                      value={selectedType}
-                      onChange={(e) => setSelectedType(e.target.value)}
-                      className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 font-medium"
-                    >
-                      {CREDENTIAL_PRESETS.map((p) => (
-                        <option key={p.type} value={p.type}>{p.name}</option>
-                      ))}
-                    </select>
-                  </div>
+              <form onSubmit={handleCreateCredential} className="mt-2 space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">Provider Type</label>
+                  <select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
+                    className="w-full rounded-xl bg-[#08090d] border border-border px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 font-medium"
+                  >
+                    {CREDENTIAL_PRESETS.map((p) => (
+                      <option key={p.type} value={p.type}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">Friendly Name</label>
-                    <input
-                      type="text"
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">Friendly Name</label>
+                  <Input
+                    type="text"
+                    required
+                    placeholder="e.g. Production OpenAI Key"
+                    value={credName}
+                    onChange={(e) => setCredName(e.target.value)}
+                    className="bg-[#08090d] border-border text-xs"
+                  />
+                </div>
+
+                {activePreset.fields.map((field) => (
+                  <div key={field.name}>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-medium text-slate-300 capitalize">{field.label}</label>
+                      {field.type === 'password' && (
+                        <button
+                          type="button"
+                          onClick={() => setShowSecret(!showSecret)}
+                          className="text-[10px] text-muted-foreground hover:text-slate-200 flex items-center gap-1 font-mono"
+                        >
+                          {showSecret ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                          {showSecret ? 'Hide' : 'Reveal'}
+                        </button>
+                      )}
+                    </div>
+                    <Input
+                      type={field.type === 'password' ? (showSecret ? 'text' : 'password') : 'text'}
                       required
-                      placeholder="e.g. Production OpenAI Key"
-                      value={credName}
-                      onChange={(e) => setCredName(e.target.value)}
-                      className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium"
+                      placeholder={field.placeholder}
+                      value={credData[field.name] || ''}
+                      onChange={(e) => setCredData({ ...credData, [field.name]: e.target.value })}
+                      className="bg-[#08090d] border-border text-xs font-mono"
                     />
                   </div>
+                ))}
 
-                  {activePreset.fields.map((field) => (
-                    <div key={field.name}>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-medium text-slate-300 capitalize">{field.label}</label>
-                        {field.type === 'password' && (
-                          <button
-                            type="button"
-                            onClick={() => setShowSecret(!showSecret)}
-                            className="text-[10px] text-slate-400 hover:text-slate-200 flex items-center gap-1 font-mono"
-                          >
-                            {showSecret ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-                            {showSecret ? 'Hide' : 'Reveal'}
-                          </button>
-                        )}
-                      </div>
-                      <input
-                        type={field.type === 'password' ? (showSecret ? 'text' : 'password') : 'text'}
-                        required
-                        placeholder={field.placeholder}
-                        value={credData[field.name] || ''}
-                        onChange={(e) => setCredData({ ...credData, [field.name]: e.target.value })}
-                        className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
-                      />
-                    </div>
-                  ))}
+                <DialogFooter className="mt-4 gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setIsModalOpen(false)}
+                    className="rounded-xl"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isSaving}
+                    className="rounded-xl font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 gap-1.5 shadow-lg shadow-emerald-950/50"
+                  >
+                    {isSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                    Save Credential
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </TabsContent>
 
-                  <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#1a1f2e]">
-                    <button
-                      type="button"
-                      onClick={() => setIsModalOpen(false)}
-                      className="rounded-xl px-4 py-2 text-xs font-semibold text-slate-400 hover:bg-[#1a1f2e] transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSaving}
-                      className="rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-2 text-xs transition-colors flex items-center gap-1.5 shadow-lg shadow-emerald-950/50"
-                    >
-                      {isSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                      Save Credential
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* SYSTEM & HEALTH TAB */}
-      {activeTab === 'system' && (
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-5 space-y-4 shadow-lg backdrop-blur-sm">
+        {/* SYSTEM & HEALTH TAB */}
+        <TabsContent value="system" className="mt-0 space-y-4">
+          <Card className="p-5 space-y-4">
             <h2 className="text-sm font-bold text-slate-200">FlowForge Engine Diagnostics</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3.5 rounded-xl bg-[#08090d] border border-[#1a1f2e]">
-                <span className="block text-[11px] text-slate-500 font-mono">Backend API Endpoint</span>
+              <div className="p-3.5 rounded-xl bg-[#08090d] border border-border">
+                <span className="block text-[11px] text-muted-foreground font-mono">Backend API Endpoint</span>
                 <span className="block text-xs font-mono font-semibold text-emerald-400 mt-1">
                   http://localhost:3001
                 </span>
-                <span className="inline-block mt-2 text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <Badge variant="default" className="mt-2 text-[10px] font-mono px-2 py-0">
                   ONLINE • Healthy (Port 3001)
-                </span>
+                </Badge>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#08090d] border border-[#1a1f2e]">
-                <span className="block text-[11px] text-slate-500 font-mono">Execution Engine Mode</span>
+              <div className="p-3.5 rounded-xl bg-[#08090d] border border-border">
+                <span className="block text-[11px] text-muted-foreground font-mono">Execution Engine Mode</span>
                 <span className="block text-xs font-semibold text-slate-200 mt-1">
                   In-Process Local Executor (BullMQ Ready)
                 </span>
-                <span className="inline-block mt-2 text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                <Badge variant="info" className="mt-2 text-[10px] font-mono px-2 py-0">
                   Zero Host Dependency Active
-                </span>
+                </Badge>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#08090d] border border-[#1a1f2e]">
-                <span className="block text-[11px] text-slate-500 font-mono">Persistence Store</span>
+              <div className="p-3.5 rounded-xl bg-[#08090d] border border-border">
+                <span className="block text-[11px] text-muted-foreground font-mono">Persistence Store</span>
                 <span className="block text-xs font-semibold text-slate-200 mt-1">
                   In-Memory Store (PostgreSQL / Drizzle Ready)
                 </span>
-                <span className="inline-block mt-2 text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                <Badge variant="warning" className="mt-2 text-[10px] font-mono px-2 py-0">
                   Seeded with Demo Workflows
-                </span>
+                </Badge>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#08090d] border border-[#1a1f2e]">
-                <span className="block text-[11px] text-slate-500 font-mono">Registered Node Types</span>
+              <div className="p-3.5 rounded-xl bg-[#08090d] border border-border">
+                <span className="block text-[11px] text-muted-foreground font-mono">Registered Node Types</span>
                 <span className="block text-xs font-semibold text-slate-200 mt-1">
                   93 Built-In Production Nodes
                 </span>
-                <span className="inline-block mt-2 text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <Badge variant="default" className="mt-2 text-[10px] font-mono px-2 py-0">
                   Triggers, Actions, Logic, Data, AI, Databases, Cloud
-                </span>
+                </Badge>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </Card>
+        </TabsContent>
 
-      {/* WORKSPACE TAB */}
-      {activeTab === 'workspace' && (
-        <div className="rounded-2xl border border-[#1a1f2e] bg-[#0e111a]/70 p-6 space-y-6 shadow-lg backdrop-blur-sm">
-          <div>
-            <h2 className="text-sm font-bold text-slate-200">Workspace Settings</h2>
-            <p className="text-xs text-slate-400">Manage workspace branding, slug, and members.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* WORKSPACE TAB */}
+        <TabsContent value="workspace" className="mt-0">
+          <Card className="p-6 space-y-6">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Workspace Name</label>
-              <input
-                type="text"
-                defaultValue="Production Cluster"
-                className="w-full rounded-xl bg-[#08090d] border border-[#1a1f2e] px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"
-              />
+              <h2 className="text-sm font-bold text-slate-200">Workspace Settings</h2>
+              <p className="text-xs text-muted-foreground">Manage workspace branding, slug, and members.</p>
             </div>
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Workspace Slug</label>
-              <input
-                type="text"
-                disabled
-                defaultValue="ws-production-cluster"
-                className="w-full rounded-xl bg-[#08090d]/60 border border-[#1a1f2e] px-3.5 py-2 text-xs text-slate-500 font-mono"
-              />
-            </div>
-          </div>
 
-          {/* Members list */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Workspace Members</h3>
-            <div className="rounded-xl border border-[#1a1f2e] bg-[#08090d]/60 divide-y divide-[#1a1f2e]">
-              <div className="flex items-center justify-between p-3.5">
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-xs font-bold text-emerald-400">
-                    A
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">Workspace Name</label>
+                <Input
+                  type="text"
+                  defaultValue="Production Cluster"
+                  className="bg-[#08090d] border-border text-xs"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">Workspace Slug</label>
+                <Input
+                  type="text"
+                  disabled
+                  defaultValue="ws-production-cluster"
+                  className="bg-[#08090d]/60 border-border text-xs text-muted-foreground font-mono"
+                />
+              </div>
+            </div>
+
+            {/* Members list */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Workspace Members</h3>
+              <div className="rounded-xl border border-border bg-[#08090d]/60 divide-y divide-border">
+                <div className="flex items-center justify-between p-3.5">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-xs font-bold text-emerald-400">
+                      A
+                    </div>
+                    <div>
+                      <span className="block text-xs font-semibold text-slate-200">admin@flowforge.local</span>
+                      <span className="block text-[10px] text-muted-foreground">FlowForge Administrator</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="block text-xs font-semibold text-slate-200">admin@flowforge.local</span>
-                    <span className="block text-[10px] text-slate-500">FlowForge Administrator</span>
-                  </div>
+                  <Badge variant="default" className="text-[10px] font-mono px-2.5 py-0">
+                    OWNER
+                  </Badge>
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  OWNER
-                </span>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

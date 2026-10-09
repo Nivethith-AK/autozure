@@ -59,6 +59,7 @@ import {
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
 import { NodeIcon } from '@/components/icons/NodeIcon';
+import { Badge } from '@/components/ui/badge';
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Play,
@@ -306,22 +307,22 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
 
             {/* Status Telemetry Badge */}
             {status === 'running' && (
-              <span className="flex items-center gap-1 text-[10px] text-blue-400 font-mono font-medium animate-pulse bg-blue-500/10 px-1.5 py-0.5 rounded-md border border-blue-500/20">
+              <Badge variant="info" className="gap-1 text-[10px] py-0 px-1.5 animate-pulse">
                 <Loader2 className="h-2.5 w-2.5 animate-spin" />
                 running
-              </span>
+              </Badge>
             )}
             {status === 'success' && (
-              <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-mono font-medium bg-emerald-500/10 px-1.5 py-0.5 rounded-md border border-emerald-500/20">
+              <Badge variant="default" className="gap-1 text-[10px] py-0 px-1.5">
                 <CheckCircle2 className="h-2.5 w-2.5" />
                 {nodeResult?.durationMs !== undefined ? `${nodeResult.durationMs}ms` : 'ok'}
-              </span>
+              </Badge>
             )}
             {status === 'failed' && (
-              <span className="flex items-center gap-1 text-[10px] text-rose-400 font-mono font-medium bg-rose-500/10 px-1.5 py-0.5 rounded-md border border-rose-500/20">
+              <Badge variant="destructive" className="gap-1 text-[10px] py-0 px-1.5">
                 <XCircle className="h-2.5 w-2.5" />
                 failed
-              </span>
+              </Badge>
             )}
           </div>
 
@@ -335,7 +336,11 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
       <div className="p-3 bg-[#080a12]/60 rounded-b-2xl text-[11px] space-y-1.5">
         <div className="flex items-center justify-between text-slate-400 font-mono text-[10px]">
           <span className="truncate text-slate-500">{nodeData.type}</span>
-          {isDisabled && <span className="text-amber-400 text-[9px] uppercase font-bold tracking-wider">DISABLED</span>}
+          {isDisabled && (
+            <Badge variant="warning" className="text-[9px] uppercase font-bold py-0 px-1.5">
+              DISABLED
+            </Badge>
+          )}
         </div>
 
         {paramSummary && (
