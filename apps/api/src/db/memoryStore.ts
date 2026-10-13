@@ -6,7 +6,7 @@ import {
   NodeExecutionResult,
   ExecutionLog,
   Credential,
-} from '@flowforge/types';
+} from '@autozure/types';
 import bcrypt from 'bcryptjs';
 
 export interface StoredUser extends User {
@@ -42,7 +42,7 @@ class MemoryStore {
     const passwordHash = bcrypt.hashSync('password123', 8);
     this.users.set(defaultUserId, {
       id: defaultUserId,
-      email: 'admin@flowforge.local',
+      email: 'admin@autozure.local',
       name: 'Admin User',
       passwordHash,
       createdAt: new Date(),
@@ -90,7 +90,7 @@ class MemoryStore {
               icon: 'Play',
               color: '#6366f1',
               parameters: {
-                data: JSON.stringify({ message: 'Hello from FlowForge!' }),
+                data: JSON.stringify({ message: 'Hello from AutoZure!' }),
               },
             },
           },

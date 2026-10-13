@@ -20,8 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@flowforge/types": ["../../packages/types/src/index.ts"],
-      "@flowforge/ui": ["../../packages/ui/src/index.ts"]
+      "@autozure/types": ["../../packages/types/src/index.ts"],
+      "@autozure/ui": ["../../packages/ui/src/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

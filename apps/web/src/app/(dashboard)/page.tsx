@@ -30,7 +30,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { workflowApi, executionApi } from '@/lib/api';
-import { Workflow, WorkflowGraph } from '@flowforge/types';
+import { Workflow, WorkflowGraph } from '@autozure/types';
 import { OpenAIIcon } from '@/components/icons/NodeIcon';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -269,7 +269,7 @@ const STARTER_TEMPLATES: StarterTemplate[] = [
               owner: 'my-org',
               repo: 'my-app',
               title: 'Incident: {{input.title}}',
-              body: 'Reported via FlowForge webhook:\n{{input.body}}',
+              body: 'Reported via AutoZure webhook:\n{{input.body}}',
             },
           },
         },
@@ -371,7 +371,7 @@ const STARTER_TEMPLATES: StarterTemplate[] = [
             type: 'connector.resend',
             label: 'Send Receipt via Resend',
             parameters: {
-              from: 'billing@flowforge.local',
+              from: 'billing@autozure.local',
               to: '{{input.customer_email}}',
               subject: 'Receipt for Order #{{input.id}}',
               html: '<p>Thank you for your payment!</p>',
@@ -558,7 +558,7 @@ export default function DashboardPage() {
     try {
       const newWf = await workflowApi.create({
         name: `Workflow ${workflows.length + 1}`,
-        description: 'Visual workflow pipeline created with FlowForge engine',
+        description: 'Visual workflow pipeline created with AutoZure engine',
         graph: {
           nodes: [
             {
@@ -703,7 +703,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black tracking-tight text-zinc-100">Automation Workflows</h1>
             <Badge variant="default" className="text-[10px] font-mono px-2.5 py-0.5">
-              FlowForge v1.0 • 93 Nodes
+              AutoZure v1.0 • 93 Nodes
             </Badge>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">

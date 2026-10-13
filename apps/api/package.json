@@ -1,11 +1,11 @@
 {
-  "name": "@flowforge/api",
+  "name": "@autozure/api",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js",
+    "start": "node -e \"const fs=require('fs');const p=fs.existsSync('./dist/apps/api/src/index.js')?'./dist/apps/api/src/index.js':'./dist/index.js';require(p);\"",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
@@ -13,7 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@flowforge/types": "workspace:*",
+    "@autozure/types": "workspace:*",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
     "cors": "^2.8.5",

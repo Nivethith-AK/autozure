@@ -37,8 +37,8 @@ export function Sidebar() {
     } catch {
       // Ignore
     } finally {
-      localStorage.removeItem('flowforge_token');
-      localStorage.removeItem('flowforge_refresh_token');
+      localStorage.removeItem('autozure_token');
+      localStorage.removeItem('autozure_refresh_token');
       window.location.href = '/login';
     }
   };
@@ -54,7 +54,7 @@ export function Sidebar() {
             </div>
             <div>
               <span className="text-sm font-extrabold tracking-tight text-zinc-100 group-hover:text-white transition-colors">
-                FlowForge
+                AutoZure
               </span>
               <span className="block text-[10px] text-zinc-400 font-mono">Self-Hosted Enterprise</span>
             </div>

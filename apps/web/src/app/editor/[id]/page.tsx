@@ -34,7 +34,7 @@ export default function WorkflowEditorPage() {
           const [newWf, nodeDefs] = await Promise.all([
             workflowApi.create({
               name: 'Untitled Pipeline',
-              description: 'Created with FlowForge visual engine',
+              description: 'Created with AutoZure visual engine',
               graph: {
                 nodes: [
                   {
@@ -86,7 +86,7 @@ export default function WorkflowEditorPage() {
       <div className="flex h-screen w-screen items-center justify-center bg-zinc-950 text-zinc-100">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-white" />
-          <p className="text-xs text-zinc-400 font-mono">Initializing FlowForge editor...</p>
+          <p className="text-xs text-zinc-400 font-mono">Initializing AutoZure editor...</p>
         </div>
       </div>
     );

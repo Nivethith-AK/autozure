@@ -27,7 +27,7 @@ export const twitterNode: NodeHandler = {
       name: 'text',
       label: 'Tweet Text',
       type: 'string',
-      placeholder: 'Hello world from FlowForge pipeline! #automation',
+      placeholder: 'Hello world from AutoZure pipeline! #automation',
       dependsOn: { name: 'operation', value: 'postTweet' },
     },
     {

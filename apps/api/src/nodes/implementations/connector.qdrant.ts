@@ -74,7 +74,7 @@ export const qdrantNode: NodeHandler = {
             {
               id: 1,
               score: 0.942,
-              payload: { documentId: 'doc_101', text: 'FlowForge visual automation engine documentation snippet' },
+              payload: { documentId: 'doc_101', text: 'AutoZure visual automation engine documentation snippet' },
             },
             {
               id: 2,

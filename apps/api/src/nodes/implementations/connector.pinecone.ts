@@ -55,7 +55,7 @@ export const pineconeNode: NodeHandler = {
         data: {
           simulated: true,
           matches: [
-            { id: 'doc-1', score: 0.94, metadata: { text: 'FlowForge multi-agent architecture' } },
+            { id: 'doc-1', score: 0.94, metadata: { text: 'AutoZure multi-agent architecture' } },
             { id: 'doc-2', score: 0.88, metadata: { text: 'Self-hosted vector pipeline' } },
           ],
         },

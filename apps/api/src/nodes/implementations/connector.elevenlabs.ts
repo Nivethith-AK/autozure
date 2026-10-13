@@ -25,7 +25,7 @@ export const elevenlabsNode: NodeHandler = {
       label: 'Text to Speak',
       type: 'string',
       required: true,
-      placeholder: 'Welcome to FlowForge automation platform.',
+      placeholder: 'Welcome to AutoZure automation platform.',
     },
     {
       name: 'modelId',

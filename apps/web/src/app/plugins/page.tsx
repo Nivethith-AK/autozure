@@ -52,7 +52,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { workflowApi } from '@/lib/api';
-import { NodeDefinitionMeta } from '@flowforge/types';
+import { NodeDefinitionMeta } from '@autozure/types';
 import { NodeIcon } from '@/components/icons/NodeIcon';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -413,7 +413,7 @@ export default function PluginsPage() {
           <DialogHeader>
             <DialogTitle className="text-sm font-bold text-zinc-100">Install Custom Connector</DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Register custom npm packages, OpenAPI specs, or third-party FlowForge connector bundles.
+              Register custom npm packages, OpenAPI specs, or third-party AutoZure connector bundles.
             </DialogDescription>
           </DialogHeader>
 
@@ -425,7 +425,7 @@ export default function PluginsPage() {
               <Input
                 type="text"
                 required
-                placeholder="e.g. @flowforge/plugin-salesforce or user/custom-nodes"
+                placeholder="e.g. @autozure/plugin-salesforce or user/custom-nodes"
                 value={customPackageName}
                 onChange={(e) => setCustomPackageName(e.target.value)}
                 className="font-mono text-xs bg-zinc-900 border-zinc-800 text-zinc-100"

@@ -46,7 +46,7 @@ export const redditNode: NodeHandler = {
     try {
       if (operation === 'getSubreddit') {
         const res = await axios.get(`https://www.reddit.com/r/${subreddit}/hot.json?limit=${limit}`, {
-          headers: { 'User-Agent': 'FlowForge/1.0' },
+          headers: { 'User-Agent': 'AutoZure/1.0' },
           timeout: 15000,
         });
 

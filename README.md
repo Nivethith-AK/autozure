@@ -1,7 +1,7 @@
-# FlowForge — Self-Hosted Visual Workflow Automation Platform
+# AutoZure — Self-Hosted Visual Workflow Automation Platform
 
 > **Automate anything. Deploy everywhere.**  
-> FlowForge is a modern, self-hosted visual workflow automation platform engineered for reliability, modularity, and distributed scale.
+> AutoZure is a modern, self-hosted visual workflow automation platform engineered for reliability, modularity, and distributed scale.
 
 ---
 
@@ -9,7 +9,7 @@
 
 ```
                       ┌─────────────────────────────────────────┐
-                      │          FlowForge Frontend             │
+                      │          AutoZure Frontend             │
                       │         (Next.js 14 + React Flow)       │
                       │               Port 3000                 │
                       └────────────────────┬────────────────────┘
@@ -17,7 +17,7 @@
                                     REST API / JWT
                                            │
                       ┌────────────────────▼────────────────────┐
-                      │          FlowForge Backend              │
+                      │          AutoZure Backend              │
                       │         (Node.js + Express API)         │
                       │               Port 3001                 │
                       └────────┬──────────────────────┬─────────┘
@@ -42,7 +42,7 @@
 
 ## Built-In Node Registry
 
-FlowForge ships with 14 production-grade nodes out of the box:
+AutoZure ships with 14 production-grade nodes out of the box:
 
 | Category | Node | Description |
 | :--- | :--- | :--- |
@@ -65,12 +65,12 @@ FlowForge ships with 14 production-grade nodes out of the box:
 
 ## Quickstart with Docker Compose
 
-The fastest way to spin up the entire FlowForge stack (PostgreSQL, Redis, API, and Next.js Web):
+The fastest way to spin up the entire AutoZure stack (PostgreSQL, Redis, API, and Next.js Web):
 
 ```bash
 # 1. Clone the repository
-git clone <repo-url> flowforge
-cd flowforge
+git clone <repo-url> autozure
+cd autozure
 
 # 2. Copy the environment variables
 cp .env.example .env
@@ -134,11 +134,11 @@ This will run Turborepo dev tasks in parallel:
 
 ## Running Automated Tests
 
-FlowForge includes unit and integration tests covering graph validation, cycle detection, cryptographic encryption, and node execution:
+AutoZure includes unit and integration tests covering graph validation, cycle detection, cryptographic encryption, and node execution:
 
 ```bash
 # Run API test suite
-pnpm --filter=@flowforge/api test
+pnpm --filter=@autozure/api test
 ```
 
 ---

@@ -1,4 +1,4 @@
-import { WorkflowGraph, WorkflowNode, WorkflowEdge } from '@flowforge/types';
+import { WorkflowGraph, WorkflowNode, WorkflowEdge } from '@autozure/types';
 
 export class GraphError extends Error {
   constructor(message: string) {

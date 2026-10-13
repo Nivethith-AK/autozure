@@ -61,7 +61,7 @@ export function Header() {
                 A
               </div>
               <div className="text-left hidden sm:block">
-                <span className="block text-xs font-semibold text-zinc-200">admin@flowforge.local</span>
+                <span className="block text-xs font-semibold text-zinc-200">admin@autozure.local</span>
                 <span className="block text-[10px] text-zinc-400 font-mono">Production Cluster</span>
               </div>
             </button>
@@ -70,7 +70,7 @@ export function Header() {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-xs font-bold leading-none text-white">Administrator</p>
-                <p className="text-[11px] leading-none text-zinc-400 font-mono">admin@flowforge.local</p>
+                <p className="text-[11px] leading-none text-zinc-400 font-mono">admin@autozure.local</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -89,8 +89,8 @@ export function Header() {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                localStorage.removeItem('flowforge_token');
-                localStorage.removeItem('flowforge_refresh_token');
+                localStorage.removeItem('autozure_token');
+                localStorage.removeItem('autozure_refresh_token');
                 window.location.href = '/login';
               }}
               className="text-zinc-300 hover:text-white focus:text-white flex items-center gap-2 cursor-pointer"

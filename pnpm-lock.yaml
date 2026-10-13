@@ -23,7 +23,7 @@ importers:
       '@anthropic-ai/sdk':
         specifier: ^0.26.0
         version: 0.26.1
-      '@flowforge/types':
+      '@autozure/types':
         specifier: workspace:*
         version: link:../../packages/types
       '@google/generative-ai':
@@ -144,10 +144,10 @@ importers:
 
   apps/web:
     dependencies:
-      '@flowforge/types':
+      '@autozure/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@flowforge/ui':
+      '@autozure/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@radix-ui/react-dialog':
@@ -235,7 +235,7 @@ importers:
 
   packages/node-sdk:
     dependencies:
-      '@flowforge/types':
+      '@autozure/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:

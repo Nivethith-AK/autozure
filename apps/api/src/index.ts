@@ -34,7 +34,7 @@ async function main() {
 
     // Start HTTP server
     const server = app.listen(PORT, () => {
-      logger.info(`🔥 FlowForge API running on http://localhost:${PORT}`);
+      logger.info(`🔥 AutoZure API running on http://localhost:${PORT}`);
       logger.info(`   Environment: ${process.env.NODE_ENV || 'development'}`);
     });
 

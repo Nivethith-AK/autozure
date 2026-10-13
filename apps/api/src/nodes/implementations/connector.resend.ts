@@ -18,7 +18,7 @@ export const resendNode: NodeHandler = {
       type: 'string',
       required: true,
       placeholder: 'onboarding@resend.dev',
-      default: 'FlowForge Alerts <notifications@resend.dev>',
+      default: 'AutoZure Alerts <notifications@resend.dev>',
     },
     {
       name: 'to',

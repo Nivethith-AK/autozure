@@ -21,8 +21,8 @@ export default function RegisterPage() {
 
     try {
       const res = await authApi.register({ name, email, password });
-      localStorage.setItem('flowforge_token', res.tokens.accessToken);
-      localStorage.setItem('flowforge_refresh_token', res.tokens.refreshToken);
+      localStorage.setItem('autozure_token', res.tokens.accessToken);
+      localStorage.setItem('autozure_refresh_token', res.tokens.refreshToken);
       router.push('/');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -39,7 +39,7 @@ export default function RegisterPage() {
             <Layers className="h-5 w-5" />
           </div>
           <h1 className="text-base font-bold tracking-tight text-white">Create an Account</h1>
-          <p className="mt-1 text-xs text-zinc-400">Get started with self-hosted FlowForge</p>
+          <p className="mt-1 text-xs text-zinc-400">Get started with self-hosted AutoZure</p>
         </div>
 
         {error && (

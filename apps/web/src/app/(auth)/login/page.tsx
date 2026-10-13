@@ -20,8 +20,8 @@ export default function LoginPage() {
 
     try {
       const res = await authApi.login({ email, password });
-      localStorage.setItem('flowforge_token', res.tokens.accessToken);
-      localStorage.setItem('flowforge_refresh_token', res.tokens.refreshToken);
+      localStorage.setItem('autozure_token', res.tokens.accessToken);
+      localStorage.setItem('autozure_refresh_token', res.tokens.refreshToken);
       router.push('/');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid email or password');
@@ -37,7 +37,7 @@ export default function LoginPage() {
           <div className="h-10 w-10 rounded-xl bg-white border border-white flex items-center justify-center text-zinc-950 mb-3 shadow-sm">
             <Layers className="h-5 w-5" />
           </div>
-          <h1 className="text-base font-bold tracking-tight text-white">Welcome to FlowForge</h1>
+          <h1 className="text-base font-bold tracking-tight text-white">Welcome to AutoZure</h1>
           <p className="mt-1 text-xs text-zinc-400">Sign in to your automation workspace</p>
         </div>
 

@@ -21,7 +21,7 @@ describe('Credential Encryption Utility', () => {
   it('should encrypt and decrypt complex JSON objects', () => {
     const payload = JSON.stringify({
       apiKey: 'sk-proj-xyz987',
-      organization: 'org-flowforge-dev',
+      organization: 'org-autozure-dev',
       rateLimit: 500,
     });
 

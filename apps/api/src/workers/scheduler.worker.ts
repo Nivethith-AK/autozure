@@ -5,7 +5,7 @@ import { db } from '../db';
 import { executions, workflowTriggers, workflows } from '../db/schema';
 import { eq, and } from 'drizzle-orm';
 import { executionQueue } from './queue';
-import { WorkflowGraph } from '@flowforge/types';
+import { WorkflowGraph } from '@autozure/types';
 
 export interface SchedulerJobData {
   workflowId: string;

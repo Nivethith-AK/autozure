@@ -28,7 +28,7 @@ export const s3Node: NodeHandler = {
       label: 'Bucket Name',
       type: 'string',
       required: true,
-      placeholder: 'my-flowforge-bucket',
+      placeholder: 'my-autozure-bucket',
     },
     {
       name: 'key',

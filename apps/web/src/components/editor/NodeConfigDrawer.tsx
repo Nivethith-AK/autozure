@@ -20,7 +20,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
-import { ParameterDefinition } from '@flowforge/types';
+import { ParameterDefinition } from '@autozure/types';
 import { NodeIcon } from '@/components/icons/NodeIcon';
 import Link from 'next/link';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';

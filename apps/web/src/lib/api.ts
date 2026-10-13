@@ -10,7 +10,7 @@ import {
   NodeDefinitionMeta,
   Credential,
   WorkflowTrigger,
-} from '@flowforge/types';
+} from '@autozure/types';
 
 const isBrowser = typeof window !== 'undefined';
 const API_BASE_URL = isBrowser
@@ -27,23 +27,23 @@ export const apiClient = axios.create({
 // Request interceptor: attach token & workspaceId
 apiClient.interceptors.request.use(async (config) => {
   if (typeof window !== 'undefined') {
-    let token = localStorage.getItem('flowforge_token');
-    let currentWorkspaceId = localStorage.getItem('flowforge_workspace_id');
+    let token = localStorage.getItem('autozure_token');
+    let currentWorkspaceId = localStorage.getItem('autozure_workspace_id');
 
     if (!currentWorkspaceId) {
       currentWorkspaceId = 'ws-default-001';
-      localStorage.setItem('flowforge_workspace_id', 'ws-default-001');
+      localStorage.setItem('autozure_workspace_id', 'ws-default-001');
     }
 
     if (!token && !config.url?.includes('/auth/')) {
       try {
         const authRes = await axios.post(`${API_BASE_URL}/auth/login`, {
-          email: 'admin@flowforge.local',
+          email: 'admin@autozure.local',
           password: 'password123',
         });
         token = authRes.data.tokens.accessToken;
-        localStorage.setItem('flowforge_token', token as string);
-        localStorage.setItem('flowforge_refresh_token', authRes.data.tokens.refreshToken);
+        localStorage.setItem('autozure_token', token as string);
+        localStorage.setItem('autozure_refresh_token', authRes.data.tokens.refreshToken);
       } catch {}
     }
 
@@ -62,18 +62,18 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config as any;
     if (error.response?.status === 401 && !originalRequest._retry && typeof window !== 'undefined') {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('flowforge_refresh_token');
+      const refreshToken = localStorage.getItem('autozure_refresh_token');
       if (refreshToken) {
         try {
           const res = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
           const newTokens = res.data.tokens;
-          localStorage.setItem('flowforge_token', newTokens.accessToken);
-          localStorage.setItem('flowforge_refresh_token', newTokens.refreshToken);
+          localStorage.setItem('autozure_token', newTokens.accessToken);
+          localStorage.setItem('autozure_refresh_token', newTokens.refreshToken);
           originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
           return apiClient(originalRequest);
         } catch {
-          localStorage.removeItem('flowforge_token');
-          localStorage.removeItem('flowforge_refresh_token');
+          localStorage.removeItem('autozure_token');
+          localStorage.removeItem('autozure_refresh_token');
           window.location.href = '/login';
         }
       }
@@ -90,7 +90,7 @@ export const authApi = {
     apiClient.post<AuthResponse>('/auth/login', data).then((r) => r.data),
   me: () => apiClient.get<User>('/auth/me').then((r) => r.data),
   logout: () => {
-    const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('flowforge_refresh_token') : null;
+    const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('autozure_refresh_token') : null;
     return apiClient.post('/auth/logout', { refreshToken }).then((r) => r.data);
   },
 };

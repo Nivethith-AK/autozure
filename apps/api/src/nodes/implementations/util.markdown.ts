@@ -25,7 +25,7 @@ export const markdownNode: NodeHandler = {
       name: 'markdown',
       label: 'Markdown Text',
       type: 'code',
-      placeholder: '# Title\n**bold text** and [link](https://flowforge.local)',
+      placeholder: '# Title\n**bold text** and [link](https://autozure.local)',
       required: true,
     },
   ],

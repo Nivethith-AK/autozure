@@ -7,7 +7,7 @@ import {
   NodeDefinitionMeta,
   Execution,
   ExecutionLog,
-} from '@flowforge/types';
+} from '@autozure/types';
 import { applyNodeChanges, applyEdgeChanges, NodeChange, EdgeChange, Connection, addEdge } from '@xyflow/react';
 
 interface WorkflowState {

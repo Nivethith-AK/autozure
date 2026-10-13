@@ -49,7 +49,7 @@ export const githubNode: NodeHandler = {
       name: 'body',
       label: 'Issue / Comment Body',
       type: 'string',
-      placeholder: 'Automated report from FlowForge:\n\n{{input.details}}',
+      placeholder: 'Automated report from AutoZure:\n\n{{input.details}}',
     },
     {
       name: 'issueNumber',
@@ -74,7 +74,7 @@ export const githubNode: NodeHandler = {
     const token = ctx.credentials['githubToken'] || process.env.GITHUB_TOKEN;
     const headers: Record<string, string> = {
       Accept: 'application/vnd.github.v3+json',
-      'User-Agent': 'FlowForge-Workflow-Engine',
+      'User-Agent': 'AutoZure-Workflow-Engine',
     };
     if (token) headers.Authorization = `Bearer ${token}`;
 

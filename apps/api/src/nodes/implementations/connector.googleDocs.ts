@@ -41,7 +41,7 @@ export const googleDocsNode: NodeHandler = {
       name: 'text',
       label: 'Text Content',
       type: 'string',
-      placeholder: 'This report was generated automatically by FlowForge...',
+      placeholder: 'This report was generated automatically by AutoZure...',
       dependsOn: { name: 'operation', value: 'appendText' },
     },
   ],

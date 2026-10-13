@@ -4,7 +4,7 @@ import { workflowTriggers, workflows, executions } from '../../db/schema';
 import { workspaceService } from '../workspaces/workspace.service';
 import { NotFoundError } from '../../middleware/error.middleware';
 import { schedulerQueue, executionQueue } from '../../workers/queue';
-import { WorkflowGraph } from '@flowforge/types';
+import { WorkflowGraph } from '@autozure/types';
 import crypto from 'crypto';
 
 export class TriggerService {

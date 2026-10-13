@@ -64,7 +64,7 @@ export const gitlabNode: NodeHandler = {
     if (operation === 'create_issue') {
       const res = await axios.post(
         `${baseUrl}/api/v4/projects/${projectId}/issues`,
-        { title: title || 'New Issue from FlowForge' },
+        { title: title || 'New Issue from AutoZure' },
         { headers, timeout: 15000, signal: ctx.signal }
       );
       return { success: true, data: { issueId: res.data.id, webUrl: res.data.web_url } };

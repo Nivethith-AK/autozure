@@ -57,7 +57,7 @@ app.use(rateLimit({
 
 // Health check (no auth required)
 app.get('/health', (_, res) => {
-  res.json({ status: 'ok', service: 'flowforge-api', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', service: 'autozure-api', timestamp: new Date().toISOString() });
 });
 
 // Webhook routes (special auth — signed secret, not JWT)

@@ -1,4 +1,4 @@
-import { NodeDefinitionMeta } from '@flowforge/types';
+import { NodeDefinitionMeta } from '@autozure/types';
 
 export interface NodeLogger {
   info(message: string, metadata?: Record<string, unknown>): void | Promise<void>;

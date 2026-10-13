@@ -6,7 +6,7 @@ import { workspaceService } from '../workspaces/workspace.service';
 import { NotFoundError, ForbiddenError, ValidationError } from '../../middleware/error.middleware';
 import { validateGraph } from '../../engine/graph';
 import { nodeRegistry } from '../../nodes/registry';
-import { WorkflowGraph } from '@flowforge/types';
+import { WorkflowGraph } from '@autozure/types';
 
 export class WorkflowService {
   async create(userId: string, workspaceId: string, data: {

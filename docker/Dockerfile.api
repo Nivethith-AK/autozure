@@ -5,8 +5,8 @@ RUN npm install -g pnpm turbo
 FROM base AS builder
 COPY . .
 RUN pnpm install --frozen-lockfile=false
-RUN pnpm --filter=@flowforge/types build
-RUN pnpm --filter=@flowforge/api build
+RUN pnpm --filter=@autozure/types build
+RUN pnpm --filter=@autozure/api build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
@@ -15,6 +15,7 @@ RUN npm install -g pnpm
 
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/pnpm-workspace.yaml ./
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/apps/api ./apps/api
 

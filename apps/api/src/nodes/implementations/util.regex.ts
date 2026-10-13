@@ -42,7 +42,7 @@ export const regexNode: NodeHandler = {
       label: 'Input Text',
       type: 'string',
       required: true,
-      placeholder: '{{input.body}} or contact support@flowforge.local',
+      placeholder: '{{input.body}} or contact support@autozure.local',
     },
     {
       name: 'replacement',

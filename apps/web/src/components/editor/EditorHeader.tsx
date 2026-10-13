@@ -125,7 +125,7 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
         id: `log-${Date.now()}`,
         executionId: '',
         level: 'info',
-        message: '⚡ Dispatching workflow execution to FlowForge engine...',
+        message: '⚡ Dispatching workflow execution to AutoZure engine...',
         timestamp: new Date(),
       });
 

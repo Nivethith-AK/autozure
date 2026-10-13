@@ -57,7 +57,7 @@ export const trelloNode: NodeHandler = {
       name: 'comment',
       label: 'Comment Text',
       type: 'string',
-      placeholder: 'Automated status update from FlowForge',
+      placeholder: 'Automated status update from AutoZure',
       dependsOn: { name: 'operation', value: 'addComment' },
     },
   ],

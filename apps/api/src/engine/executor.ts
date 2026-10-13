@@ -1,4 +1,4 @@
-import { WorkflowGraph, Execution, NodeExecutionResult, ExecutionLog } from '@flowforge/types';
+import { WorkflowGraph, Execution, NodeExecutionResult, ExecutionLog } from '@autozure/types';
 import { topologicalSort, getPredecessors } from './graph';
 import { nodeRegistry } from '../nodes/registry';
 import { ExecutionContext } from '../nodes/types';

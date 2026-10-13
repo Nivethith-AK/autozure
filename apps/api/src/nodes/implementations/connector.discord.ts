@@ -29,7 +29,7 @@ export const discordNode: NodeHandler = {
       name: 'username',
       label: 'Bot Display Name (Optional)',
       type: 'string',
-      default: 'FlowForge Bot',
+      default: 'AutoZure Bot',
     },
     {
       name: 'embedTitle',
@@ -67,7 +67,7 @@ export const discordNode: NodeHandler = {
     if (!targetUrl) return { success: false, error: 'Discord Webhook URL is required' };
 
     const payload: Record<string, unknown> = {
-      username: username || 'FlowForge Bot',
+      username: username || 'AutoZure Bot',
     };
 
     if (content) payload.content = interpolate(content as string);
@@ -82,7 +82,7 @@ export const discordNode: NodeHandler = {
           description: interpolate(embedDescription as string || ''),
           color: decimalColor,
           timestamp: new Date().toISOString(),
-          footer: { text: 'FlowForge Automation Engine' },
+          footer: { text: 'AutoZure Automation Engine' },
         },
       ];
     }

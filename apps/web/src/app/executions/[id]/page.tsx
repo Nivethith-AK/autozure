@@ -24,7 +24,7 @@ import {
   Info,
 } from 'lucide-react';
 import { executionApi, workflowApi } from '@/lib/api';
-import { Execution, NodeExecutionResult, ExecutionLog, Workflow } from '@flowforge/types';
+import { Execution, NodeExecutionResult, ExecutionLog, Workflow } from '@autozure/types';
 
 export default function ExecutionDetailPage() {
   const params = useParams();

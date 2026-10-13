@@ -48,7 +48,7 @@ import {
   Terminal,
 } from 'lucide-react';
 import { credentialApi } from '@/lib/api';
-import { Credential } from '@flowforge/types';
+import { Credential } from '@autozure/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -674,7 +674,7 @@ function SettingsContent() {
         {/* SYSTEM & HEALTH TAB */}
         <TabsContent value="system" className="mt-0 space-y-4">
           <Card className="p-5 space-y-4 bg-zinc-950/80 border-zinc-800">
-            <h2 className="text-sm font-bold text-zinc-100">FlowForge Engine Diagnostics</h2>
+            <h2 className="text-sm font-bold text-zinc-100">AutoZure Engine Diagnostics</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800">
                 <span className="block text-[11px] text-muted-foreground font-mono">Backend API Endpoint</span>
@@ -757,8 +757,8 @@ function SettingsContent() {
                       A
                     </div>
                     <div>
-                      <span className="block text-xs font-semibold text-zinc-200">admin@flowforge.local</span>
-                      <span className="block text-[10px] text-muted-foreground">FlowForge Administrator</span>
+                      <span className="block text-xs font-semibold text-zinc-200">admin@autozure.local</span>
+                      <span className="block text-[10px] text-muted-foreground">AutoZure Administrator</span>
                     </div>
                   </div>
                   <Badge variant="default" className="text-[10px] font-mono px-2.5 py-0 bg-white text-zinc-950 font-bold border-white">

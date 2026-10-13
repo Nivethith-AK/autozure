@@ -78,7 +78,7 @@ export const pagerdutyNode: NodeHandler = {
         payload: {
           summary,
           severity,
-          source: 'FlowForge Engine',
+          source: 'AutoZure Engine',
           timestamp: new Date().toISOString(),
         },
       });

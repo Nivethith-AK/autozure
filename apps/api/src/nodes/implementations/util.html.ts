@@ -52,7 +52,7 @@ export const htmlNode: NodeHandler = {
     if (source === 'url' && url) {
       await ctx.logger.info(`HTML Scraper: fetching live URL ${url}`);
       try {
-        const res = await axios.get(String(url), { timeout: 15000, headers: { 'User-Agent': 'FlowForgeBot/1.0' } });
+        const res = await axios.get(String(url), { timeout: 15000, headers: { 'User-Agent': 'AutoZureBot/1.0' } });
         rawHtml = typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
       } catch (err: any) {
         return { success: false, error: `Failed to fetch URL: ${err.message}` };

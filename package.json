@@ -1,5 +1,5 @@
 {
-  "name": "flowforge",
+  "name": "autozure",
   "version": "1.0.0",
   "private": true,
   "workspaces": [
@@ -11,8 +11,8 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "db:migrate": "turbo run db:migrate --filter=@flowforge/api",
-    "db:generate": "turbo run db:generate --filter=@flowforge/api"
+    "db:migrate": "turbo run db:migrate --filter=@autozure/api",
+    "db:generate": "turbo run db:generate --filter=@autozure/api"
   },
   "devDependencies": {
     "turbo": "^2.0.0",

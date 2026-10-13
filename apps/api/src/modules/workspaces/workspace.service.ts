@@ -131,7 +131,7 @@ export class WorkspaceService {
         .filter(m => m.workspaceId === workspaceId)
         .map(m => ({
           ...m,
-          user: memoryStore.users.get(m.userId) || { id: m.userId, email: 'admin@flowforge.local', name: 'Admin' },
+          user: memoryStore.users.get(m.userId) || { id: m.userId, email: 'admin@autozure.local', name: 'Admin' },
         }));
     }
 

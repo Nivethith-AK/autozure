@@ -19,7 +19,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { executionApi, workflowApi } from '@/lib/api';
-import { Execution, Workflow } from '@flowforge/types';
+import { Execution, Workflow } from '@autozure/types';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function ExecutionsPage() {

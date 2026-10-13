@@ -16,7 +16,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "@flowforge/types": ["../../packages/types/src/index.ts"]
+      "@autozure/types": ["../../packages/types/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

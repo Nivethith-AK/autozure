@@ -5,7 +5,7 @@ import { logger } from '../lib/logger';
 import { db } from '../db';
 import { executions } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { WorkflowGraph } from '@flowforge/types';
+import { WorkflowGraph } from '@autozure/types';
 
 export interface ExecutionJobData {
   executionId: string;

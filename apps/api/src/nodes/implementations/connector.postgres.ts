@@ -15,7 +15,7 @@ export const postgresNode: NodeHandler = {
       name: 'connectionString',
       label: 'PostgreSQL Connection URL',
       type: 'string',
-      placeholder: 'postgresql://postgres:password@localhost:5432/flowforge',
+      placeholder: 'postgresql://postgres:password@localhost:5432/autozure',
       description: 'Leave empty to use default local DB',
     },
     {

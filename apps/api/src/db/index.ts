@@ -2,7 +2,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from './schema';
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://flowforge:flowforge_secret@localhost:5432/flowforge';
+const connectionString = process.env.DATABASE_URL || 'postgresql://autozure:autozure_secret@localhost:5432/autozure';
 
 const pool = new Pool({
   connectionString,

@@ -49,7 +49,7 @@ function CanvasInner() {
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
-      const nodeType = event.dataTransfer.getData('application/flowforge-nodetype');
+      const nodeType = event.dataTransfer.getData('application/autozure-nodetype');
       if (!nodeType) return;
 
       let position = { x: 250, y: 200 };

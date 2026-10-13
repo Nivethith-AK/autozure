@@ -53,7 +53,7 @@ import {
   Key,
 } from 'lucide-react';
 import { useWorkflowStore } from '@/store/workflowStore';
-import { NodeDefinitionMeta } from '@flowforge/types';
+import { NodeDefinitionMeta } from '@autozure/types';
 import { NodeIcon } from '@/components/icons/NodeIcon';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -216,7 +216,7 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
                   key={node.type}
                   draggable
                   onDragStart={(e) => {
-                    e.dataTransfer.setData('application/flowforge-nodetype', node.type);
+                    e.dataTransfer.setData('application/autozure-nodetype', node.type);
                     e.dataTransfer.effectAllowed = 'move';
                   }}
                   onClick={() => handleAddNode(node.type)}

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { topologicalSort, validateGraph, getPredecessors, GraphError } from './graph';
-import { WorkflowGraph } from '@flowforge/types';
+import { WorkflowGraph } from '@autozure/types';
 
 describe('Workflow Graph Engine', () => {
   it('should successfully sort a linear DAG', () => {

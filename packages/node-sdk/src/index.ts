@@ -3,7 +3,7 @@ import {
   ParameterDefinition,
   PortDefinition,
   NodeDefinitionMeta,
-} from '@flowforge/types';
+} from '@autozure/types';
 
 export interface NodeLogger {
   info(message: string, metadata?: Record<string, unknown>): void | Promise<void>;
@@ -34,10 +34,10 @@ export interface NodeDefinition extends NodeDefinitionMeta {
 }
 
 /**
- * Define a FlowForge node with strict type checking.
+ * Define a AutoZure node with strict type checking.
  */
 export function defineNode(definition: NodeDefinition): NodeDefinition {
   return definition;
 }
 
-export * from '@flowforge/types';
+export * from '@autozure/types';

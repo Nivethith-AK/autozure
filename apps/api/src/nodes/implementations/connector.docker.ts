@@ -29,7 +29,7 @@ export const dockerNode: NodeHandler = {
       name: 'containerId',
       label: 'Container ID or Name',
       type: 'string',
-      placeholder: 'flowforge_redis_1',
+      placeholder: 'autozure_redis_1',
       dependsOn: { name: 'operation', value: 'inspectContainer' },
     },
   ],
@@ -50,14 +50,14 @@ export const dockerNode: NodeHandler = {
           containers: [
             {
               Id: '8f7a6b5c4d3e',
-              Names: ['/flowforge_api'],
+              Names: ['/autozure_api'],
               Image: 'node:20-alpine',
               State: 'running',
               Status: 'Up 4 hours',
             },
             {
               Id: '1a2b3c4d5e6f',
-              Names: ['/flowforge_redis'],
+              Names: ['/autozure_redis'],
               Image: 'redis:7-alpine',
               State: 'running',
               Status: 'Up 4 hours',
