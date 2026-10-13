@@ -44,7 +44,9 @@ interface WorkflowState {
   addNode: (nodeType: string, position: { x: number; y: number }) => void;
   selectNode: (nodeId: string | null) => void;
   updateNodeParameters: (nodeId: string, parameters: Record<string, unknown>) => void;
+  updateNodeData: (nodeId: string, data: Partial<any>) => void;
   updateNodeLabel: (nodeId: string, label: string) => void;
+  toggleNodeDisabled: (nodeId: string) => void;
   deleteNode: (nodeId: string) => void;
 
   setNodeDefinitions: (defs: NodeDefinitionMeta[]) => void;
@@ -109,7 +111,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
         {
           ...connection,
           animated: true,
-          style: { stroke: '#10b981', strokeWidth: 2 },
+          style: { stroke: '#d4d4d8', strokeWidth: 2 },
         },
         get().edges
       ),
@@ -189,6 +191,28 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     });
   },
 
+  updateNodeData: (nodeId, data) => {
+    const nodes = get().nodes.map((node) => {
+      if (node.id === nodeId) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            ...data,
+          },
+        };
+      }
+      return node;
+    });
+
+    const updatedSelected = nodes.find((n) => n.id === nodeId);
+    set({
+      nodes,
+      selectedNode: updatedSelected as unknown as WorkflowNode,
+      isDirty: true,
+    });
+  },
+
   updateNodeLabel: (nodeId, label) => {
     const nodes = get().nodes.map((node) => {
       if (node.id === nodeId) {
@@ -199,7 +223,33 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       }
       return node;
     });
-    set({ nodes, isDirty: true });
+    const updatedSelected = nodes.find((n) => n.id === nodeId);
+    set({
+      nodes,
+      selectedNode: updatedSelected as unknown as WorkflowNode,
+      isDirty: true,
+    });
+  },
+
+  toggleNodeDisabled: (nodeId) => {
+    const nodes = get().nodes.map((node) => {
+      if (node.id === nodeId) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            disabled: !node.data.disabled,
+          },
+        };
+      }
+      return node;
+    });
+    const updatedSelected = nodes.find((n) => n.id === nodeId);
+    set({
+      nodes,
+      selectedNode: updatedSelected as unknown as WorkflowNode,
+      isDirty: true,
+    });
   },
 
   deleteNode: (nodeId) => {

@@ -149,38 +149,38 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
   if (!isOpen) return null;
 
   return (
-    <aside className="fixed left-0 top-14 bottom-0 z-30 w-84 sm:w-96 border-r border-border bg-[#0a0c14]/95 backdrop-blur-2xl flex flex-col shadow-2xl transition-all select-none">
+    <aside className="fixed left-0 top-14 bottom-0 z-30 w-84 sm:w-96 border-r border-zinc-800 bg-zinc-950/98 backdrop-blur-2xl flex flex-col shadow-2xl transition-all select-none">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border bg-[#0f121d]/70">
+      <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-950">
         <div>
-          <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-            <span>Integration Registry</span>
+          <h2 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+            <span>Node Library</span>
             <Badge variant="default" className="text-[10px] font-mono px-2 py-0">
-              {nodeDefinitions.length} nodes
+              {nodeDefinitions.length}
             </Badge>
           </h2>
-          <p className="text-[11px] text-muted-foreground mt-0.5">Triggers, AI models, connectors & logic actions</p>
+          <p className="text-[11px] text-zinc-400 mt-0.5">Drag onto canvas or click to insert</p>
         </div>
         <Button
           variant="ghost"
           size="icon-sm"
           onClick={onClose}
-          className="text-slate-400 hover:text-white rounded-lg"
+          className="text-zinc-400 hover:text-white rounded-lg"
         >
           <X className="h-4 w-4" />
         </Button>
       </div>
 
       {/* Search Input */}
-      <div className="p-3 border-b border-border bg-[#080a11]">
+      <div className="p-3 border-b border-zinc-800 bg-zinc-950">
         <div className="relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500 pointer-events-none" />
           <Input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search triggers, AI, databases, commerce..."
-            className="pl-9 h-9 bg-card border-border text-xs rounded-xl"
+            placeholder="Search 93 connectors & actions..."
+            className="pl-9 h-9 bg-zinc-900 border-zinc-800 text-xs rounded-xl text-zinc-100 placeholder:text-zinc-500"
           />
         </div>
 
@@ -192,8 +192,8 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
               onClick={() => setSelectedCategory(cat)}
               className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold capitalize whitespace-nowrap transition-all ${
                 selectedCategory === cat
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-sm'
-                  : 'bg-card text-muted-foreground hover:text-slate-200 border border-border'
+                  ? 'bg-white text-zinc-950 shadow-sm'
+                  : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
               }`}
             >
               {cat}
@@ -206,7 +206,7 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
       <ScrollArea className="flex-1 p-3">
         <div className="space-y-2 pr-2 pb-4">
           {filteredNodes.length === 0 ? (
-            <div className="text-center py-14 text-xs text-muted-foreground">
+            <div className="text-center py-14 text-xs text-zinc-500">
               No integration nodes found matching &ldquo;{search}&rdquo;
             </div>
           ) : (
@@ -214,8 +214,13 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
               return (
                 <div
                   key={node.type}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('application/flowforge-nodetype', node.type);
+                    e.dataTransfer.effectAllowed = 'move';
+                  }}
                   onClick={() => handleAddNode(node.type)}
-                  className="group relative flex items-start gap-3 rounded-2xl border border-border bg-card/70 p-3 hover:border-emerald-500/50 hover:bg-[#121624] cursor-pointer transition-all hover:scale-[1.01] hover:shadow-xl hover:shadow-emerald-950/20"
+                  className="group relative flex items-start gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-3 hover:border-zinc-600 hover:bg-zinc-900 cursor-grab active:cursor-grabbing transition-all hover:scale-[1.01] hover:shadow-xl shadow-sm"
                 >
                   <div
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-inner transition-transform group-hover:scale-105"
@@ -230,20 +235,20 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
 
                   <div className="flex-1 min-w-0 pr-6">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-semibold text-slate-100 truncate group-hover:text-emerald-400 transition-colors">
+                      <span className="text-xs font-semibold text-zinc-100 truncate group-hover:text-white transition-colors">
                         {node.label}
                       </span>
                       <Badge variant="secondary" className="text-[9px] uppercase px-1.5 py-0 font-mono font-bold">
                         {node.category}
                       </Badge>
                     </div>
-                    <p className="mt-1 text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                    <p className="mt-1 text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">
                       {node.description}
                     </p>
                   </div>
 
                   <button
-                    className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 rounded-lg p-1.5 bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-all shadow-md font-bold"
+                    className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 rounded-lg p-1.5 bg-white text-zinc-950 hover:bg-zinc-200 transition-all shadow-md font-bold"
                     title="Add to canvas"
                   >
                     <Plus className="h-3.5 w-3.5" />

@@ -44,42 +44,42 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r border-border bg-[#08090d] flex flex-col justify-between select-none">
+    <aside className="w-64 border-r border-border bg-zinc-950 flex flex-col justify-between select-none">
       <div>
         {/* Brand Header */}
         <div className="h-14 border-b border-border px-5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 border border-emerald-400/40 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-950/60 group-hover:scale-105 transition-transform">
-              <Zap className="h-4 w-4 fill-slate-950" />
+            <div className="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-700 flex items-center justify-center text-white font-black shadow-sm group-hover:border-white transition-colors">
+              <Zap className="h-4 w-4 fill-white text-white" />
             </div>
             <div>
-              <span className="text-sm font-extrabold tracking-tight text-slate-100 group-hover:text-emerald-400 transition-colors">
+              <span className="text-sm font-extrabold tracking-tight text-zinc-100 group-hover:text-white transition-colors">
                 FlowForge
               </span>
-              <span className="block text-[10px] text-emerald-400/90 font-mono">Self-Hosted Enterprise</span>
+              <span className="block text-[10px] text-zinc-400 font-mono">Self-Hosted Enterprise</span>
             </div>
           </Link>
 
-          <Badge variant="secondary" className="text-[10px] font-mono px-2 py-0 border-border bg-card text-muted-foreground">
+          <Badge variant="secondary" className="text-[10px] font-mono px-2 py-0 border-border bg-zinc-900 text-zinc-300">
             v1.0
           </Badge>
         </div>
 
         {/* Workspace Selector Bar */}
         <div className="p-3 border-b border-border/60">
-          <div className="rounded-xl bg-card border border-border p-2.5 flex items-center justify-between hover:border-slate-700 cursor-pointer transition-colors group">
+          <div className="rounded-xl bg-zinc-900/60 border border-border p-2.5 flex items-center justify-between hover:border-zinc-700 cursor-pointer transition-colors group">
             <div className="overflow-hidden">
               <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span className="block text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                <span className="block text-[10px] uppercase font-semibold text-zinc-400 tracking-wider">
                   Workspace
                 </span>
               </div>
-              <span className="block text-xs font-semibold text-slate-200 group-hover:text-emerald-400 transition-colors truncate mt-0.5">
+              <span className="block text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors truncate mt-0.5">
                 Production Cluster
               </span>
             </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-slate-300 transition-colors shrink-0" />
+            <ChevronRight className="h-4 w-4 text-zinc-500 group-hover:text-zinc-300 transition-colors shrink-0" />
           </div>
         </div>
 
@@ -102,10 +102,10 @@ export function Sidebar() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition-all ${
+                className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs transition-all ${
                   isActive
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shadow-sm font-semibold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-card'
+                    ? 'bg-white text-zinc-950 font-bold border border-white shadow-sm'
+                    : 'text-zinc-400 hover:text-white hover:bg-zinc-900 font-medium'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -115,8 +115,10 @@ export function Sidebar() {
 
                 {item.badge && (
                   <Badge
-                    variant={item.badgeVariant || 'default'}
-                    className="text-[9px] font-mono px-1.5 py-0 font-semibold"
+                    variant={isActive ? 'default' : 'secondary'}
+                    className={`text-[9px] font-mono px-1.5 py-0 font-semibold ${
+                      isActive ? 'bg-zinc-900 text-zinc-100 border-zinc-800' : 'bg-zinc-900 text-zinc-400 border-zinc-800'
+                    }`}
                   >
                     {item.badge}
                   </Badge>
@@ -130,13 +132,13 @@ export function Sidebar() {
       {/* Engine Status & Logout */}
       <div className="p-3 border-t border-border space-y-2">
         {/* Engine status indicator */}
-        <div className="px-3 py-2 rounded-xl bg-card border border-border flex items-center justify-between text-[11px] font-mono">
-          <span className="text-muted-foreground flex items-center gap-1.5">
-            <Server className="h-3.5 w-3.5 text-emerald-400" />
+        <div className="px-3 py-2 rounded-xl bg-zinc-900/60 border border-border flex items-center justify-between text-[11px] font-mono">
+          <span className="text-zinc-400 flex items-center gap-1.5">
+            <Server className="h-3.5 w-3.5 text-zinc-300" />
             Local Node Engine
           </span>
-          <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="flex items-center gap-1.5 text-zinc-200 font-semibold">
+            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
             93 Nodes
           </span>
         </div>
@@ -144,7 +146,7 @@ export function Sidebar() {
         <Button
           variant="ghost"
           onClick={handleLogout}
-          className="w-full justify-start gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 h-auto"
+          className="w-full justify-start gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-zinc-400 hover:text-white hover:bg-zinc-900 h-auto"
         >
           <LogOut className="h-4 w-4" />
           Sign Out

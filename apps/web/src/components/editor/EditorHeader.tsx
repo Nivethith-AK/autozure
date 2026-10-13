@@ -205,17 +205,17 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
 
   return (
     <>
-      <header className="h-14 border-b border-border bg-[#08090d]/90 backdrop-blur-md px-4 flex items-center justify-between z-30 select-none">
+      <header className="h-14 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-md px-4 flex items-center justify-between z-30 select-none">
         {/* Left: Breadcrumbs & Workflow Title */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" asChild className="text-slate-400 hover:text-white rounded-xl">
+          <Button variant="ghost" size="sm" asChild className="text-zinc-400 hover:text-white rounded-xl">
             <Link href="/" className="flex items-center gap-1.5">
               <ArrowLeft className="h-3.5 w-3.5" />
               <span className="hidden sm:inline font-medium">Workflows</span>
             </Link>
           </Button>
 
-          <ChevronRight className="h-3.5 w-3.5 text-slate-600 hidden sm:inline" />
+          <ChevronRight className="h-3.5 w-3.5 text-zinc-600 hidden sm:inline" />
 
           {/* Editable Title */}
           <div className="flex items-center gap-2">
@@ -227,7 +227,7 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
                 onChange={(e) => setTitleValue(e.target.value)}
                 onBlur={handleTitleSubmit}
                 onKeyDown={(e) => e.key === 'Enter' && handleTitleSubmit()}
-                className="h-8 w-56 bg-card border-emerald-500/50 text-xs font-semibold ring-1 ring-emerald-500/40 rounded-xl"
+                className="h-8 w-56 bg-zinc-900 border-zinc-700 text-xs font-semibold ring-1 ring-white/60 rounded-xl"
               />
             ) : (
               <div
@@ -235,12 +235,12 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
                   setTitleValue(workflow?.name || 'Untitled Pipeline');
                   setIsEditingTitle(true);
                 }}
-                className="group flex items-center gap-2 cursor-pointer rounded-xl px-2 py-1 hover:bg-card transition-colors"
+                className="group flex items-center gap-2 cursor-pointer rounded-xl px-2 py-1 hover:bg-zinc-900 transition-colors"
               >
-                <h1 className="text-sm font-bold text-slate-100 tracking-tight">
+                <h1 className="text-sm font-bold text-zinc-100 tracking-tight">
                   {workflow?.name || 'Untitled Pipeline'}
                 </h1>
-                <Edit2 className="h-3 w-3 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Edit2 className="h-3 w-3 text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             )}
 
@@ -257,7 +257,7 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
                 >
                   <span
                     className={`w-1.5 h-1.5 rounded-full ${
-                      workflow.status === 'active' ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'
+                      workflow.status === 'active' ? 'bg-zinc-950 animate-pulse' : 'bg-zinc-500'
                     }`}
                   />
                   <span>{workflow.status}</span>
@@ -270,7 +270,7 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
                 ● Unsaved
               </Badge>
             ) : (
-              <span className="text-[10px] text-muted-foreground font-mono hidden md:inline">
+              <span className="text-[10px] text-zinc-400 font-mono hidden md:inline">
                 Saved (Ctrl+S)
               </span>
             )}
@@ -284,10 +284,10 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
             variant="outline"
             size="sm"
             onClick={() => setIsWebhookModalOpen(true)}
-            className="rounded-xl text-slate-300 hover:text-white border-border gap-1.5"
+            className="rounded-xl text-zinc-300 hover:text-white border-zinc-800 gap-1.5 bg-zinc-900"
             title="Inbound Webhook Trigger URL & curl test"
           >
-            <Globe className="h-3.5 w-3.5 text-blue-400" />
+            <Globe className="h-3.5 w-3.5 text-zinc-300" />
             <span className="hidden md:inline">Webhook</span>
           </Button>
 
@@ -296,14 +296,14 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
             variant="ghost"
             size="icon-sm"
             onClick={handleExportJson}
-            className="rounded-xl text-slate-400 hover:text-white"
+            className="rounded-xl text-zinc-400 hover:text-white"
             title="Export Workflow JSON"
           >
             <Download className="h-3.5 w-3.5" />
           </Button>
 
           <label
-            className="inline-flex items-center justify-center rounded-xl h-7 w-7 text-xs text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors cursor-pointer"
+            className="inline-flex items-center justify-center rounded-xl h-7 w-7 text-xs text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             title="Import Workflow JSON"
           >
             <Upload className="h-3.5 w-3.5" />
@@ -317,8 +317,8 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
             onClick={onToggleLibrary}
             className={`rounded-xl gap-1.5 transition-all ${
               isLibraryOpen
-                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm'
-                : 'border-border text-slate-200'
+                ? 'bg-zinc-800 text-white border-zinc-700 shadow-sm'
+                : 'border-zinc-800 bg-zinc-900 text-zinc-200 hover:text-white'
             }`}
           >
             <Plus className="h-3.5 w-3.5" />
@@ -333,12 +333,12 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
             disabled={isSaving || !isDirty}
             className={`rounded-xl gap-1.5 transition-all ${
               isDirty
-                ? 'bg-card text-white border-slate-700 shadow-sm'
-                : 'text-slate-600 border-border/40 opacity-50 cursor-not-allowed'
+                ? 'bg-zinc-900 text-white border-zinc-700 shadow-sm hover:bg-zinc-800'
+                : 'text-zinc-600 border-zinc-800/40 opacity-50 cursor-not-allowed'
             }`}
           >
             {isSaving ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin text-emerald-400" />
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-white" />
             ) : (
               <Save className="h-3.5 w-3.5" />
             )}
@@ -349,30 +349,30 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
           <Button
             onClick={handleExecute}
             disabled={isExecuting}
-            className="rounded-xl font-bold gap-2 bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 shadow-lg shadow-emerald-950/60"
+            className="rounded-xl font-bold gap-2 bg-white hover:bg-zinc-200 text-zinc-950 border border-white shadow-md active:bg-zinc-300"
           >
             {isExecuting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin text-zinc-950" />
             ) : (
               <Play className="h-3.5 w-3.5 fill-current" />
             )}
             <span>Run Workflow</span>
-            <kbd className="hidden sm:inline-block text-[10px] bg-slate-950/20 px-1 rounded font-mono">⌘↵</kbd>
+            <kbd className="hidden sm:inline-block text-[10px] bg-zinc-200 px-1 rounded font-mono text-zinc-800">⌘↵</kbd>
           </Button>
         </div>
       </header>
 
       {/* Webhook Details Dialog with shadcn Dialog */}
       <Dialog open={isWebhookModalOpen} onOpenChange={setIsWebhookModalOpen}>
-        <DialogContent className="max-w-lg bg-[#0c0e17] border-border text-slate-100 rounded-2xl">
+        <DialogContent className="max-w-lg bg-zinc-950 border-zinc-800 text-zinc-100 rounded-2xl">
           <DialogHeader>
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+              <div className="h-8 w-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-200">
                 <Globe className="h-4 w-4" />
               </div>
               <div>
-                <DialogTitle className="text-sm font-bold text-slate-100">Inbound Webhook Trigger</DialogTitle>
-                <DialogDescription className="text-xs text-muted-foreground">
+                <DialogTitle className="text-sm font-bold text-zinc-100">Inbound Webhook Trigger</DialogTitle>
+                <DialogDescription className="text-xs text-zinc-400">
                   Trigger this workflow from any external API or webhook
                 </DialogDescription>
               </div>
@@ -381,14 +381,14 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
 
           <div className="mt-2 space-y-4">
             <div>
-              <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1 font-mono">
+              <label className="block text-[11px] font-semibold text-zinc-300 uppercase tracking-wider mb-1 font-mono">
                 HTTP POST Endpoint URL
               </label>
               <div className="flex items-center gap-2">
                 <Input
                   readOnly
                   value={webhookUrl}
-                  className="font-mono text-emerald-400 text-xs bg-card border-border"
+                  className="font-mono text-zinc-100 text-xs bg-zinc-900 border-zinc-800"
                 />
                 <Button
                   variant="outline"
@@ -398,20 +398,20 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
                     setCopiedWebhook(true);
                     setTimeout(() => setCopiedWebhook(false), 2000);
                   }}
-                  className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border-emerald-500/30 gap-1.5"
+                  className="bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border-zinc-700 gap-1.5"
                 >
-                  {copiedWebhook ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copiedWebhook ? <Check className="h-3.5 w-3.5 text-white" /> : <Copy className="h-3.5 w-3.5" />}
                   {copiedWebhook ? 'Copied' : 'Copy'}
                 </Button>
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1 font-mono">
+              <label className="block text-[11px] font-semibold text-zinc-300 uppercase tracking-wider mb-1 font-mono">
                 Quick curl Test Command
               </label>
               <div className="relative">
-                <pre className="p-3 rounded-xl bg-[#08090d] border border-border text-[11px] font-mono text-slate-300 overflow-x-auto leading-relaxed">
+                <pre className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-[11px] font-mono text-zinc-200 overflow-x-auto leading-relaxed">
                   {sampleCurl}
                 </pre>
                 <Button
@@ -422,10 +422,10 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
                     setCopiedCurl(true);
                     setTimeout(() => setCopiedCurl(false), 2000);
                   }}
-                  className="absolute top-2 right-2 text-slate-300"
+                  className="absolute top-2 right-2 text-zinc-400 hover:text-white"
                   title="Copy curl"
                 >
-                  {copiedCurl ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copiedCurl ? <Check className="h-3.5 w-3.5 text-white" /> : <Copy className="h-3.5 w-3.5" />}
                 </Button>
               </div>
             </div>

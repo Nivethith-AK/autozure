@@ -32,12 +32,38 @@ function CanvasInner() {
   const onConnect = useWorkflowStore((s) => s.onConnect);
   const selectNode = useWorkflowStore((s) => s.selectNode);
   const setNodes = useWorkflowStore((s) => s.setNodes);
+  const addNode = useWorkflowStore((s) => s.addNode);
 
   const [bgVariant, setBgVariant] = useState<BackgroundVariant>(BackgroundVariant.Dots);
   const [showMiniMap, setShowMiniMap] = useState(true);
 
-  const { fitView, zoomIn, zoomOut } = useReactFlow();
+  const { fitView, zoomIn, zoomOut, screenToFlowPosition } = useReactFlow();
   const nodeTypes = useMemo(() => ({ custom: CustomNode }), []);
+
+  // Drag and drop handler from node library drawer
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+      const nodeType = event.dataTransfer.getData('application/flowforge-nodetype');
+      if (!nodeType) return;
+
+      let position = { x: 250, y: 200 };
+      if (typeof screenToFlowPosition === 'function') {
+        position = screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
+      }
+
+      addNode(nodeType, position);
+    },
+    [screenToFlowPosition, addNode]
+  );
 
   // Smart Auto-Align layout (DAG positioning)
   const handleAutoAlign = useCallback(() => {
@@ -100,9 +126,9 @@ function CanvasInner() {
   }, [nodes, edges, setNodes, fitView]);
 
   return (
-    <div className="relative h-full w-full bg-[#08090d] overflow-hidden">
+    <div className="relative h-full w-full bg-[#09090b] overflow-hidden">
       {/* Background vignette */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(8,9,13,0.7)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(9,9,11,0.85)_100%)]" />
 
       <ReactFlow
         nodes={nodes}
@@ -110,6 +136,8 @@ function CanvasInner() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
         nodeTypes={nodeTypes}
         onPaneClick={() => selectNode(null)}
         fitView
@@ -118,36 +146,36 @@ function CanvasInner() {
         <Background
           variant={bgVariant}
           gap={20}
-          size={1.6}
-          color="#1e2538"
-          className="bg-[#08090d]"
+          size={1.5}
+          color="#27272a"
+          className="bg-[#09090b]"
         />
 
         {showMiniMap && (
           <MiniMap
-            nodeColor={(node: any) => node.data?.color || '#10b981'}
-            maskColor="rgba(8, 9, 13, 0.85)"
-            className="!bottom-16 !right-6 !m-0 !w-44 !h-32"
+            nodeColor={() => '#52525b'}
+            maskColor="rgba(9, 9, 11, 0.88)"
+            className="!bottom-16 !right-6 !m-0 !w-44 !h-32 border border-zinc-800"
           />
         )}
       </ReactFlow>
 
       {/* Floating Canvas Controls HUD */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 p-1.5 rounded-2xl glass-panel shadow-2xl border border-white/[0.1] bg-[#0c0e17]/90 backdrop-blur-xl">
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 p-1.5 rounded-2xl shadow-2xl border border-zinc-800 bg-zinc-950/95 backdrop-blur-xl">
         <button
           onClick={handleAutoAlign}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition-all hover:scale-[1.02] shadow-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-100 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 transition-all hover:scale-[1.02] shadow-sm"
           title="Auto-organize workflow layout"
         >
-          <Layers className="h-3.5 w-3.5" />
+          <Layers className="h-3.5 w-3.5 text-zinc-300" />
           <span>Auto-Align</span>
         </button>
 
-        <div className="h-4 w-px bg-white/[0.1] mx-1" />
+        <div className="h-4 w-px bg-zinc-800 mx-1" />
 
         <button
           onClick={() => zoomIn({ duration: 200 })}
-          className="p-2 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-white/[0.08] transition-colors"
+          className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors"
           title="Zoom In"
         >
           <ZoomIn className="h-4 w-4" />
@@ -155,7 +183,7 @@ function CanvasInner() {
 
         <button
           onClick={() => zoomOut({ duration: 200 })}
-          className="p-2 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-white/[0.08] transition-colors"
+          className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors"
           title="Zoom Out"
         >
           <ZoomOut className="h-4 w-4" />
@@ -163,13 +191,13 @@ function CanvasInner() {
 
         <button
           onClick={() => fitView({ padding: 0.2, duration: 300 })}
-          className="p-2 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-white/[0.08] transition-colors"
+          className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors"
           title="Fit Canvas"
         >
           <Maximize2 className="h-4 w-4" />
         </button>
 
-        <div className="h-4 w-px bg-white/[0.1] mx-1" />
+        <div className="h-4 w-px bg-zinc-800 mx-1" />
 
         <button
           onClick={() =>
@@ -181,7 +209,7 @@ function CanvasInner() {
                 : BackgroundVariant.Dots
             )
           }
-          className="p-2 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-white/[0.08] transition-colors"
+          className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors"
           title="Cycle Grid Style"
         >
           <Grid className="h-4 w-4" />
@@ -191,8 +219,8 @@ function CanvasInner() {
           onClick={() => setShowMiniMap((v) => !v)}
           className={`p-2 rounded-xl transition-colors ${
             showMiniMap
-              ? 'text-emerald-400 bg-white/[0.06]'
-              : 'text-slate-400 hover:text-slate-100 hover:bg-white/[0.08]'
+              ? 'text-white bg-zinc-900'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
           }`}
           title="Toggle MiniMap"
         >

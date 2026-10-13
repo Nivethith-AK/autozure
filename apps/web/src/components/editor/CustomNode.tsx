@@ -115,11 +115,11 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
   const deleteNode = useWorkflowStore((s) => s.deleteNode);
   const addNode = useWorkflowStore((s) => s.addNode);
   const activeExecution = useWorkflowStore((s) => s.activeExecution);
-  const updateNodeParameters = useWorkflowStore((s) => s.updateNodeParameters);
+  const toggleNodeDisabled = useWorkflowStore((s) => s.toggleNodeDisabled);
 
   const nodeData = data as any;
   const IconComponent = ICON_MAP[nodeData.icon] || Box;
-  const brandColor = nodeData.color || '#3b82f6';
+  const brandColor = nodeData.color || '#ffffff';
   const isDisabled = !!nodeData.disabled;
 
   // Determine node execution status from active execution
@@ -141,7 +141,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
 
   const handleToggleDisabled = (e: React.MouseEvent) => {
     e.stopPropagation();
-    updateNodeParameters(id, { disabled: !isDisabled });
+    toggleNodeDisabled(id);
   };
 
   // Extract a helpful summary badge from parameters
@@ -206,63 +206,58 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
     <div
       onClick={() => selectNode(id)}
       className={`group relative min-w-[260px] max-w-[290px] rounded-2xl border transition-all duration-200 cursor-pointer select-none ${
-        isDisabled ? 'opacity-40 grayscale' : ''
+        isDisabled ? 'opacity-40 grayscale border-dashed border-zinc-700' : ''
       } ${
         selected
-          ? 'border-emerald-500 bg-[#0e121d] shadow-2xl ring-2 ring-emerald-500/40 glow-emerald'
-          : 'border-white/[0.08] bg-[#0c0e17]/95 hover:border-white/[0.18] hover:bg-[#0f121e] shadow-xl'
+          ? 'border-white bg-zinc-950 shadow-2xl ring-1 ring-white/70'
+          : 'border-zinc-800 bg-zinc-950/95 hover:border-zinc-700 shadow-xl'
       } ${
         status === 'running'
-          ? 'border-blue-500 ring-2 ring-blue-500/50 glow-blue'
+          ? 'border-zinc-300 ring-1 ring-zinc-300/50'
           : status === 'failed'
-          ? 'border-rose-500 ring-2 ring-rose-500/50 glow-rose'
+          ? 'border-zinc-600 ring-1 ring-zinc-600/50'
           : status === 'success'
-          ? 'border-emerald-500/80 shadow-emerald-950/40'
+          ? 'border-zinc-500'
           : ''
       }`}
     >
-      {/* Top subtle brand accent line */}
+      {/* Top subtle formal accent line */}
       <div
         className="h-[2px] w-full rounded-t-2xl transition-opacity"
         style={{
-          background: `linear-gradient(90deg, transparent, ${brandColor}, transparent)`,
-          opacity: selected ? 1 : 0.6,
+          background: selected ? '#ffffff' : 'rgba(255, 255, 255, 0.12)',
         }}
       />
 
       {/* Floating hover toolbar */}
-      <div className="absolute -top-10 right-1 opacity-0 group-hover:opacity-100 transition-all duration-150 flex items-center gap-1 bg-[#090b12]/95 border border-white/[0.12] rounded-xl p-1 shadow-2xl z-30 backdrop-blur-md">
+      <div className="absolute -top-10 right-1 opacity-0 group-hover:opacity-100 transition-all duration-150 flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-xl p-1 shadow-2xl z-30 backdrop-blur-md">
         <button
           onClick={(e) => {
             e.stopPropagation();
             selectNode(id);
           }}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-white/[0.08] transition-colors"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
           title="Configure Parameters"
         >
           <Settings2 className="h-3.5 w-3.5" />
         </button>
         <button
           onClick={handleDuplicate}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-white/[0.08] transition-colors"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
           title="Duplicate Node"
         >
           <Copy className="h-3.5 w-3.5" />
         </button>
         <button
           onClick={handleToggleDisabled}
-          className={`p-1.5 rounded-lg transition-colors ${
-            isDisabled
-              ? 'text-amber-400 hover:bg-amber-500/10'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.08]'
-          }`}
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
           title={isDisabled ? 'Enable Node' : 'Disable Node'}
         >
           <Power className="h-3.5 w-3.5" />
         </button>
         <button
           onClick={handleDelete}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
           title="Delete Node"
         >
           <Trash2 className="h-3.5 w-3.5" />
@@ -279,14 +274,14 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
             className="react-flow__handle-left"
             style={{
               top: `${((idx + 1) / ((nodeData.inputs?.length || 1) + 1)) * 100}%`,
-              backgroundColor: '#64748b',
+              backgroundColor: '#71717a',
             }}
           />
         </div>
       ))}
 
       {/* Node Header */}
-      <div className="flex items-center gap-3 p-3.5 border-b border-white/[0.06]">
+      <div className="flex items-center gap-3 p-3.5 border-b border-zinc-800/80">
         {/* Brand Icon Box */}
         <div
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-inner transition-transform group-hover:scale-105"
@@ -301,7 +296,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-1">
-            <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-slate-400 truncate">
+            <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-zinc-400 truncate">
               {nodeData.category || 'node'}
             </span>
 
@@ -326,16 +321,16 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
             )}
           </div>
 
-          <div className="truncate text-xs font-semibold text-slate-100 mt-0.5 tracking-tight group-hover:text-emerald-400 transition-colors">
+          <div className="truncate text-xs font-semibold text-zinc-100 mt-0.5 tracking-tight group-hover:text-white transition-colors">
             {nodeData.label || 'Node'}
           </div>
         </div>
       </div>
 
       {/* Node Body & Parameter Snippet */}
-      <div className="p-3 bg-[#080a12]/60 rounded-b-2xl text-[11px] space-y-1.5">
-        <div className="flex items-center justify-between text-slate-400 font-mono text-[10px]">
-          <span className="truncate text-slate-500">{nodeData.type}</span>
+      <div className="p-3 bg-zinc-950/60 rounded-b-2xl text-[11px] space-y-1.5">
+        <div className="flex items-center justify-between text-zinc-400 font-mono text-[10px]">
+          <span className="truncate text-zinc-500">{nodeData.type}</span>
           {isDisabled && (
             <Badge variant="warning" className="text-[9px] uppercase font-bold py-0 px-1.5">
               DISABLED
@@ -344,7 +339,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
         </div>
 
         {paramSummary && (
-          <div className="rounded-lg bg-[#111422] border border-white/[0.06] px-2.5 py-1 text-[10px] font-mono text-emerald-400/90 truncate shadow-inner">
+          <div className="rounded-lg bg-zinc-900 border border-zinc-800 px-2.5 py-1 text-[10px] font-mono text-zinc-300 truncate shadow-inner">
             {paramSummary}
           </div>
         )}
@@ -360,14 +355,14 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
             className="react-flow__handle-right"
             style={{
               top: `${((idx + 1) / ((nodeData.outputs?.length || 1) + 1)) * 100}%`,
-              backgroundColor: '#10b981',
+              backgroundColor: '#ffffff',
             }}
           />
           {/* Label for special branches like condition true/false */}
           {nodeData.type === 'logic.condition' && (
             <span
               className={`absolute right-4 text-[9px] font-mono font-bold uppercase tracking-wider ${
-                port.name === 'true' ? 'text-emerald-400' : 'text-rose-400'
+                port.name === 'true' ? 'text-zinc-200' : 'text-zinc-500'
               }`}
               style={{
                 top: `${((idx + 1) / ((nodeData.outputs?.length || 1) + 1)) * 100 - 8}%`,

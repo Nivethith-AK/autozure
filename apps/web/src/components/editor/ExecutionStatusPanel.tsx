@@ -162,70 +162,70 @@ export function ExecutionStatusPanel() {
       : 'h-64';
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-[#1a1f2e] bg-[#08090d]/95 backdrop-blur-2xl shadow-2xl transition-all select-none">
+    <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-zinc-800 bg-zinc-950/95 backdrop-blur-2xl shadow-2xl transition-all select-none">
       {/* Top Header Bar */}
       <div
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center justify-between px-5 py-2.5 cursor-pointer hover:bg-[#0e111a]/70 transition-colors border-b border-[#1a1f2e]/60"
+        className="flex items-center justify-between px-5 py-2.5 cursor-pointer hover:bg-zinc-900/80 transition-colors border-b border-zinc-800/80"
       >
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-lg bg-[#0e111a] border border-[#1a1f2e] flex items-center justify-center text-emerald-400">
+            <div className="h-6 w-6 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-100">
               <Terminal className="h-3.5 w-3.5" />
             </div>
-            <span className="text-xs font-bold text-slate-100 tracking-tight">Execution Console</span>
+            <span className="text-xs font-bold text-zinc-100 tracking-tight">Execution Console</span>
           </div>
 
           {/* Status Badge */}
-          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase tracking-wider bg-[#0e111a] border border-[#1a1f2e]">
+          <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase tracking-wider bg-zinc-900 border border-zinc-800">
             {status === 'running' && (
               <>
-                <Loader2 className="h-3 w-3 animate-spin text-blue-400" />
-                <span className="text-blue-400">Executing</span>
+                <Loader2 className="h-3 w-3 animate-spin text-zinc-300" />
+                <span className="text-zinc-200">Executing</span>
               </>
             )}
             {status === 'success' && (
               <>
-                <CheckCircle2 className="h-3 w-3 text-emerald-400" />
-                <span className="text-emerald-400">Success</span>
+                <CheckCircle2 className="h-3 w-3 text-white" />
+                <span className="text-white font-bold">Success</span>
               </>
             )}
             {status === 'failed' && (
               <>
-                <XCircle className="h-3 w-3 text-rose-400" />
-                <span className="text-rose-400">Failed</span>
+                <XCircle className="h-3 w-3 text-zinc-400" />
+                <span className="text-zinc-300 font-bold">Failed</span>
               </>
             )}
             {status === 'pending' && (
               <>
-                <Clock className="h-3 w-3 text-amber-400" />
-                <span className="text-amber-400">Queued</span>
+                <Clock className="h-3 w-3 text-zinc-400" />
+                <span className="text-zinc-300">Queued</span>
               </>
             )}
-            {status === 'cancelled' && <span className="text-slate-400">Cancelled</span>}
+            {status === 'cancelled' && <span className="text-zinc-400">Cancelled</span>}
           </div>
 
           {/* Telemetry info chips */}
           {activeExecution?.id && (
-            <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 font-mono">
+            <div className="hidden sm:flex items-center gap-2 text-[11px] text-zinc-400 font-mono">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleCopyId(activeExecution.id);
                 }}
-                className="hover:text-emerald-400 transition-colors flex items-center gap-1"
+                className="hover:text-white transition-colors flex items-center gap-1"
                 title="Click to copy run ID"
               >
-                <span>Run: <strong className="text-slate-200">{activeExecution.id.slice(0, 8)}</strong></span>
-                {copiedId ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3 text-slate-500" />}
+                <span>Run: <strong className="text-zinc-200">{activeExecution.id.slice(0, 8)}</strong></span>
+                {copiedId ? <Check className="h-3 w-3 text-white" /> : <Copy className="h-3 w-3 text-zinc-500" />}
               </button>
 
               {totalDuration > 0 && (
-                <span className="text-slate-500">• {totalDuration}ms total runtime</span>
+                <span className="text-zinc-500">• {totalDuration}ms total runtime</span>
               )}
 
               {activeExecution.startedAt && (
-                <span className="text-slate-500">• Started {new Date(activeExecution.startedAt).toLocaleTimeString()}</span>
+                <span className="text-zinc-500">• Started {new Date(activeExecution.startedAt).toLocaleTimeString()}</span>
               )}
             </div>
           )}
@@ -236,7 +236,7 @@ export function ExecutionStatusPanel() {
           {status === 'running' && (
             <button
               onClick={handleCancelExecution}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold text-zinc-300 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 transition-colors"
             >
               <StopCircle className="h-3 w-3" />
               Cancel Run
@@ -246,7 +246,7 @@ export function ExecutionStatusPanel() {
           {activeExecution?.id && (
             <Link
               href={`/executions/${activeExecution.id}`}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold text-slate-400 hover:text-emerald-400 hover:bg-[#0e111a] border border-transparent hover:border-[#1a1f2e] transition-colors"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-colors"
               title="Open full execution telemetry page"
             >
               <ExternalLink className="h-3 w-3" />
@@ -256,7 +256,7 @@ export function ExecutionStatusPanel() {
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-[#0e111a] transition-colors"
+            className="text-zinc-400 hover:text-zinc-100 p-1.5 rounded-lg hover:bg-zinc-900 transition-colors"
           >
             {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
           </button>
@@ -265,17 +265,17 @@ export function ExecutionStatusPanel() {
 
       {/* Expanded Console Window */}
       {isExpanded && (
-        <div className="bg-[#08090d] flex flex-col">
+        <div className="bg-zinc-950 flex flex-col">
           {/* Main Tabs Toolbar */}
-          <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-2 border-b border-[#1a1f2e] bg-[#0e111a]/40 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-2 border-b border-zinc-800 bg-zinc-900/60 text-xs">
             {/* Primary View Mode Tabs */}
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setActiveTab('waterfall')}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                   activeTab === 'waterfall'
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#0e111a]'
+                    ? 'bg-white text-zinc-950 font-bold border border-white shadow-sm'
+                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/80 border border-transparent'
                 }`}
               >
                 <BarChart3 className="h-3.5 w-3.5" />
@@ -286,8 +286,8 @@ export function ExecutionStatusPanel() {
                 onClick={() => setActiveTab('logs')}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                   activeTab === 'logs'
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#0e111a]'
+                    ? 'bg-white text-zinc-950 font-bold border border-white shadow-sm'
+                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/80 border border-transparent'
                 }`}
               >
                 <Terminal className="h-3.5 w-3.5" />
@@ -298,8 +298,8 @@ export function ExecutionStatusPanel() {
                 onClick={() => setActiveTab('data')}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                   activeTab === 'data'
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#0e111a]'
+                    ? 'bg-white text-zinc-950 font-bold border border-white shadow-sm'
+                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/80 border border-transparent'
                 }`}
               >
                 <Code2 className="h-3.5 w-3.5" />
@@ -312,11 +312,11 @@ export function ExecutionStatusPanel() {
               {activeTab === 'logs' && (
                 <>
                   {/* Log level filter pills */}
-                  <div className="flex items-center gap-1 mr-2 bg-[#0e111a] p-0.5 rounded-lg border border-[#1a1f2e]">
+                  <div className="flex items-center gap-1 mr-2 bg-zinc-900 p-0.5 rounded-lg border border-zinc-800">
                     <button
                       onClick={() => setLogLevel('all')}
                       className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
-                        logLevel === 'all' ? 'bg-[#1a1f2e] text-slate-100' : 'text-slate-400 hover:text-slate-200'
+                        logLevel === 'all' ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       All
@@ -324,7 +324,7 @@ export function ExecutionStatusPanel() {
                     <button
                       onClick={() => setLogLevel('info')}
                       className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
-                        logLevel === 'info' ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:text-slate-200'
+                        logLevel === 'info' ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       Info ({counts.info})
@@ -332,7 +332,7 @@ export function ExecutionStatusPanel() {
                     <button
                       onClick={() => setLogLevel('warn')}
                       className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
-                        logLevel === 'warn' ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:text-slate-200'
+                        logLevel === 'warn' ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       Warn ({counts.warn})
@@ -340,7 +340,7 @@ export function ExecutionStatusPanel() {
                     <button
                       onClick={() => setLogLevel('error')}
                       className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
-                        logLevel === 'error' ? 'bg-rose-500/20 text-rose-400' : 'text-slate-400 hover:text-slate-200'
+                        logLevel === 'error' ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       Err ({counts.error})
@@ -349,13 +349,13 @@ export function ExecutionStatusPanel() {
 
                   {/* Search box */}
                   <div className="relative">
-                    <Search className="absolute left-2.5 top-1.5 h-3 w-3 text-slate-500" />
+                    <Search className="absolute left-2.5 top-1.5 h-3 w-3 text-zinc-500" />
                     <input
                       type="text"
                       placeholder="Filter logs..."
                       value={searchFilter}
                       onChange={(e) => setSearchFilter(e.target.value)}
-                      className="rounded-lg bg-[#0e111a] border border-[#1a1f2e] pl-7 pr-2.5 py-1 text-[11px] text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                      className="rounded-lg bg-zinc-900 border border-zinc-800 pl-7 pr-2.5 py-1 text-[11px] text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-white"
                     />
                   </div>
 
@@ -364,8 +364,8 @@ export function ExecutionStatusPanel() {
                     onClick={() => setFollowLogs(!followLogs)}
                     className={`px-2 py-1 rounded-lg text-[10px] font-mono transition-colors flex items-center gap-1 ${
                       followLogs
-                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                        : 'text-slate-500 hover:text-slate-300'
+                        ? 'bg-zinc-800 text-white border border-zinc-700 font-semibold'
+                        : 'text-zinc-500 hover:text-zinc-300'
                     }`}
                     title="Auto-scroll to bottom on new log"
                   >
@@ -376,16 +376,16 @@ export function ExecutionStatusPanel() {
                   {/* Copy logs */}
                   <button
                     onClick={handleCopyLogs}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-[#0e111a] border border-transparent hover:border-[#1a1f2e] transition-colors"
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-colors"
                     title="Copy all logs to clipboard as JSON"
                   >
-                    {copiedLogs ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                    {copiedLogs ? <Check className="h-3.5 w-3.5 text-white" /> : <Copy className="h-3.5 w-3.5" />}
                   </button>
 
                   {/* Clear logs */}
                   <button
                     onClick={handleClearLogs}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors"
                     title="Clear console logs"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -406,7 +406,7 @@ export function ExecutionStatusPanel() {
                       : 'sm'
                   )
                 }
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-[#0e111a] border border-transparent hover:border-[#1a1f2e] transition-colors ml-1"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-colors ml-1"
                 title="Toggle console height"
               >
                 {panelHeight === 'full' ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
@@ -415,18 +415,18 @@ export function ExecutionStatusPanel() {
           </div>
 
           {/* Viewport Content */}
-          <div className={`${heightClass} overflow-y-auto p-4 font-mono text-[11px] bg-[#08090d] select-text`}>
+          <div className={`${heightClass} overflow-y-auto p-4 font-mono text-[11px] bg-zinc-950 select-text`}>
             {/* 1. PIPELINE WATERFALL VIEW */}
             {activeTab === 'waterfall' && (
               <div className="space-y-3">
                 {nodeResults.length === 0 ? (
-                  <div className="text-center py-10 text-slate-500 italic">
+                  <div className="text-center py-10 text-zinc-500 italic">
                     <p>No node execution results yet.</p>
-                    <p className="text-[10px] text-slate-600 mt-1">Run a workflow to generate telemetry graphs.</p>
+                    <p className="text-[10px] text-zinc-600 mt-1">Run a workflow to generate telemetry graphs.</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {nodeResults.map((nr, idx) => {
+                    {nodeResults.map((nr) => {
                       const duration = nr.durationMs || 1;
                       const maxDur = Math.max(...nodeResults.map((r) => r.durationMs || 1), 10);
                       const widthPercent = Math.min(100, Math.max(8, (duration / maxDur) * 100));
@@ -438,60 +438,60 @@ export function ExecutionStatusPanel() {
                             setSelectedNodeResult(nr.nodeId);
                             setActiveTab('data');
                           }}
-                          className="group p-3 rounded-xl border border-[#1a1f2e] bg-[#0e111a]/60 hover:bg-[#0e111a] hover:border-slate-700/80 cursor-pointer transition-all flex flex-col gap-2"
+                          className="group p-3 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-900 hover:border-zinc-600 cursor-pointer transition-all flex flex-col gap-2"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2.5">
-                              {nr.status === 'success' && <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />}
-                              {nr.status === 'failed' && <XCircle className="h-4 w-4 text-rose-400 shrink-0" />}
-                              {nr.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-blue-400 shrink-0" />}
-                              {nr.status === 'skipped' && <Clock className="h-4 w-4 text-slate-500 shrink-0" />}
+                              {nr.status === 'success' && <CheckCircle2 className="h-4 w-4 text-white shrink-0" />}
+                              {nr.status === 'failed' && <XCircle className="h-4 w-4 text-zinc-400 shrink-0" />}
+                              {nr.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-zinc-300 shrink-0" />}
+                              {nr.status === 'skipped' && <Clock className="h-4 w-4 text-zinc-500 shrink-0" />}
 
                               <div>
-                                <span className="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
+                                <span className="text-xs font-bold text-zinc-200 group-hover:text-white transition-colors">
                                   {nr.nodeId}
                                 </span>
-                                <span className="text-[10px] text-slate-500 ml-2 font-mono">
+                                <span className="text-[10px] text-zinc-500 ml-2 font-mono">
                                   [{nr.nodeType}]
                                 </span>
                               </div>
                             </div>
 
                             <div className="flex items-center gap-3">
-                              <span className="text-[11px] font-semibold text-slate-300 font-mono">
+                              <span className="text-[11px] font-semibold text-zinc-300 font-mono">
                                 {nr.durationMs !== undefined ? `${nr.durationMs}ms` : 'pending'}
                               </span>
                               <span
                                 className={`text-[9px] uppercase px-2 py-0.5 rounded font-bold border ${
                                   nr.status === 'success'
-                                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                    ? 'bg-white text-zinc-950 border-white'
                                     : nr.status === 'failed'
-                                    ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                                    : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                    ? 'bg-zinc-800 text-zinc-300 border-zinc-700'
+                                    : 'bg-zinc-800 text-zinc-200 border-zinc-700'
                                 }`}
                               >
                                 {nr.status}
                               </span>
-                              <ChevronRight className="h-3.5 w-3.5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+                              <ChevronRight className="h-3.5 w-3.5 text-zinc-500 group-hover:text-white transition-colors" />
                             </div>
                           </div>
 
                           {/* Waterfall Duration Bar */}
-                          <div className="w-full bg-[#1a1f2e]/60 rounded-full h-1.5 overflow-hidden">
+                          <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
                             <div
                               className={`h-full rounded-full transition-all duration-500 ${
                                 nr.status === 'success'
-                                  ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
+                                  ? 'bg-white'
                                   : nr.status === 'failed'
-                                  ? 'bg-gradient-to-r from-rose-500 to-red-400'
-                                  : 'bg-gradient-to-r from-blue-500 to-cyan-400'
+                                  ? 'bg-zinc-500'
+                                  : 'bg-zinc-400'
                               }`}
                               style={{ width: `${widthPercent}%` }}
                             />
                           </div>
 
                           {nr.error && (
-                            <div className="text-rose-400 text-[10px] font-mono bg-rose-500/10 border border-rose-500/20 rounded-lg p-2 mt-1">
+                            <div className="text-zinc-200 text-[10px] font-mono bg-zinc-900 border border-zinc-700 rounded-lg p-2 mt-1">
                               {nr.error}
                             </div>
                           )}
@@ -507,30 +507,30 @@ export function ExecutionStatusPanel() {
             {activeTab === 'logs' && (
               <div ref={logContainerRef} className="space-y-1.5">
                 {filteredLogs.length === 0 ? (
-                  <p className="text-slate-500 italic py-8 text-center">No console logs recorded.</p>
+                  <p className="text-zinc-500 italic py-8 text-center">No console logs recorded.</p>
                 ) : (
                   filteredLogs.map((log, idx) => (
-                    <div key={log.id || idx} className="flex items-start gap-2.5 leading-relaxed hover:bg-[#0e111a]/40 p-1 rounded transition-colors">
-                      <span className="text-slate-600 shrink-0 font-mono select-none text-[10px]">
+                    <div key={log.id || idx} className="flex items-start gap-2.5 leading-relaxed hover:bg-zinc-900/60 p-1 rounded transition-colors">
+                      <span className="text-zinc-500 shrink-0 font-mono select-none text-[10px]">
                         {new Date(log.timestamp).toLocaleTimeString()}
                       </span>
                       <span
                         className={`uppercase text-[9px] px-1.5 py-0.2 rounded font-bold shrink-0 select-none ${
                           log.level === 'error'
-                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                            ? 'bg-zinc-800 text-zinc-200 border border-zinc-700'
                             : log.level === 'warn'
-                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                            : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                            ? 'bg-zinc-850 text-zinc-300 border border-zinc-750'
+                            : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
                         }`}
                       >
                         {log.level}
                       </span>
                       {log.nodeId && (
-                        <span className="text-emerald-400/90 shrink-0 font-mono">
+                        <span className="text-zinc-300 shrink-0 font-mono">
                           [{log.nodeId}]
                         </span>
                       )}
-                      <span className="text-slate-200 break-all">{log.message}</span>
+                      <span className="text-zinc-200 break-all">{log.message}</span>
                     </div>
                   ))
                 )}
@@ -541,7 +541,7 @@ export function ExecutionStatusPanel() {
             {activeTab === 'data' && (
               <div>
                 {nodeResults.length === 0 ? (
-                  <p className="text-slate-500 italic py-8 text-center">No node output data recorded for this run.</p>
+                  <p className="text-zinc-500 italic py-8 text-center">No node output data recorded for this run.</p>
                 ) : (
                   <div className="space-y-4">
                     {/* Node selector tabs */}
@@ -552,8 +552,8 @@ export function ExecutionStatusPanel() {
                           onClick={() => setSelectedNodeResult(nr.nodeId)}
                           className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
                             activeNodeResult?.nodeId === nr.nodeId
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-sm'
-                              : 'bg-[#0e111a] text-slate-400 hover:text-slate-200 border-[#1a1f2e]'
+                              ? 'bg-white text-zinc-950 font-bold border-white shadow-sm'
+                              : 'bg-zinc-900 text-zinc-400 hover:text-white border-zinc-800'
                           }`}
                         >
                           {nr.nodeId} ({nr.status})
@@ -564,33 +564,33 @@ export function ExecutionStatusPanel() {
                     {activeNodeResult && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Input Payload */}
-                        <div className="rounded-xl border border-[#1a1f2e] bg-[#0e111a]/50 p-3 space-y-2">
-                          <div className="flex items-center justify-between text-xs text-slate-400 font-bold border-b border-[#1a1f2e] pb-1.5">
+                        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-3 space-y-2">
+                          <div className="flex items-center justify-between text-xs text-zinc-300 font-bold border-b border-zinc-800 pb-1.5">
                             <span>Input Payload</span>
                             <button
                               onClick={() => navigator.clipboard.writeText(JSON.stringify(activeNodeResult.inputData, null, 2))}
-                              className="text-[10px] text-slate-500 hover:text-emerald-400 flex items-center gap-1"
+                              className="text-[10px] text-zinc-500 hover:text-white flex items-center gap-1 transition-colors"
                             >
                               <Copy className="h-3 w-3" /> Copy
                             </button>
                           </div>
-                          <pre className="text-[11px] text-slate-300 font-mono overflow-x-auto max-h-56 p-2 bg-[#08090d] rounded-lg border border-[#1a1f2e]">
+                          <pre className="text-[11px] text-zinc-300 font-mono overflow-x-auto max-h-56 p-2 bg-zinc-950 rounded-lg border border-zinc-800">
                             {JSON.stringify(activeNodeResult.inputData || {}, null, 2)}
                           </pre>
                         </div>
 
                         {/* Output Payload */}
-                        <div className="rounded-xl border border-[#1a1f2e] bg-[#0e111a]/50 p-3 space-y-2">
-                          <div className="flex items-center justify-between text-xs text-emerald-400 font-bold border-b border-[#1a1f2e] pb-1.5">
+                        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-3 space-y-2">
+                          <div className="flex items-center justify-between text-xs text-zinc-200 font-bold border-b border-zinc-800 pb-1.5">
                             <span>Output Result</span>
                             <button
                               onClick={() => navigator.clipboard.writeText(JSON.stringify(activeNodeResult.outputData, null, 2))}
-                              className="text-[10px] text-slate-500 hover:text-emerald-400 flex items-center gap-1"
+                              className="text-[10px] text-zinc-500 hover:text-white flex items-center gap-1 transition-colors"
                             >
                               <Copy className="h-3 w-3" /> Copy
                             </button>
                           </div>
-                          <pre className="text-[11px] text-emerald-300 font-mono overflow-x-auto max-h-56 p-2 bg-[#08090d] rounded-lg border border-[#1a1f2e]">
+                          <pre className="text-[11px] text-zinc-100 font-mono overflow-x-auto max-h-56 p-2 bg-zinc-950 rounded-lg border border-zinc-800">
                             {JSON.stringify(activeNodeResult.outputData || {}, null, 2)}
                           </pre>
                         </div>

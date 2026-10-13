@@ -100,10 +100,10 @@ export default function ExecutionDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-100">
+      <div className="flex h-screen w-screen items-center justify-center bg-zinc-950 text-zinc-100">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-          <p className="text-xs text-slate-400">Loading execution telemetry...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-white" />
+          <p className="text-xs text-zinc-400 font-medium">Loading execution telemetry...</p>
         </div>
       </div>
     );
@@ -111,10 +111,10 @@ export default function ExecutionDetailPage() {
 
   if (!execution) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-slate-950 text-slate-100">
+      <div className="flex h-screen w-screen items-center justify-center bg-zinc-950 text-zinc-100">
         <div className="text-center">
-          <p className="text-xs text-slate-400">Execution not found or deleted.</p>
-          <Link href="/executions" className="mt-3 inline-block text-xs text-emerald-400 hover:underline">
+          <p className="text-xs text-zinc-400">Execution not found or deleted.</p>
+          <Link href="/executions" className="mt-3 inline-block text-xs font-semibold text-white hover:underline underline-offset-4">
             Back to Executions
           </Link>
         </div>
@@ -133,23 +133,23 @@ export default function ExecutionDetailPage() {
   const nodeLogs = logs.filter((l) => !selectedNode || l.nodeId === selectedNode.nodeId);
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-slate-950 text-slate-100 overflow-hidden select-none">
+    <div className="flex h-screen w-screen flex-col bg-zinc-950 text-zinc-100 overflow-hidden select-none">
       {/* Top Header */}
-      <header className="h-14 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md px-5 flex items-center justify-between z-20">
+      <header className="h-14 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md px-5 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">
           <Link
             href="/executions"
-            className="rounded-lg p-2 text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition-colors"
+            className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors"
             title="Back to Executions"
           >
             <ArrowLeft className="h-4 w-4" />
           </Link>
 
-          <div className="h-4 w-px bg-slate-800" />
+          <div className="h-4 w-px bg-zinc-800" />
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-slate-100">
+              <span className="text-sm font-bold text-zinc-100">
                 Run {execution.id.slice(0, 8)}
               </span>
 
@@ -157,22 +157,22 @@ export default function ExecutionDetailPage() {
               <span
                 className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase tracking-wider ${
                   execution.status === 'success'
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                    ? 'bg-white text-zinc-950 font-bold border border-white'
                     : execution.status === 'failed'
-                    ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                    : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                    ? 'bg-zinc-800 text-zinc-300 border border-zinc-700'
+                    : 'bg-zinc-800 text-zinc-200 border border-zinc-700'
                 }`}
               >
                 {execution.status === 'success' && <CheckCircle2 className="h-3 w-3" />}
                 {execution.status === 'failed' && <XCircle className="h-3 w-3" />}
-                {execution.status === 'running' && <Loader2 className="h-3 w-3 animate-spin" />}
+                {execution.status === 'running' && <Loader2 className="h-3 w-3 animate-spin text-zinc-300" />}
                 {execution.status}
               </span>
 
               {workflow && (
                 <Link
                   href={`/editor/${workflow.id}`}
-                  className="hidden md:flex items-center gap-1 text-xs text-slate-400 hover:text-emerald-400 font-medium transition-colors"
+                  className="hidden md:flex items-center gap-1 text-xs text-zinc-400 hover:text-white font-medium transition-colors"
                 >
                   ({workflow.name})
                   <ArrowUpRight className="h-3 w-3" />
@@ -180,9 +180,9 @@ export default function ExecutionDetailPage() {
               )}
             </div>
 
-            <div className="flex items-center gap-3 text-[11px] text-slate-500 font-mono mt-0.5">
-              <span>Trigger: <strong className="text-slate-300 capitalize">{execution.triggerType}</strong></span>
-              <span>• Duration: <strong className="text-slate-300">{durationStr}</strong></span>
+            <div className="flex items-center gap-3 text-[11px] text-zinc-500 font-mono mt-0.5">
+              <span>Trigger: <strong className="text-zinc-300 capitalize">{execution.triggerType}</strong></span>
+              <span>• Duration: <strong className="text-zinc-300">{durationStr}</strong></span>
               <span>• Started: {new Date(execution.startedAt).toLocaleTimeString()}</span>
             </div>
           </div>
@@ -194,13 +194,13 @@ export default function ExecutionDetailPage() {
           <button
             onClick={handleReRun}
             disabled={isReRunning}
-            className="flex items-center gap-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 px-3 py-1.5 text-xs text-slate-300 font-medium transition-colors"
+            className="flex items-center gap-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-3 py-1.5 text-xs text-zinc-300 font-medium transition-colors hover:text-white"
             title="Re-run this workflow"
           >
             {isReRunning ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin text-emerald-400" />
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-zinc-300" />
             ) : (
-              <Play className="h-3.5 w-3.5 text-emerald-400" />
+              <Play className="h-3.5 w-3.5" />
             )}
             <span className="hidden sm:inline">Re-Run</span>
           </button>
@@ -208,7 +208,7 @@ export default function ExecutionDetailPage() {
           {/* Download JSON */}
           <button
             onClick={handleDownloadExecution}
-            className="flex items-center gap-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 px-3 py-1.5 text-xs text-slate-300 font-medium transition-colors"
+            className="flex items-center gap-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-3 py-1.5 text-xs text-zinc-300 font-medium transition-colors hover:text-white"
             title="Download full execution JSON"
           >
             <Download className="h-3.5 w-3.5" />
@@ -218,7 +218,7 @@ export default function ExecutionDetailPage() {
           {workflow && (
             <Link
               href={`/editor/${workflow.id}`}
-              className="flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-3.5 py-1.5 text-xs transition-colors shadow-lg shadow-emerald-950/40"
+              className="flex items-center gap-1.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold px-3.5 py-1.5 text-xs transition-colors border border-white shadow-sm"
             >
               Open Editor
               <ChevronRight className="h-3.5 w-3.5" />
@@ -230,20 +230,20 @@ export default function ExecutionDetailPage() {
       {/* Main split view */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left Sidebar: Node execution pipeline */}
-        <div className="w-80 border-r border-slate-800 bg-slate-950/70 flex flex-col">
-          <div className="p-3.5 border-b border-slate-800 text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+        <div className="w-80 border-r border-zinc-800 bg-zinc-950/70 flex flex-col">
+          <div className="p-3.5 border-b border-zinc-800 text-xs font-semibold text-zinc-400 uppercase tracking-wider flex items-center justify-between">
             <span className="flex items-center gap-1.5">
               <Layers className="h-3.5 w-3.5" />
               Executed Nodes
             </span>
-            <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-900 text-slate-400">
+            <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-zinc-900 text-zinc-300 border border-zinc-800">
               {nodeResults.length}
             </span>
           </div>
 
           <div className="flex-1 overflow-y-auto p-2.5 space-y-1.5">
             {nodeResults.length === 0 ? (
-              <div className="p-4 text-center text-xs text-slate-500">
+              <div className="p-4 text-center text-xs text-zinc-500">
                 No node executions recorded yet.
               </div>
             ) : (
@@ -255,24 +255,24 @@ export default function ExecutionDetailPage() {
                     onClick={() => setSelectedNode(nr)}
                     className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all ${
                       isSelected
-                        ? 'bg-slate-900 border-emerald-500/50 text-slate-100 shadow-md ring-1 ring-emerald-500/20'
-                        : 'bg-slate-900/30 border-slate-800/80 text-slate-400 hover:bg-slate-900/60 hover:text-slate-200'
+                        ? 'bg-zinc-900 border-white text-white shadow-md ring-1 ring-white/50'
+                        : 'bg-zinc-900/30 border-zinc-800 text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
                     }`}
                   >
                     <div className="overflow-hidden pr-2">
-                      <span className="block text-xs font-bold text-slate-100 truncate">{nr.nodeId}</span>
-                      <span className="block text-[10px] text-slate-500 font-mono truncate">{nr.nodeType}</span>
+                      <span className="block text-xs font-bold text-zinc-100 truncate">{nr.nodeId}</span>
+                      <span className="block text-[10px] text-zinc-500 font-mono truncate">{nr.nodeType}</span>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
                       {nr.durationMs !== undefined && (
-                        <span className="text-[10px] font-mono text-slate-500">
+                        <span className="text-[10px] font-mono text-zinc-500">
                           {nr.durationMs}ms
                         </span>
                       )}
-                      {nr.status === 'success' && <CheckCircle2 className="h-4 w-4 text-emerald-400" />}
-                      {nr.status === 'failed' && <XCircle className="h-4 w-4 text-rose-400" />}
-                      {nr.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-blue-400" />}
+                      {nr.status === 'success' && <CheckCircle2 className="h-4 w-4 text-white" />}
+                      {nr.status === 'failed' && <XCircle className="h-4 w-4 text-zinc-400" />}
+                      {nr.status === 'running' && <Loader2 className="h-4 w-4 animate-spin text-zinc-300" />}
                     </div>
                   </div>
                 );
@@ -282,33 +282,33 @@ export default function ExecutionDetailPage() {
         </div>
 
         {/* Right Content Pane: I/O & Log Inspector */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-slate-950">
+        <div className="flex-1 flex flex-col overflow-hidden bg-zinc-950">
           {!selectedNode ? (
-            <div className="flex-1 flex items-center justify-center text-center p-8 text-slate-500 text-xs">
+            <div className="flex-1 flex items-center justify-center text-center p-8 text-zinc-500 text-xs">
               Select a node from the left panel to inspect its inputs, outputs, and runtime logs.
             </div>
           ) : (
             <>
               {/* Selected Node Header */}
-              <div className="p-4 border-b border-slate-800 bg-slate-900/30 flex items-center justify-between">
+              <div className="p-4 border-b border-zinc-800 bg-zinc-900/40 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-sm font-bold text-slate-100">{selectedNode.nodeId}</h2>
-                    <span className="text-[11px] font-mono text-slate-500">({selectedNode.nodeType})</span>
+                    <h2 className="text-sm font-bold text-zinc-100">{selectedNode.nodeId}</h2>
+                    <span className="text-[11px] font-mono text-zinc-500">({selectedNode.nodeType})</span>
                     <span
                       className={`text-[10px] font-mono uppercase font-semibold px-2 py-0.5 rounded-full ${
                         selectedNode.status === 'success'
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          ? 'bg-white text-zinc-950 font-bold border border-white'
                           : selectedNode.status === 'failed'
-                          ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                          : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                          ? 'bg-zinc-800 text-zinc-300 border border-zinc-700'
+                          : 'bg-zinc-800 text-zinc-200 border border-zinc-700'
                       }`}
                     >
                       {selectedNode.status}
                     </span>
                   </div>
-                  <div className="mt-1 flex items-center gap-3 text-xs text-slate-400 font-mono">
-                    <span>Duration: <strong className="text-slate-200">{selectedNode.durationMs ?? 0}ms</strong></span>
+                  <div className="mt-1 flex items-center gap-3 text-xs text-zinc-400 font-mono">
+                    <span>Duration: <strong className="text-zinc-200">{selectedNode.durationMs ?? 0}ms</strong></span>
                     {selectedNode.startedAt && (
                       <span>Started: {new Date(selectedNode.startedAt).toLocaleTimeString()}</span>
                     )}
@@ -316,35 +316,35 @@ export default function ExecutionDetailPage() {
                 </div>
 
                 {/* Tab selector */}
-                <div className="flex items-center gap-1 rounded-xl bg-slate-900 border border-slate-800 p-1">
+                <div className="flex items-center gap-1 rounded-xl bg-zinc-900 border border-zinc-800 p-1">
                   <button
                     onClick={() => setActiveTab('output')}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                      activeTab === 'output' ? 'bg-slate-800 text-slate-100 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                      activeTab === 'output' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'
                     }`}
                   >
                     Output Data
                   </button>
                   <button
                     onClick={() => setActiveTab('input')}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                      activeTab === 'input' ? 'bg-slate-800 text-slate-100 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                      activeTab === 'input' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'
                     }`}
                   >
                     Input Data
                   </button>
                   <button
                     onClick={() => setActiveTab('logs')}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                      activeTab === 'logs' ? 'bg-slate-800 text-slate-100 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                      activeTab === 'logs' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'
                     }`}
                   >
                     Node Logs ({nodeLogs.length})
                   </button>
                   <button
                     onClick={() => setActiveTab('raw')}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                      activeTab === 'raw' ? 'bg-slate-800 text-slate-100 shadow-sm' : 'text-slate-400 hover:text-slate-200'
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                      activeTab === 'raw' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'
                     }`}
                   >
                     Raw Record
@@ -354,11 +354,11 @@ export default function ExecutionDetailPage() {
 
               {/* Error Banner if Node Failed */}
               {selectedNode.error && (
-                <div className="m-4 rounded-2xl border border-rose-900/50 bg-rose-950/20 p-4 flex items-start gap-3 text-rose-300">
-                  <AlertTriangle className="h-5 w-5 text-rose-400 shrink-0 mt-0.5" />
+                <div className="m-4 rounded-2xl border border-zinc-700 bg-zinc-900/60 p-4 flex items-start gap-3 text-zinc-200">
+                  <AlertTriangle className="h-5 w-5 text-zinc-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-xs font-bold text-rose-200">Execution Error Encountered</h4>
-                    <p className="mt-1 text-xs font-mono text-rose-400 break-all leading-relaxed">
+                    <h4 className="text-xs font-bold text-zinc-100">Execution Error Encountered</h4>
+                    <p className="mt-1 text-xs font-mono text-zinc-300 break-all leading-relaxed">
                       {selectedNode.error}
                     </p>
                   </div>
@@ -370,16 +370,16 @@ export default function ExecutionDetailPage() {
                 {activeTab === 'output' && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-slate-300">Node Output Payload</span>
+                      <span className="text-xs font-semibold text-zinc-300">Node Output Payload</span>
                       <button
                         onClick={() => copyText(JSON.stringify(selectedNode.outputData, null, 2), 'output')}
-                        className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-emerald-400 transition-colors"
+                        className="flex items-center gap-1 text-[11px] font-semibold text-zinc-400 hover:text-white transition-colors"
                       >
-                        {copiedKey === 'output' ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                        {copiedKey === 'output' ? <Check className="h-3.5 w-3.5 text-white" /> : <Copy className="h-3.5 w-3.5" />}
                         {copiedKey === 'output' ? 'Copied' : 'Copy Output JSON'}
                       </button>
                     </div>
-                    <pre className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 font-mono text-xs text-emerald-400 overflow-x-auto leading-relaxed shadow-inner">
+                    <pre className="p-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 font-mono text-xs text-zinc-100 overflow-x-auto leading-relaxed shadow-inner">
                       {JSON.stringify(selectedNode.outputData ?? {}, null, 2)}
                     </pre>
                   </div>
@@ -388,16 +388,16 @@ export default function ExecutionDetailPage() {
                 {activeTab === 'input' && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-slate-300">Predecessor Input Payload</span>
+                      <span className="text-xs font-semibold text-zinc-300">Predecessor Input Payload</span>
                       <button
                         onClick={() => copyText(JSON.stringify(selectedNode.inputData, null, 2), 'input')}
-                        className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-emerald-400 transition-colors"
+                        className="flex items-center gap-1 text-[11px] font-semibold text-zinc-400 hover:text-white transition-colors"
                       >
-                        {copiedKey === 'input' ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                        {copiedKey === 'input' ? <Check className="h-3.5 w-3.5 text-white" /> : <Copy className="h-3.5 w-3.5" />}
                         {copiedKey === 'input' ? 'Copied' : 'Copy Input JSON'}
                       </button>
                     </div>
-                    <pre className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 font-mono text-xs text-blue-400 overflow-x-auto leading-relaxed shadow-inner">
+                    <pre className="p-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 font-mono text-xs text-zinc-200 overflow-x-auto leading-relaxed shadow-inner">
                       {JSON.stringify(selectedNode.inputData ?? {}, null, 2)}
                     </pre>
                   </div>
@@ -405,28 +405,28 @@ export default function ExecutionDetailPage() {
 
                 {activeTab === 'logs' && (
                   <div className="space-y-2">
-                    <span className="text-xs font-semibold text-slate-300">Execution Logs Scoped to this Node</span>
+                    <span className="text-xs font-semibold text-zinc-300">Execution Logs Scoped to this Node</span>
                     {nodeLogs.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic p-4">No specific logs generated for this node.</p>
+                      <p className="text-xs text-zinc-500 italic p-4">No specific logs generated for this node.</p>
                     ) : (
-                      <div className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 font-mono text-xs space-y-2 leading-relaxed">
+                      <div className="p-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 font-mono text-xs space-y-2 leading-relaxed">
                         {nodeLogs.map((l, i) => (
                           <div key={l.id || i} className="flex items-start gap-2">
-                            <span className="text-slate-500 font-mono text-[10px]">
+                            <span className="text-zinc-500 font-mono text-[10px]">
                               {new Date(l.timestamp).toLocaleTimeString()}
                             </span>
                             <span
                               className={`uppercase text-[9px] px-1.5 rounded font-bold ${
                                 l.level === 'error'
-                                  ? 'bg-rose-500/20 text-rose-400'
+                                  ? 'bg-zinc-800 text-zinc-200 border border-zinc-700'
                                   : l.level === 'warn'
-                                  ? 'bg-amber-500/20 text-amber-400'
-                                  : 'bg-blue-500/20 text-blue-400'
+                                  ? 'bg-zinc-800 text-zinc-300 border border-zinc-700'
+                                  : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
                               }`}
                             >
                               {l.level}
                             </span>
-                            <span className="text-slate-200 break-all">{l.message}</span>
+                            <span className="text-zinc-200 break-all">{l.message}</span>
                           </div>
                         ))}
                       </div>
@@ -436,8 +436,8 @@ export default function ExecutionDetailPage() {
 
                 {activeTab === 'raw' && (
                   <div className="space-y-2">
-                    <span className="text-xs font-semibold text-slate-300">Raw Node Result Object</span>
-                    <pre className="p-4 rounded-2xl border border-slate-800 bg-slate-900/60 font-mono text-xs text-slate-300 overflow-x-auto leading-relaxed shadow-inner">
+                    <span className="text-xs font-semibold text-zinc-300">Raw Node Result Object</span>
+                    <pre className="p-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 font-mono text-xs text-zinc-300 overflow-x-auto leading-relaxed shadow-inner">
                       {JSON.stringify(selectedNode, null, 2)}
                     </pre>
                   </div>
