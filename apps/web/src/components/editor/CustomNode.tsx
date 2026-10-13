@@ -221,19 +221,19 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
   return (
     <div
       onClick={() => selectNode(id)}
-      className={`group relative min-w-[260px] max-w-[290px] rounded-2xl border transition-all duration-200 cursor-pointer select-none ${
+      className={`group relative min-w-[280px] max-w-[310px] rounded-2xl border transition-all duration-200 cursor-pointer select-none ${
         isDisabled ? 'opacity-40 grayscale border-dashed border-zinc-700' : ''
       } ${
         selected
-          ? 'border-white bg-zinc-950 shadow-2xl ring-1 ring-white/70'
-          : 'border-zinc-800 bg-zinc-950/95 hover:border-zinc-700 shadow-xl'
+          ? 'border-white bg-zinc-900 shadow-[0_0_30px_rgba(255,255,255,0.18)] ring-2 ring-white/90'
+          : 'border-zinc-700/80 bg-zinc-900/95 hover:border-zinc-500 shadow-[0_10px_30px_rgba(0,0,0,0.55)] hover:shadow-[0_16px_45px_rgba(0,0,0,0.75)]'
       } ${
         status === 'running'
-          ? 'border-zinc-300 ring-1 ring-zinc-300/50'
+          ? 'border-zinc-200 ring-2 ring-white/60 animate-pulse'
           : status === 'failed'
-          ? 'border-zinc-600 ring-1 ring-zinc-600/50'
+          ? 'border-zinc-500 ring-1 ring-zinc-500'
           : status === 'success'
-          ? 'border-zinc-500'
+          ? 'border-zinc-400'
           : ''
       }`}
     >
@@ -287,7 +287,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
           type="target"
           position={Position.Left}
           id={port.name}
-          className="react-flow__handle-left !h-3 !w-3 !rounded-full !border-2 !border-zinc-950 !bg-zinc-400 hover:!bg-white hover:!scale-125 transition-all shadow-md"
+          className="react-flow__handle-left !h-3.5 !w-3.5 !rounded-full !border-2 !border-zinc-950 !bg-zinc-200 hover:!bg-white hover:!scale-150 transition-all shadow-[0_0_8px_rgba(255,255,255,0.6)] cursor-crosshair"
           style={{
             top: `${((idx + 1) / (inputs.length + 1)) * 100}%`,
           }}
@@ -295,51 +295,51 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
       ))}
 
       {/* Node Header */}
-      <div className="flex items-center gap-3 p-3.5 border-b border-zinc-800/80">
+      <div className="flex items-center gap-3.5 p-4 border-b border-zinc-800/90">
         {/* Brand Icon Box - Formal Monochrome Container */}
         <div
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-100 shadow-inner transition-transform group-hover:scale-105 group-hover:border-zinc-700"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-950 text-white shadow-inner transition-transform group-hover:scale-105 group-hover:border-zinc-500"
         >
           <NodeIcon nodeType={nodeData.type} iconName={nodeData.icon} className="h-5 w-5 text-zinc-100" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-1">
-            <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-zinc-400 truncate">
+          <div className="flex items-center justify-between gap-1.5">
+            <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-400 truncate">
               {nodeData.category || 'node'}
             </span>
 
             {/* Status Telemetry Badge */}
             {status === 'running' && (
-              <Badge variant="info" className="gap-1 text-[10px] py-0 px-1.5 animate-pulse">
+              <Badge variant="info" className="gap-1 text-[10px] py-0 px-2 font-mono uppercase tracking-wider animate-pulse">
                 <Loader2 className="h-2.5 w-2.5 animate-spin" />
                 running
               </Badge>
             )}
             {status === 'success' && (
-              <Badge variant="default" className="gap-1 text-[10px] py-0 px-1.5">
+              <Badge variant="default" className="gap-1 text-[10px] py-0 px-2 font-mono uppercase tracking-wider bg-white text-zinc-950 font-bold">
                 <CheckCircle2 className="h-2.5 w-2.5" />
                 {nodeResult?.durationMs !== undefined ? `${nodeResult.durationMs}ms` : 'ok'}
               </Badge>
             )}
             {status === 'failed' && (
-              <Badge variant="destructive" className="gap-1 text-[10px] py-0 px-1.5">
+              <Badge variant="destructive" className="gap-1 text-[10px] py-0 px-2 font-mono uppercase tracking-wider">
                 <XCircle className="h-2.5 w-2.5" />
                 failed
               </Badge>
             )}
           </div>
 
-          <div className="truncate text-xs font-semibold text-zinc-100 mt-0.5 tracking-tight group-hover:text-white transition-colors">
+          <div className="truncate text-sm font-bold text-white mt-0.5 tracking-tight group-hover:text-white transition-colors">
             {nodeData.label || 'Node'}
           </div>
         </div>
       </div>
 
       {/* Node Body & Parameter Snippet */}
-      <div className="p-3 bg-zinc-950/60 rounded-b-2xl text-[11px] space-y-1.5">
+      <div className="p-3.5 bg-zinc-950/70 rounded-b-2xl text-[11px] space-y-2 border-t border-zinc-850">
         <div className="flex items-center justify-between text-zinc-400 font-mono text-[10px]">
-          <span className="truncate text-zinc-500">{nodeData.type}</span>
+          <span className="truncate text-zinc-400 font-medium">{nodeData.type}</span>
           {isDisabled && (
             <Badge variant="warning" className="text-[9px] uppercase font-bold py-0 px-1.5">
               DISABLED
@@ -348,7 +348,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
         </div>
 
         {paramSummary && (
-          <div className="rounded-lg bg-zinc-900 border border-zinc-800 px-2.5 py-1 text-[10px] font-mono text-zinc-300 truncate shadow-inner">
+          <div className="rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-1.5 text-[11px] font-mono text-zinc-200 truncate shadow-inner">
             {paramSummary}
           </div>
         )}
@@ -361,7 +361,7 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
             type="source"
             position={Position.Right}
             id={port.name}
-            className="react-flow__handle-right !h-3 !w-3 !rounded-full !border-2 !border-zinc-950 !bg-zinc-200 hover:!bg-white hover:!scale-125 transition-all shadow-md"
+            className="react-flow__handle-right !h-3.5 !w-3.5 !rounded-full !border-2 !border-zinc-950 !bg-white hover:!scale-150 transition-all shadow-[0_0_10px_rgba(255,255,255,0.7)] cursor-crosshair"
             style={{
               top: `${((idx + 1) / (outputs.length + 1)) * 100}%`,
             }}

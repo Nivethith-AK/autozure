@@ -5,6 +5,9 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'AutoZure — Visual Workflow Automation',
   description: 'Self-hosted, modular visual workflow automation platform.',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

@@ -9,6 +9,7 @@ import {
   BackgroundVariant,
   useReactFlow,
   ReactFlowProvider,
+  MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useWorkflowStore } from '@/store/workflowStore';
@@ -112,8 +113,8 @@ function CanvasInner() {
     const updatedNodes = nodes.map((node) => {
       const l = layerMap[node.id] || 0;
       const indexInLayer = layers[l].indexOf(node.id);
-      const x = 120 + l * 340;
-      const y = 140 + indexInLayer * 160;
+      const x = 80 + l * 440;
+      const y = 160 + indexInLayer * 220;
 
       return {
         ...node,
@@ -122,7 +123,7 @@ function CanvasInner() {
     });
 
     setNodes(updatedNodes);
-    setTimeout(() => fitView({ padding: 0.2, duration: 400 }), 50);
+    setTimeout(() => fitView({ padding: 0.25, duration: 400 }), 50);
   }, [nodes, edges, setNodes, fitView]);
 
   return (
@@ -141,6 +142,18 @@ function CanvasInner() {
         nodeTypes={nodeTypes}
         onNodeClick={(_event, node) => selectNode(node.id)}
         onPaneClick={() => selectNode(null)}
+        defaultEdgeOptions={{
+          type: 'smoothstep',
+          animated: true,
+          style: { stroke: '#d4d4d8', strokeWidth: 2 },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: 16,
+            height: 16,
+            color: '#d4d4d8',
+          },
+        }}
+        connectionLineStyle={{ stroke: '#ffffff', strokeWidth: 2 }}
         fitView
         className="touch-none select-none"
       >

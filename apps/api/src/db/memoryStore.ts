@@ -82,13 +82,13 @@ class MemoryStore {
           {
             id: 'node-trigger-1',
             type: 'trigger.manual',
-            position: { x: 100, y: 200 },
+            position: { x: 80, y: 200 },
             data: {
               type: 'trigger.manual',
               label: 'Manual Trigger',
               category: 'triggers',
               icon: 'Play',
-              color: '#6366f1',
+              color: '#ffffff',
               parameters: {
                 data: JSON.stringify({ message: 'Hello from AutoZure!' }),
               },
@@ -97,13 +97,13 @@ class MemoryStore {
           {
             id: 'node-var-2',
             type: 'data.setVariable',
-            position: { x: 380, y: 200 },
+            position: { x: 480, y: 200 },
             data: {
               type: 'data.setVariable',
               label: 'Set Parameters',
               category: 'data',
               icon: 'Variable',
-              color: '#0ea5e9',
+              color: '#ffffff',
               parameters: {
                 assignments: JSON.stringify({ environment: 'local', status: 'ready', counter: 42 }),
                 keepOriginal: true,
@@ -113,13 +113,13 @@ class MemoryStore {
           {
             id: 'node-debug-3',
             type: 'util.debug',
-            position: { x: 660, y: 200 },
+            position: { x: 880, y: 200 },
             data: {
               type: 'util.debug',
               label: 'Inspect Output',
               category: 'utils',
               icon: 'Bug',
-              color: '#84cc16',
+              color: '#ffffff',
               parameters: {
                 label: 'Sample Output Inspection',
               },
@@ -133,6 +133,8 @@ class MemoryStore {
             target: 'node-var-2',
             sourceHandle: 'output',
             targetHandle: 'input',
+            type: 'smoothstep',
+            animated: true,
           },
           {
             id: 'edge-2-3',
@@ -140,6 +142,8 @@ class MemoryStore {
             target: 'node-debug-3',
             sourceHandle: 'output',
             targetHandle: 'input',
+            type: 'smoothstep',
+            animated: true,
           },
         ],
       },

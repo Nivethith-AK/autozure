@@ -8,7 +8,7 @@ import {
   Execution,
   ExecutionLog,
 } from '@autozure/types';
-import { applyNodeChanges, applyEdgeChanges, NodeChange, EdgeChange, Connection, addEdge } from '@xyflow/react';
+import { applyNodeChanges, applyEdgeChanges, NodeChange, EdgeChange, Connection, addEdge, MarkerType } from '@xyflow/react';
 
 interface WorkflowState {
   // Workflow metadata
@@ -124,8 +124,15 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       edges: addEdge(
         {
           ...connection,
+          type: 'smoothstep',
           animated: true,
           style: { stroke: '#d4d4d8', strokeWidth: 2 },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: 16,
+            height: 16,
+            color: '#d4d4d8',
+          },
         },
         get().edges
       ),
@@ -156,8 +163,8 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
         label: def?.label || nodeType,
         category: def?.category || 'actions',
         icon: def?.icon || 'Box',
-        color: def?.color || '#3b82f6',
-        inputs: def?.inputs || [{ name: 'input', label: 'Input' }],
+        color: '#ffffff',
+        inputs: def?.inputs || (nodeType.startsWith('trigger.') ? [] : [{ name: 'input', label: 'Input' }]),
         outputs: def?.outputs || [{ name: 'output', label: 'Output' }],
         parameters: defaultParams,
       },
