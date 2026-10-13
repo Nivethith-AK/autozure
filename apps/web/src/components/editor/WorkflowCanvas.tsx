@@ -139,6 +139,7 @@ function CanvasInner() {
         onDragOver={onDragOver}
         onDrop={onDrop}
         nodeTypes={nodeTypes}
+        onNodeClick={(_event, node) => selectNode(node.id)}
         onPaneClick={() => selectNode(null)}
         fitView
         className="touch-none select-none"

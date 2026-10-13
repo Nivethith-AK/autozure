@@ -24,31 +24,53 @@ export const apiClient = axios.create({
   },
 });
 
-// Request interceptor: attach token & workspaceId
-apiClient.interceptors.request.use(async (config) => {
-  if (typeof window !== 'undefined') {
-    let token = localStorage.getItem('autozure_token');
-    let currentWorkspaceId = localStorage.getItem('autozure_workspace_id');
+// Token acquisition deduplication promise
+let pendingLoginPromise: Promise<string | null> | null = null;
+let pendingRefreshPromise: Promise<string | null> | null = null;
 
-    if (!currentWorkspaceId) {
-      currentWorkspaceId = 'ws-default-001';
-      localStorage.setItem('autozure_workspace_id', 'ws-default-001');
-    }
+async function getOrFetchToken(): Promise<string | null> {
+  if (typeof window === 'undefined') return null;
+  const existingToken = localStorage.getItem('autozure_token');
+  if (existingToken) return existingToken;
 
-    if (!token && !config.url?.includes('/auth/')) {
+  if (!pendingLoginPromise) {
+    pendingLoginPromise = (async () => {
       try {
         const authRes = await axios.post(`${API_BASE_URL}/auth/login`, {
           email: 'admin@autozure.local',
           password: 'password123',
         });
-        token = authRes.data.tokens.accessToken;
-        localStorage.setItem('autozure_token', token as string);
-        localStorage.setItem('autozure_refresh_token', authRes.data.tokens.refreshToken);
-      } catch {}
+        const token = authRes.data.tokens?.accessToken;
+        if (token) {
+          localStorage.setItem('autozure_token', token);
+          localStorage.setItem('autozure_refresh_token', authRes.data.tokens.refreshToken);
+        }
+        return token || null;
+      } catch (err) {
+        console.warn('Auto-login initialization failed:', err);
+        return null;
+      } finally {
+        pendingLoginPromise = null;
+      }
+    })();
+  }
+  return pendingLoginPromise;
+}
+
+// Request interceptor: attach token & workspaceId
+apiClient.interceptors.request.use(async (config) => {
+  if (typeof window !== 'undefined') {
+    let currentWorkspaceId = localStorage.getItem('autozure_workspace_id');
+    if (!currentWorkspaceId) {
+      currentWorkspaceId = 'ws-default-001';
+      localStorage.setItem('autozure_workspace_id', 'ws-default-001');
     }
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (!config.url?.includes('/auth/')) {
+      const token = await getOrFetchToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     config.headers['x-workspace-id'] = currentWorkspaceId;
   }
@@ -64,17 +86,29 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem('autozure_refresh_token');
       if (refreshToken) {
-        try {
-          const res = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
-          const newTokens = res.data.tokens;
-          localStorage.setItem('autozure_token', newTokens.accessToken);
-          localStorage.setItem('autozure_refresh_token', newTokens.refreshToken);
-          originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
+        if (!pendingRefreshPromise) {
+          pendingRefreshPromise = (async () => {
+            try {
+              const res = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
+              const newTokens = res.data.tokens;
+              localStorage.setItem('autozure_token', newTokens.accessToken);
+              localStorage.setItem('autozure_refresh_token', newTokens.refreshToken);
+              return newTokens.accessToken as string;
+            } catch {
+              localStorage.removeItem('autozure_token');
+              localStorage.removeItem('autozure_refresh_token');
+              window.location.href = '/login';
+              return null;
+            } finally {
+              pendingRefreshPromise = null;
+            }
+          })();
+        }
+
+        const newAccessToken = await pendingRefreshPromise;
+        if (newAccessToken) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return apiClient(originalRequest);
-        } catch {
-          localStorage.removeItem('autozure_token');
-          localStorage.removeItem('autozure_refresh_token');
-          window.location.href = '/login';
         }
       }
     }

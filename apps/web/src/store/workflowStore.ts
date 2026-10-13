@@ -73,10 +73,24 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   isExecuting: false,
 
   setWorkflow: (workflow) => {
-    const rawNodes = (workflow.graph?.nodes || []).map((n) => ({
-      ...n,
-      type: 'custom',
-    }));
+    const defs = get().nodeDefinitions;
+    const rawNodes = (workflow.graph?.nodes || []).map((n) => {
+      const def = defs.find((d) => d.type === (n.data?.type || n.type));
+      return {
+        ...n,
+        type: 'custom',
+        data: {
+          ...n.data,
+          type: n.data?.type || n.type,
+          label: n.data?.label || def?.label || n.type,
+          category: n.data?.category || def?.category || 'actions',
+          icon: n.data?.icon || def?.icon || 'Box',
+          inputs: n.data?.inputs || def?.inputs || (n.data?.type?.startsWith('trigger.') ? [] : [{ name: 'input', label: 'Input' }]),
+          outputs: n.data?.outputs || def?.outputs || [{ name: 'output', label: 'Output' }],
+          parameters: n.data?.parameters || {},
+        },
+      };
+    });
     const rawEdges = workflow.graph?.edges || [];
     set({
       workflow,
@@ -262,7 +276,24 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     });
   },
 
-  setNodeDefinitions: (nodeDefinitions) => set({ nodeDefinitions }),
+  setNodeDefinitions: (nodeDefinitions) => {
+    const currentNodes = get().nodes.map((n) => {
+      const def = nodeDefinitions.find((d) => d.type === (n.data?.type || n.type));
+      if (!def) return n;
+      return {
+        ...n,
+        data: {
+          ...n.data,
+          label: n.data?.label || def.label,
+          category: n.data?.category || def.category,
+          icon: n.data?.icon || def.icon,
+          inputs: n.data?.inputs || def.inputs || (n.data?.type?.startsWith('trigger.') ? [] : [{ name: 'input', label: 'Input' }]),
+          outputs: n.data?.outputs || def.outputs || [{ name: 'output', label: 'Output' }],
+        },
+      };
+    });
+    set({ nodeDefinitions, nodes: currentNodes });
+  },
   setActiveExecution: (activeExecution) => set({ activeExecution }),
   addExecutionLog: (log) => set({ executionLogs: [log, ...get().executionLogs] }),
   setIsExecuting: (isExecuting) => set({ isExecuting }),

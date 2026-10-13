@@ -116,11 +116,27 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
   const addNode = useWorkflowStore((s) => s.addNode);
   const activeExecution = useWorkflowStore((s) => s.activeExecution);
   const toggleNodeDisabled = useWorkflowStore((s) => s.toggleNodeDisabled);
+  const nodeDefinitions = useWorkflowStore((s) => s.nodeDefinitions);
 
   const nodeData = data as any;
-  const IconComponent = ICON_MAP[nodeData.icon] || Box;
-  const brandColor = nodeData.color || '#ffffff';
   const isDisabled = !!nodeData.disabled;
+
+  const definition = React.useMemo(() => {
+    return nodeDefinitions.find((d) => d.type === (nodeData?.type || id));
+  }, [nodeDefinitions, nodeData?.type, id]);
+
+  const inputs = React.useMemo(() => {
+    if (nodeData.inputs && nodeData.inputs.length > 0) return nodeData.inputs;
+    if (definition?.inputs && definition.inputs.length > 0) return definition.inputs;
+    if (nodeData.type?.startsWith('trigger.')) return [];
+    return [{ name: 'input', label: 'Input' }];
+  }, [nodeData.inputs, definition?.inputs, nodeData.type]);
+
+  const outputs = React.useMemo(() => {
+    if (nodeData.outputs && nodeData.outputs.length > 0) return nodeData.outputs;
+    if (definition?.outputs && definition.outputs.length > 0) return definition.outputs;
+    return [{ name: 'output', label: 'Output' }];
+  }, [nodeData.outputs, definition?.outputs]);
 
   // Determine node execution status from active execution
   const nodeResult = activeExecution?.nodeResults?.find((r) => r.nodeId === id);
@@ -265,33 +281,26 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
       </div>
 
       {/* Input handles (Left) */}
-      {(nodeData.inputs || []).map((port: any, idx: number) => (
-        <div key={`in-${port.name}-${idx}`} className="relative">
-          <Handle
-            type="target"
-            position={Position.Left}
-            id={port.name}
-            className="react-flow__handle-left"
-            style={{
-              top: `${((idx + 1) / ((nodeData.inputs?.length || 1) + 1)) * 100}%`,
-              backgroundColor: '#71717a',
-            }}
-          />
-        </div>
+      {inputs.map((port: any, idx: number) => (
+        <Handle
+          key={`in-${port.name}-${idx}`}
+          type="target"
+          position={Position.Left}
+          id={port.name}
+          className="react-flow__handle-left !h-3 !w-3 !rounded-full !border-2 !border-zinc-950 !bg-zinc-400 hover:!bg-white hover:!scale-125 transition-all shadow-md"
+          style={{
+            top: `${((idx + 1) / (inputs.length + 1)) * 100}%`,
+          }}
+        />
       ))}
 
       {/* Node Header */}
       <div className="flex items-center gap-3 p-3.5 border-b border-zinc-800/80">
-        {/* Brand Icon Box */}
+        {/* Brand Icon Box - Formal Monochrome Container */}
         <div
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-inner transition-transform group-hover:scale-105"
-          style={{
-            backgroundColor: `${brandColor}18`,
-            color: brandColor,
-            border: `1px solid ${brandColor}35`,
-          }}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-100 shadow-inner transition-transform group-hover:scale-105 group-hover:border-zinc-700"
         >
-          <NodeIcon nodeType={nodeData.type} iconName={nodeData.icon} className="h-5 w-5" />
+          <NodeIcon nodeType={nodeData.type} iconName={nodeData.icon} className="h-5 w-5 text-zinc-100" />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -346,16 +355,15 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
       </div>
 
       {/* Output handles (Right) */}
-      {(nodeData.outputs || []).map((port: any, idx: number) => (
-        <div key={`out-${port.name}-${idx}`} className="relative">
+      {outputs.map((port: any, idx: number) => (
+        <React.Fragment key={`out-${port.name}-${idx}`}>
           <Handle
             type="source"
             position={Position.Right}
             id={port.name}
-            className="react-flow__handle-right"
+            className="react-flow__handle-right !h-3 !w-3 !rounded-full !border-2 !border-zinc-950 !bg-zinc-200 hover:!bg-white hover:!scale-125 transition-all shadow-md"
             style={{
-              top: `${((idx + 1) / ((nodeData.outputs?.length || 1) + 1)) * 100}%`,
-              backgroundColor: '#ffffff',
+              top: `${((idx + 1) / (outputs.length + 1)) * 100}%`,
             }}
           />
           {/* Label for special branches like condition true/false */}
@@ -365,13 +373,13 @@ export const CustomNode = memo(({ id, data, selected }: NodeProps) => {
                 port.name === 'true' ? 'text-zinc-200' : 'text-zinc-500'
               }`}
               style={{
-                top: `${((idx + 1) / ((nodeData.outputs?.length || 1) + 1)) * 100 - 8}%`,
+                top: `calc(${((idx + 1) / (outputs.length + 1)) * 100}% - 7px)`,
               }}
             >
               {port.name}
             </span>
           )}
-        </div>
+        </React.Fragment>
       ))}
     </div>
   );

@@ -7,7 +7,7 @@ export const authRouter = Router();
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: process.env.NODE_ENV === 'production' ? 100 : 500,
   message: { error: 'TOO_MANY_REQUESTS', message: 'Too many auth attempts' },
 });
 
