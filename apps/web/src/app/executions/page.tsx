@@ -200,6 +200,8 @@ export default function ExecutionsPage() {
           <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-zinc-500" />
           <input
             type="text"
+            id="search-executions"
+            name="search-executions"
             placeholder="Search by ID, workflow name, or trigger..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

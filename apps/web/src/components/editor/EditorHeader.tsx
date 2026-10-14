@@ -222,6 +222,8 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
             {isEditingTitle ? (
               <Input
                 type="text"
+                id="workflow-title-input"
+                name="workflow-title-input"
                 autoFocus
                 value={titleValue}
                 onChange={(e) => setTitleValue(e.target.value)}
@@ -303,11 +305,12 @@ export function EditorHeader({ onToggleLibrary, isLibraryOpen }: EditorHeaderPro
           </Button>
 
           <label
+            htmlFor="import-workflow-json"
             className="inline-flex items-center justify-center rounded-xl h-7 w-7 text-xs text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             title="Import Workflow JSON"
           >
             <Upload className="h-3.5 w-3.5" />
-            <input type="file" accept=".json" onChange={handleImportJson} className="hidden" />
+            <input id="import-workflow-json" name="import-workflow-json" type="file" accept=".json" onChange={handleImportJson} className="hidden" />
           </label>
 
           {/* Toggle Node Library */}

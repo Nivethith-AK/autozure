@@ -598,8 +598,10 @@ function SettingsContent() {
 
               <form onSubmit={handleCreateCredential} className="mt-2 space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-zinc-300 mb-1">Provider Type</label>
+                  <label htmlFor="cred-provider-type" className="block text-xs font-medium text-zinc-300 mb-1">Provider Type</label>
                   <select
+                    id="cred-provider-type"
+                    name="cred-provider-type"
                     value={selectedType}
                     onChange={(e) => setSelectedType(e.target.value)}
                     className="w-full rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-2 text-xs text-zinc-100 focus:outline-none focus:border-zinc-500 font-medium"
@@ -611,9 +613,11 @@ function SettingsContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-zinc-300 mb-1">Friendly Name</label>
+                  <label htmlFor="cred-friendly-name" className="block text-xs font-medium text-zinc-300 mb-1">Friendly Name</label>
                   <Input
                     type="text"
+                    id="cred-friendly-name"
+                    name="cred-friendly-name"
                     required
                     placeholder="e.g. Production OpenAI Key"
                     value={credName}
@@ -625,7 +629,7 @@ function SettingsContent() {
                 {activePreset.fields.map((field) => (
                   <div key={field.name}>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-medium text-zinc-300 capitalize">{field.label}</label>
+                      <label htmlFor={`cred-field-${field.name}`} className="text-xs font-medium text-zinc-300 capitalize">{field.label}</label>
                       {field.type === 'password' && (
                         <button
                           type="button"
@@ -639,6 +643,8 @@ function SettingsContent() {
                     </div>
                     <Input
                       type={field.type === 'password' ? (showSecret ? 'text' : 'password') : 'text'}
+                      id={`cred-field-${field.name}`}
+                      name={`cred-field-${field.name}`}
                       required
                       placeholder={field.placeholder}
                       value={credData[field.name] || ''}
@@ -729,17 +735,21 @@ function SettingsContent() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-zinc-300 mb-1">Workspace Name</label>
+                <label htmlFor="workspace-name-input" className="block text-xs font-medium text-zinc-300 mb-1">Workspace Name</label>
                 <Input
                   type="text"
+                  id="workspace-name-input"
+                  name="workspace-name"
                   defaultValue="Production Cluster"
                   className="bg-zinc-900 border-zinc-800 text-xs text-zinc-100"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-zinc-300 mb-1">Workspace Slug</label>
+                <label htmlFor="workspace-slug-input" className="block text-xs font-medium text-zinc-300 mb-1">Workspace Slug</label>
                 <Input
                   type="text"
+                  id="workspace-slug-input"
+                  name="workspace-slug"
                   disabled
                   defaultValue="ws-production-cluster"
                   className="bg-zinc-900/60 border-zinc-800 text-xs text-muted-foreground font-mono"

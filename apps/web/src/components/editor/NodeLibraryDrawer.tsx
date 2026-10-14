@@ -177,6 +177,8 @@ export function NodeLibraryDrawer({ isOpen, onClose }: NodeLibraryDrawerProps) {
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500 pointer-events-none" />
           <Input
             type="text"
+            id="search-library-nodes"
+            name="search-library-nodes"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search 93 connectors & actions..."

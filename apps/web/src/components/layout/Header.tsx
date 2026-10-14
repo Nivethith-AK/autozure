@@ -32,6 +32,8 @@ export function Header() {
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500 pointer-events-none" />
           <Input
             type="text"
+            id="global-search"
+            name="global-search"
             placeholder="Search workflows, triggers..."
             className="pl-9 h-9 bg-zinc-900 border-zinc-800 text-xs rounded-xl focus-visible:ring-white"
           />

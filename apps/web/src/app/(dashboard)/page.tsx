@@ -852,6 +852,8 @@ export default function DashboardPage() {
             <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               type="text"
+              id="search-workflows"
+              name="search-workflows"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search workflows by name or description..."
@@ -896,6 +898,9 @@ export default function DashboardPage() {
 
             {/* Sort Dropdown */}
             <select
+              id="sort-workflows"
+              name="sort-workflows"
+              aria-label="Sort workflows"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
               className="rounded-xl bg-card border border-border px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-zinc-500 font-medium"

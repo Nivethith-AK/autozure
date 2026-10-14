@@ -191,11 +191,13 @@ export function NodeConfigDrawer() {
           <TabsContent value="parameters" className="mt-0 space-y-4">
             {/* Rename Title */}
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="node-name-input" className="block text-[11px] font-semibold text-zinc-300 uppercase tracking-wider mb-1.5">
                 Node Name
               </label>
               <Input
                 type="text"
+                id="node-name-input"
+                name="node-name-input"
                 value={nodeData.label || ''}
                 onChange={(e) => updateNodeLabel(selectedNodeId, e.target.value)}
                 className="h-8 bg-zinc-900 border-zinc-800 text-xs rounded-xl"
@@ -213,7 +215,7 @@ export function NodeConfigDrawer() {
               (definition?.parameters || []).map((param: ParameterDefinition) => (
                 <div key={param.name} className="space-y-1.5 rounded-xl p-2.5 bg-zinc-900/60 border border-zinc-800">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-zinc-200 flex items-center gap-1">
+                    <label htmlFor={`param-${param.name}`} className="text-xs font-medium text-zinc-200 flex items-center gap-1">
                       {param.label}
                       {param.required && <span className="text-zinc-400">*</span>}
                     </label>
@@ -247,6 +249,8 @@ export function NodeConfigDrawer() {
                   {param.type === 'string' && (
                     <Input
                       type="text"
+                      id={`param-${param.name}`}
+                      name={`param-${param.name}`}
                       value={parameters[param.name] ?? ''}
                       onChange={(e) => handleParamChange(param.name, e.target.value)}
                       placeholder={param.placeholder}
@@ -257,6 +261,8 @@ export function NodeConfigDrawer() {
                   {param.type === 'number' && (
                     <Input
                       type="number"
+                      id={`param-${param.name}`}
+                      name={`param-${param.name}`}
                       value={parameters[param.name] ?? ''}
                       onChange={(e) => handleParamChange(param.name, Number(e.target.value))}
                       className="h-8 bg-zinc-900 border-zinc-800 text-xs font-mono rounded-xl"
@@ -265,8 +271,10 @@ export function NodeConfigDrawer() {
 
                   {param.type === 'boolean' && (
                     <div className="flex items-center justify-between mt-1 p-2 rounded-xl bg-zinc-900 border border-zinc-800">
-                      <span className="text-xs text-zinc-300 font-medium">Enabled</span>
+                      <label htmlFor={`param-${param.name}`} className="text-xs text-zinc-300 font-medium">Enabled</label>
                       <Switch
+                        id={`param-${param.name}`}
+                        name={`param-${param.name}`}
                         checked={!!parameters[param.name]}
                         onCheckedChange={(checked) => handleParamChange(param.name, checked)}
                       />
@@ -275,6 +283,8 @@ export function NodeConfigDrawer() {
 
                   {param.type === 'select' && (
                     <select
+                      id={`param-${param.name}`}
+                      name={`param-${param.name}`}
                       value={parameters[param.name] ?? param.default ?? ''}
                       onChange={(e) => handleParamChange(param.name, e.target.value)}
                       className="w-full rounded-xl bg-zinc-900 border border-zinc-800 px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-white transition-all"
@@ -291,6 +301,8 @@ export function NodeConfigDrawer() {
                     <div className="relative">
                       <Textarea
                         rows={6}
+                        id={`param-${param.name}`}
+                        name={`param-${param.name}`}
                         value={
                           typeof parameters[param.name] === 'object'
                             ? JSON.stringify(parameters[param.name], null, 2)
@@ -320,11 +332,13 @@ export function NodeConfigDrawer() {
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-zinc-300 uppercase tracking-wider mb-1.5 font-mono">
+              <label htmlFor="sample-test-payload" className="block text-[11px] font-semibold text-zinc-300 uppercase tracking-wider mb-1.5 font-mono">
                 Sample Input Payload (JSON)
               </label>
               <Textarea
                 rows={5}
+                id="sample-test-payload"
+                name="sample-test-payload"
                 value={testPayload}
                 onChange={(e) => setTestPayload(e.target.value)}
                 className="bg-zinc-900 border-zinc-800 text-xs text-zinc-200 font-mono"

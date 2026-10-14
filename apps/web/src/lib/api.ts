@@ -28,11 +28,51 @@ export const apiClient = axios.create({
 let pendingLoginPromise: Promise<string | null> | null = null;
 let pendingRefreshPromise: Promise<string | null> | null = null;
 
+function isTokenExpired(token: string): boolean {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return true;
+    const payload = JSON.parse(atob(parts[1]));
+    if (!payload.exp) return false;
+    return payload.exp * 1000 < Date.now() + 10000; // expired or expiring in 10 seconds
+  } catch {
+    return true;
+  }
+}
+
 async function getOrFetchToken(): Promise<string | null> {
   if (typeof window === 'undefined') return null;
   const existingToken = localStorage.getItem('autozure_token');
-  if (existingToken) return existingToken;
+  if (existingToken && !isTokenExpired(existingToken)) return existingToken;
 
+  // If token is missing or expired, attempt refresh first if refreshToken exists
+  const refreshToken = localStorage.getItem('autozure_refresh_token');
+  if (refreshToken) {
+    if (!pendingRefreshPromise) {
+      pendingRefreshPromise = (async () => {
+        try {
+          const res = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
+          const newTokens = res.data.tokens;
+          if (newTokens?.accessToken) {
+            localStorage.setItem('autozure_token', newTokens.accessToken);
+            localStorage.setItem('autozure_refresh_token', newTokens.refreshToken);
+            return newTokens.accessToken as string;
+          }
+          return null;
+        } catch {
+          localStorage.removeItem('autozure_token');
+          localStorage.removeItem('autozure_refresh_token');
+          return null;
+        } finally {
+          pendingRefreshPromise = null;
+        }
+      })();
+    }
+    const refreshed = await pendingRefreshPromise;
+    if (refreshed) return refreshed;
+  }
+
+  // Fallback to dev/self-hosted auto-login
   if (!pendingLoginPromise) {
     pendingLoginPromise = (async () => {
       try {

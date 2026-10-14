@@ -258,6 +258,8 @@ export default function PluginsPage() {
             <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               type="text"
+              id="search-plugins"
+              name="search-plugins"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search connectors (Slack, GitHub, Postgres, OpenAI, Stripe)..."
