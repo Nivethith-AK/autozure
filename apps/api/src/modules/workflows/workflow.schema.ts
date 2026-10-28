@@ -33,6 +33,10 @@ const workflowEdgeSchema = z.object({
   sourceHandle: z.string().optional(),
   targetHandle: z.string().optional(),
   label: z.string().optional(),
+  type: z.string().optional(),
+  animated: z.boolean().optional(),
+  style: z.record(z.unknown()).optional(),
+  markerEnd: z.unknown().optional(),
 });
 
 const graphSchema = z.object({

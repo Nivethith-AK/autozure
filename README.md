@@ -40,26 +40,23 @@
 
 ---
 
-## Built-In Node Registry
+## Built-In Node Registry & Connectors
 
-AutoZure ships with 14 production-grade nodes out of the box:
+AutoZure ships with **93 production-grade connectors and nodes** spanning 15 functional categories:
 
-| Category | Node | Description |
-| :--- | :--- | :--- |
-| **Triggers** | `trigger.manual` | Trigger workflow manually via UI or REST API with optional custom payload |
-| | `trigger.webhook` | Secure webhook URL trigger supporting GET, POST, PUT, PATCH, DELETE |
-| | `trigger.schedule` | Cron-based repeatable scheduling with BullMQ |
-| **Actions** | `action.http` | Full HTTP client (Axios) supporting all methods, headers, auth, and timeouts |
-| | `action.delay` | Pauses execution for a specified duration (ms/s/m) with abort signal handling |
-| | `action.code` | Executes custom JavaScript logic in a sandboxed execution context |
-| **Logic** | `logic.condition` | 11 comparison operators with branching (`true` / `false` paths) |
-| | `logic.merge` | Merges multi-branch input streams (combine, append, first, second) |
-| **Data** | `data.transform` | Reshape and map JSON fields using keypath templates |
-| | `data.setVariable` | Add or overwrite key-value pairs on the pipeline data payload |
-| **AI** | `ai.openai` | GPT-4o, GPT-4o Mini, GPT-3.5 with structured JSON mode and template interpolation |
-| | `ai.gemini` | Google Gemini 1.5 Pro, Flash, and 2.0 Flash models with JSON output mode |
-| | `ai.anthropic` | Anthropic Claude 3.5 Sonnet and Haiku with system instructions and token controls |
-| **Utils** | `util.debug` | Telemetry inspector for debugging data passing without payload mutation |
+| Category | Count | Key Supported Integrations & Engines |
+| :--- | :---: | :--- |
+| **Triggers** | 8 | Manual Trigger, Webhook Trigger (REST API), Schedule (Cron), GitHub Webhook, Stripe Events, Slack Events, Discord Events, GitLab Events |
+| **Actions & Compute** | 12 | HTTP Request (Axios), Delay/Timer, Custom JavaScript Code (Sandboxed), Shell Command, Python Script, Docker Runner, GraphQL Request |
+| **AI & LLM Orchestration** | 14 | OpenAI (GPT-4o, GPT-4o Mini), Anthropic (Claude 3.5 Sonnet, Haiku), Google Gemini (1.5 Pro, Flash), Ollama (Local Llama 3), Groq (Llama 3 70B), Mistral AI, DeepSeek, Perplexity, Cohere, ElevenLabs Audio |
+| **Logic & Flow Control** | 6 | Condition (11 Comparison Operators), Merge (Multi-branch), Switch/Router, Loop/Iterator, Filter, Error Handler |
+| **Data Transformation** | 8 | Data Transform (JSONPath mapping), Set Variable, JSON Parser, XML Converter, CSV Parser, Regex Extractor, Math Calculation |
+| **Databases & Cache** | 7 | PostgreSQL, MySQL, Redis, Supabase, MongoDB, DynamoDB, Neo4j |
+| **Cloud & Storage** | 8 | AWS S3, Google Cloud Storage, Cloudflare R2, Azure Blob Storage, SFTP, MinIO, Dropbox, Google Drive |
+| **DevOps & CI/CD** | 8 | GitHub (Issues, PRs, Commits), GitLab, Docker Engine, Kubernetes API, Sentry, PagerDuty, Datadog, Prometheus |
+| **Communication & Chat** | 8 | Slack, Discord, Telegram Bot, Microsoft Teams, Twilio SMS, SendGrid, Resend, Postmark |
+| **CRM & Workspace** | 8 | Notion, Airtable, HubSpot, Google Sheets, Linear, Jira, Asana, ClickUp |
+| **Commerce & Billing** | 6 | Stripe (Charges, Subscriptions), Shopify, PayPal, Lemon Squeezy, QuickBooks, Paddle |
 
 ---
 
@@ -69,14 +66,14 @@ The fastest way to spin up the entire AutoZure stack (PostgreSQL, Redis, API, an
 
 ```bash
 # 1. Clone the repository
-git clone <repo-url> autozure
+git clone https://github.com/Nivethith-AK/autozure.git
 cd autozure
 
 # 2. Copy the environment variables
 cp .env.example .env
 
 # 3. Launch all services
-docker compose -f docker/docker-compose.yml up --build -d
+docker compose up --build -d
 ```
 
 - **Frontend Dashboard:** [http://localhost:3000](http://localhost:3000)

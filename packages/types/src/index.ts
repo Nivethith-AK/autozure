@@ -127,6 +127,10 @@ export interface WorkflowEdge {
   targetHandle?: string;
   label?: string;
   condition?: string;
+  type?: string;
+  animated?: boolean;
+  style?: Record<string, unknown>;
+  markerEnd?: unknown;
 }
 
 export interface WorkflowGraph {

@@ -30,7 +30,7 @@ async function deepAudit() {
   });
 
   console.log('=== PART 1: AUDITING WORKFLOWS DASHBOARD WINDOW (/) ===');
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle2' });
+  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle2', timeout: 60000 });
   await new Promise(r => setTimeout(r, 1000));
 
   // 1. Check title & metrics
@@ -86,13 +86,13 @@ async function deepAudit() {
     if (page.url().includes('/editor/')) {
       console.log('   ✓ Blank workflow created and redirected to editor successfully!');
       // Navigate back to dashboard to finish dashboard tests
-      await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle2' });
+      await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle2', timeout: 60000 });
       await new Promise(r => setTimeout(r, 600));
     }
   }
 
   console.log('\n=== PART 2: AUDITING WORKFLOW EDITOR WINDOW (/editor/[id]) ===');
-  await page.goto(`${BASE_URL}/editor/wf-sample-welcome`, { waitUntil: 'networkidle2' });
+  await page.goto(`${BASE_URL}/editor/wf-sample-welcome`, { waitUntil: 'networkidle2', timeout: 60000 });
   await page.waitForSelector('.react-flow__node');
   await new Promise(r => setTimeout(r, 1000));
 
